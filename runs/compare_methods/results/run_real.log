@@ -1,0 +1,57 @@
+[Achilles_10252013] 1.6m Linear Maze | cells 120 | place cells {1.0: 57, -1.0: 63} | events 3260 (median 120 ms)
+  cPCA single: C 0.11 [0.29] | C-C0 0.13 [0.29] | selected 0.16
+  cPCA mixture: {2: '0.16 [0.34] stab 0.96', 3: '0.24 [0.35] stab 0.94', 4: '0.20 [0.39] stab 0.90', 6: '0.33 [0.45] stab 0.89'} -> K=2 by stability | 27s
+  seqNMF: 0.27 [0.66] factors cells [83, 16, 10] spans [28. 20. 16.] | 86s
+  HMM: 0.12 [0.29] states 35 chain ratio 0.85 | 188s
+  count PCA/ICA: 14 assemblies; member field spread 0.63 vs random 0.60
+[Achilles_10252013] done in 306s
+[Achilles_11012013] Circular Maze | cells 92 | place cells {1.0: 51, -1.0: 62} | events 2678 (median 120 ms)
+  cPCA single: C 0.32 [0.39] | C-C0 0.34 [0.43] | selected 0.32
+  cPCA mixture: {2: '0.35 [0.47] stab 0.99', 3: '0.39 [0.61] stab 0.98', 4: '0.62 [0.61] stab 0.96', 6: '0.64 [0.63] stab 0.90'} -> K=2 by stability | 12s
+  seqNMF: 0.65 [0.81] factors cells [41, 22, 13] spans [24. 33. 20.] | 100s
+  HMM: 0.21 [0.42] states 35 chain ratio 0.63 | 201s
+  count PCA/ICA: 13 assemblies; member field spread 0.92 vs random 0.92
+[Achilles_11012013] done in 323s
+[Buddy_06272013] 1.6m Linear Maze | cells 48 | place cells {1.0: 13, -1.0: 13} | events 1483 (median 110 ms)
+  cPCA single: C 0.38 [0.73] | C-C0 0.50 [0.68] | selected 0.41
+  cPCA mixture: {2: '0.41 [0.73] stab 0.98', 3: '0.46 [0.77] stab 0.89', 4: '0.40 [0.83] stab 0.80', 6: '0.78 [0.85] stab 0.81'} -> K=2 by stability | 3s
+  seqNMF: 0.47 [0.69] factors cells [23, 7, 8] spans [30. 35. 78.] | 44s
+  HMM: 0.69 [0.67] states 20 chain ratio 0.65 | 98s
+  count PCA/ICA: 6 assemblies; member field spread 0.25 vs random 0.59
+[Buddy_06272013] done in 148s
+[Cicero_09012014] 1.6m Linear Maze | cells 55 | place cells {1.0: 17, -1.0: 15} | events 3702 (median 110 ms)
+  cPCA single: C 0.39 [0.67] | C-C0 0.32 [0.58] | selected 0.29
+  cPCA mixture: {2: '0.38 [0.78] stab 0.99', 3: '0.32 [0.77] stab 0.99', 4: '0.51 [0.82] stab 0.95', 6: '0.59 [0.78] stab 0.91'} -> K=3 by stability | 7s
+  seqNMF: 0.46 [0.65] factors cells [41, 8, 3] spans [17. 21. 58.] | 60s
+  HMM: 0.24 [0.59] states 20 chain ratio 0.32 | 248s
+  count PCA/ICA: 7 assemblies; member field spread 0.48 vs random 0.51
+[Cicero_09012014] done in 320s
+[Cicero_09102014] Circular Maze | cells 81 | place cells {1.0: 22, -1.0: 36} | events 4892 (median 110 ms)
+  cPCA single: C 0.28 [0.58] | C-C0 0.35 [0.66] | selected 0.33
+  cPCA mixture: {2: '0.35 [0.74] stab 0.99', 3: '0.36 [0.78] stab 0.97', 4: '0.43 [0.83] stab 0.94', 6: '0.45 [0.82] stab 0.91'} -> K=2 by stability | 24s
+  seqNMF: 0.66 [0.80] factors cells [43, 12, 6] spans [22. 28. 62.] | 110s
+  HMM: 0.51 [0.61] states 35 chain ratio 0.44 | 295s
+  count PCA/ICA: 10 assemblies; member field spread 1.04 vs random 0.91
+[Cicero_09102014] done in 447s
+[Cicero_09172014] 2m Linear Maze | cells 59 | place cells {1.0: 23, -1.0: 22} | events 3462 (median 120 ms)
+  cPCA single: C 0.18 [0.51] | C-C0 0.37 [0.44] | selected 0.16
+  cPCA mixture: {2: '0.25 [0.59] stab 0.99', 3: '0.35 [0.61] stab 0.97', 4: '0.39 [0.69] stab 0.93', 6: '0.42 [0.72] stab 0.97'} -> K=2 by stability | 8s
+  seqNMF: 0.31 [0.54] factors cells [42, 6, 6] spans [17. 12. 24.] | 55s
+  HMM: 0.41 [0.49] states 35 chain ratio 0.71 | 196s
+  count PCA/ICA: 8 assemblies; member field spread 0.60 vs random 0.62
+[Cicero_09172014] done in 263s
+[Gatsby_08022013] 1.6m Linear Maze | cells 66 | place cells {1.0: 19, -1.0: 21} | events 2782 (median 110 ms)
+  cPCA single: C 0.38 [0.56] | C-C0 0.60 [0.51] | selected 0.40
+  cPCA mixture: {2: '0.56 [0.65] stab 0.99', 3: '0.54 [0.68] stab 0.99', 4: '0.45 [0.72] stab 0.98', 6: '0.57 [0.77] stab 0.93'} -> K=2 by stability | 7s
+  seqNMF: 0.77 [0.70] factors cells [37, 6, 20] spans [23.  9. 33.] | 64s
+  HMM: 0.24 [0.51] states 35 chain ratio 0.36 | 152s
+  count PCA/ICA: 9 assemblies; member field spread 0.44 vs random 0.54
+[Gatsby_08022013] done in 227s
+[Gatsby_08282013] Circular Maze | cells 41 | place cells {1.0: 20, -1.0: 25} | events 4940 (median 110 ms)
+  cPCA single: C 0.51 [0.69] | C-C0 0.51 [0.68] | selected 0.47
+  cPCA mixture: {2: '0.66 [0.78] stab 0.97', 3: '0.57 [0.86] stab 0.99', 4: '0.74 [0.86] stab 0.99', 6: '0.72 [0.88] stab 0.93'} -> K=3 by stability | 4s
+  seqNMF: nan [nan] factors cells [6, 4, 2] spans [3. 8. 0.] | 39s
+  HMM: 0.44 [0.64] states 35 chain ratio 0.86 | 243s
+  count PCA/ICA: 9 assemblies; member field spread 0.72 vs random 0.74
+[Gatsby_08282013] done in 297s
+ALL_DONE
