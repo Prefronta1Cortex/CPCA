@@ -7,7 +7,6 @@ dependencies:
   - scipy
   - matplotlib
   - scikit-learn
-  - pandas
-  - jupyter
+  - h5py
   - pytest
   - pip

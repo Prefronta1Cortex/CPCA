@@ -2,9 +2,8 @@
 data/
 hc-11/
 
-# generated outputs (regenerate with scripts/)
-results/
-figures/
+# generated binaries (tables and figures are committed; regenerate with scripts/)
+results/**/*.pkl
 
 # python
 __pycache__/
