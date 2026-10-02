@@ -1,22 +1,19 @@
-.DS_Store
+# data (never committed)
+data/
+hc-11/
+
+# generated outputs (regenerate with scripts/)
+results/
+figures/
+
+# python
 __pycache__/
 *.pyc
 *.egg-info/
 .pytest_cache/
 .ipynb_checkpoints/
 .venv/
-data/raw/
-data/*.npz
-data/*.mat
 
-hc-11/
-data/hc11_sessinfo/
-
-hc-11/
-data/hc11_sessinfo/
-
-hc-11/
-data/hc11_sessinfo/
-
-hc-11/
-data/hc11_sessinfo/
+# os / editor
+.DS_Store
+fontlist-*.json
