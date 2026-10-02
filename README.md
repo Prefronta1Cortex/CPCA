@@ -37,6 +37,7 @@ pytest -q
 python scripts/run_synthetic.py        # ~1 min: planted routes, 8 conditions x 3 draws
 python scripts/run_hc11.py             # ~3 min: all sessions, POST and PRE, 4 variants
 python scripts/summarize.py            # tables -> results/summary.md, figures -> figures/
+python scripts/plot_component_circle.py  # components and data on the unit half-circle
 ```
 
 Minimal use of the method on your own events:
