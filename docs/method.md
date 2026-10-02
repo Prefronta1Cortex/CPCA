@@ -51,6 +51,8 @@ Why PCA can separate routes at all: PCA separates directions that are (nearly) o
 
 Members are the cells with weight at least 20% of the component's largest weight. Their angles are placed on the circle, the widest empty gap is cut, and the angles are unwrapped from there into relative times (ms). The same numbers are a delay-line neuron in the sense of Haessig et al. (2020): synaptic weight $|p_{nk}|$ and delay $D - \tau_{nk}$, so that the members' spikes arrive together when the event plays in the component's order.
 
+`figures/component_on_the_circle.png` (from `scripts/plot_component_circle.py`) shows the picture: on synthetic data each cell's event arrows cluster at one angle and the component's arrow for that cell points there. On hc-11 the cells' mean arrows all sit within 5–8° of the population peak; a centred component's arrows describe *deviations* from that common direction, so after centring the angles are relative and their spread is amplified. Reading them as an order is valid; reading them as milliseconds is not. A read-out that projects each entry onto the direction at right angles to the cell's mean arrow (the linearised timing deviation) gives the same POST/PRE result (17/118 vs 5/104 against 21/118 vs 4/104), so the simpler angle read-out is kept.
+
 ## 6. Evaluation
 
 Label-free, from the sleep spikes only:
