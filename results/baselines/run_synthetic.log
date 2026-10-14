@@ -1,1 +1,3 @@
 A one route, every event a replay: cPCA uncentred: 1.00[0.20] | cPCA centred: 0.00[nan] | seqNMF: 0.99[0.21] | HMM AUC nan, congruent 0% | 505s
+B one route, forward and backward 60/40, span 25 ms: cPCA uncentred: 0.99[0.20] | cPCA centred: 0.79[0.21] | seqNMF: 0.81[0.23] | HMM AUC nan, congruent 0% | 447s
+C one route, forward and backward 60/40, span 80 ms: cPCA uncentred: 1.00[0.21] | cPCA centred: 0.76[0.24] | seqNMF: 0.98[0.38] | HMM AUC nan, congruent 0% | 213s
