@@ -186,6 +186,108 @@ def figure_hc11(base):
     plt.close(fig)
 
 
+def figure_integrated(base):
+    """All methods on one plot: each method's score relative to its own chance level, POST vs PRE.
+
+    cPCA / seqNMF: map-matching (component|factor, direction) tests divided by 5% of tests.
+    HMM congruence: % congruent events divided by 1% (the 99% criterion).
+    HMM latent map: decoding error with shuffled positions divided by the real error (uses behaviour post hoc).
+    Bayesian decoding: % significant events divided by 5% (uses the map as input).
+    Bars: pooled over sessions (sums for counts, median for the error ratio). Dots: single sessions.
+    Right panel: maze specificity = log2(POST ratio) - log2(PRE ratio) per session.
+    """
+    cp = {b["name"]: load_cpca(b["name"]) for b in base}
+    v = "centred, T = event duration"
+    FLOOR = 0.15                                                   # zero counts are drawn at this floor with an open marker
+    methods = [
+        ("cPCA (centred)\ncomponents whose order\nmatches the map\n[label-free]", C_CPCA, "label-free"),
+        ("seqNMF\nfactors whose lags\nmatch the map\n[label-free]", C_SEQ, "label-free"),
+        ("HMM congruence\nevents with sequential\nstructure\n[label-free]", C_HMM, "label-free"),
+        ("HMM latent map\nposition decoded via\nstate place fields\n[behaviour used post hoc]", "#9fd3bd", "behaviour used post hoc"),
+        ("Bayesian decoding\nevents with a decoded\ntrajectory\n[place map as input]", C_BAYES, "map as input"),
+    ]
+
+    def per_session(b, epoch):
+        e = b["epochs"][epoch]
+        c = cp[b["name"]]
+        out = []
+        h, t = hits_of(c["epochs"][epoch]["variants"][v]["components"]) if c else (np.nan, 0)
+        out.append((h, 0.05 * t))
+        h, t = hits_of(e["seqNMF"]["factors"])
+        out.append((h, 0.05 * t))
+        out.append((100 * e["HMM"]["congruent_99"], 1.0))
+        l = e["HMM"]["lspf"]
+        out.append((l["shuffled_median_error_m"], l["median_error_m"]))
+        out.append((100 * e["Bayes"]["frac_sig"], 5.0))
+        return out
+
+    table = {epoch: [per_session(b, epoch) for b in base] for epoch in ("post", "pre")}
+    fig, axes = plt.subplots(1, 2, figsize=(20, 7.6), gridspec_kw={"width_ratios": [2.1, 1]})
+    ax = axes[0]
+    x = np.arange(len(methods))
+    for i, (epoch, shade, lab) in enumerate((("post", 1.0, "POST sleep (after the novel maze)"), ("pre", 0.35, "PRE sleep (before, control)"))):
+        pos = x - 0.2 + 0.4 * i
+        pooled = []
+        for m in range(len(methods)):
+            num = np.array([row[m][0] for row in table[epoch]], float)
+            den = np.array([row[m][1] for row in table[epoch]], float)
+            ok = np.isfinite(num) & np.isfinite(den) & (den > 0)
+            if m == 3:
+                pooled.append(np.nanmedian(num[ok] / den[ok]))
+            else:
+                pooled.append(num[ok].sum() / den[ok].sum() if den[ok].sum() > 0 else np.nan)
+            ratios = np.where(ok, num / np.where(den > 0, den, np.nan), np.nan)
+            zero = ok & (num == 0)
+            jitter = np.linspace(-0.12, 0.12, len(ratios))
+            ax.scatter(pos[m] + jitter[~zero & ok], ratios[~zero & ok], s=28, color="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
+                       label="single sessions" if (i == 0 and m == 0) else None)
+            ax.scatter(pos[m] + jitter[zero], np.full(zero.sum(), FLOOR), s=34, facecolors="none", edgecolors="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
+                       label="session with zero matches (drawn at the floor)" if (i == 0 and m == 0) else None)
+        colours = [c for _, c, _ in methods]
+        ax.bar(pos, np.maximum(pooled, FLOOR), width=0.38, color=colours, alpha=shade, edgecolor="black" if epoch == "pre" else "none", linewidth=0.8, zorder=2,
+               label=lab)
+        for p_, val in zip(pos, pooled):
+            ax.text(p_, max(val, FLOOR) * 1.12, f"{val:.1f}×", ha="center", va="bottom", fontsize=10.5, fontweight="bold" if epoch == "post" else "normal")
+    ax.axhline(1.0, color="black", lw=1.6, ls="--", zorder=3, label="chance level of each method (1×)")
+    ax.set_yscale("log")
+    ax.set_ylim(FLOOR * 0.8, 60)
+    ax.set_xticks(x)
+    ax.set_xticklabels([m for m, _, _ in methods], fontsize=10.5)
+    ax.set_ylabel("score relative to the method's own chance level (×, log scale)")
+    ax.set_title("hc-11, eight sessions: every method against its own chance level, POST vs PRE sleep", pad=12)
+    ax.yaxis.grid(True, which="both", color="#e6e9ee", zorder=0)
+    ax.set_axisbelow(True)
+    handles, labels_ = ax.get_legend_handles_labels()
+    order = [labels_.index(l) for l in ("POST sleep (after the novel maze)", "PRE sleep (before, control)", "chance level of each method (1×)", "single sessions", "session with zero matches (drawn at the floor)") if l in labels_]
+    ax.legend([handles[o] for o in order], [labels_[o] for o in order], loc="upper left", frameon=False, fontsize=10)
+    # right: specificity to the experienced maze
+    ax = axes[1]
+    for m, (name, colour, _) in enumerate(methods):
+        spec = []
+        for row_post, row_pre in zip(table["post"], table["pre"]):
+            a = row_post[m][0] / row_post[m][1] if row_post[m][1] > 0 else np.nan
+            b_ = row_pre[m][0] / row_pre[m][1] if row_pre[m][1] > 0 else np.nan
+            if np.isfinite(a) and np.isfinite(b_):
+                spec.append(np.log2(max(a, FLOOR)) - np.log2(max(b_, FLOOR)))
+        spec = np.array(spec)
+        jitter = np.linspace(-0.15, 0.15, spec.size)
+        ax.scatter(np.full(spec.size, m) + jitter, spec, s=40, color=colour, edgecolors="black", linewidths=0.5, zorder=3)
+        ax.hlines(np.median(spec), m - 0.3, m + 0.3, colors="black", linewidth=2.6, zorder=4)
+    ax.axhline(0, color="black", lw=1.2, ls="--")
+    ax.set_xticks(x)
+    ax.set_xticklabels([m.split("\n")[0] for m, _, _ in methods], fontsize=10.5, rotation=15, ha="right")
+    ax.set_ylabel("specificity to the experienced maze:\nlog₂(POST ÷ chance) − log₂(PRE ÷ chance), per session")
+    ax.set_title("Is the signal about the maze the animal just ran?\n(above 0 = stronger in POST than PRE; thick line = median)", pad=12)
+    ax.set_ylim(-4.5, 4.5)
+    ax.text(0.5, -0.3, "seqNMF has 0 or 1 map match per session, so its points are ±(floor) artefacts and sit off the plotted range.",
+            transform=ax.transAxes, ha="center", va="top", fontsize=9, color="#555555")
+    ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+    fig.savefig(FIG / "baselines_hc11_integrated.png", dpi=170, bbox_inches="tight")
+    plt.close(fig)
+
+
 def figure_example(base, name="Achilles_11012013"):
     """One session: the best map-matching cPCA component, the best seqNMF factor, and the HMM latent map."""
     from cpca import event_spike_times, fit, population_bursts
@@ -307,6 +409,7 @@ def main():
         figure_synthetic(syn)
     if base:
         figure_hc11(base)
+        figure_integrated(base)
         if any(b["name"] == "Achilles_11012013" for b in base):
             figure_example(base)
     write_summary(syn, base)

@@ -1,6 +1,6 @@
 # Baseline methods: what was run, how, and what was not
 
-Open with `Cmd+Shift+V` for formulas. Results: `results/baselines/summary.md`, `figures/baselines_*.png`. Code: `baselines/`, `scripts/run_baselines.py`, `scripts/summarize_baselines.py`.
+Open with `Cmd+Shift+V` for formulas. Results: `results/baselines/summary.md`, `figures/baselines_*.png`; the one-figure summary is `figures/baselines_hc11_integrated.png` (each method relative to its own chance level, POST vs PRE, with per-session points and a maze-specificity panel). Code: `baselines/`, `scripts/run_baselines.py`, `scripts/summarize_baselines.py`.
 
 ## Rules
 
