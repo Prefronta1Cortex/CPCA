@@ -42,7 +42,7 @@ def timing_consistency(encoded, component, rng, n_shuffles=50):
 
 
 def member_order_vs_place(component, T, centres, circular, length, rng, frac=0.2, min_members=6, n_null=500, n_rotations=12):
-    """Spearman between members' relative times and their place-field centres, with a null.
+    """Spearman between a component's members' relative times and their place-field centres, with a null.
 
     centres: place-field centre per cell (NaN = no field). For circular tracks
     the best of n_rotations rotations is taken for data and null alike. The
@@ -50,7 +50,17 @@ def member_order_vs_place(component, T, centres, circular, length, rng, frac=0.2
     (rho, null 95th percentile of |rho|, number of members with a field).
     """
     _, times, _, included, _ = readout(component, T, min_weight=frac)
-    use = included & np.isfinite(times) & np.isfinite(centres)
+    return order_vs_place(np.where(included, times, np.nan), centres, circular, length, rng, min_members, n_null, n_rotations)
+
+
+def order_vs_place(times, centres, circular, length, rng, min_members=6, n_null=500, n_rotations=12):
+    """Same test for any method's cell order: `times` is one value per cell (NaN = not a member).
+
+    Used for complex-PCA components, seqNMF factor lags, or any other per-cell ordering,
+    so every method is scored identically.
+    """
+    times = np.asarray(times, dtype=float)
+    use = np.isfinite(times) & np.isfinite(centres)
     n = int(use.sum())
     if n < min_members:
         return np.nan, np.nan, n
