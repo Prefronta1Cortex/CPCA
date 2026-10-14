@@ -1,1 +1,24 @@
 [Achilles_10252013] post: seqNMF 3/5 significant factors, map hits 0/2 (774s) | HMM congruent 99%: 29.6%, lsPF error 0.21 vs shuffled 0.67 m (160s) | Bayes sig 21.6% strict 7.2%
+[Achilles_10252013] pre: seqNMF 3/5 significant factors, map hits 0/2 (353s) | HMM congruent 99%: 31.8%, lsPF error 0.50 vs shuffled 0.63 m (184s) | Bayes sig 18.8% strict 5.7%
+[Achilles_10252013] saved (1533s)
+[Achilles_11012013] post: seqNMF 2/5 significant factors, map hits 0/2 (205s) | HMM congruent 99%: 24.4%, lsPF error 0.10 vs shuffled 0.62 m (75s) | Bayes sig 11.2% strict 3.2%
+[Achilles_11012013] pre: seqNMF 2/5 significant factors, map hits 0/2 (233s) | HMM congruent 99%: 14.1%, lsPF error 0.57 vs shuffled 0.61 m (155s) | Bayes sig 8.2% strict 1.2%
+[Achilles_11012013] saved (712s)
+[Buddy_06272013] post: seqNMF 1/5 significant factors, map hits 0/2 (69s) | HMM congruent 99%: 14.0%, lsPF error 0.23 vs shuffled 0.59 m (38s) | Bayes sig 20.5% strict 1.2%
+[Buddy_06272013] pre: seqNMF 1/5 significant factors, map hits 0/2 (115s) | HMM congruent 99%: 10.1%, lsPF error 0.20 vs shuffled 0.53 m (118s) | Bayes sig 21.6% strict 0.4%
+[Buddy_06272013] saved (349s)
+[Cicero_09012014] post: seqNMF 1/5 significant factors, map hits 0/2 (174s) | HMM congruent 99%: 22.4%, lsPF error 0.42 vs shuffled 0.45 m (120s) | Bayes sig 16.6% strict 0.1%
+[Cicero_09012014] pre: seqNMF 2/5 significant factors, map hits 0/2 (185s) | HMM congruent 99%: 17.5%, lsPF error 0.39 vs shuffled 0.89 m (219s) | Bayes sig 16.9% strict 0.0%
+[Cicero_09012014] saved (768s)
+[Cicero_09102014] post: seqNMF 1/5 significant factors, map hits 1/2 (352s) | HMM congruent 99%: 22.3%, lsPF error 0.12 vs shuffled 0.68 m (241s) | Bayes sig 13.1% strict 1.8%
+[Cicero_09102014] pre: seqNMF 1/5 significant factors, map hits 0/2 (205s) | HMM congruent 99%: 23.3%, lsPF error 0.35 vs shuffled 0.63 m (87s) | Bayes sig 12.3% strict 1.6%
+[Cicero_09102014] saved (967s)
+[Cicero_09172014] post: seqNMF 2/5 significant factors, map hits 0/2 (121s) | HMM congruent 99%: 21.6%, lsPF error 0.22 vs shuffled 0.75 m (86s) | Bayes sig 13.0% strict 1.1%
+[Cicero_09172014] pre: seqNMF 2/5 significant factors, map hits 0/2 (123s) | HMM congruent 99%: 23.7%, lsPF error 0.40 vs shuffled 1.00 m (107s) | Bayes sig 11.8% strict 0.7%
+[Cicero_09172014] saved (477s)
+[Gatsby_08022013] post: seqNMF 1/5 significant factors, map hits 0/2 (137s) | HMM congruent 99%: 30.1%, lsPF error 0.30 vs shuffled 0.47 m (70s) | Bayes sig 18.9% strict 1.1%
+[Gatsby_08022013] pre: seqNMF 2/5 significant factors, map hits 1/2 (134s) | HMM congruent 99%: 29.0%, lsPF error 0.34 vs shuffled 0.69 m (99s) | Bayes sig 17.6% strict 1.4%
+[Gatsby_08022013] saved (469s)
+[Gatsby_08282013] post: seqNMF 4/5 significant factors, map hits 0/1 (86s) | HMM congruent 99%: 17.6%, lsPF error 0.21 vs shuffled 0.61 m (105s) | Bayes sig 10.0% strict 0.8%
+[Gatsby_08282013] pre: seqNMF 2/5 significant factors, map hits 0/0 (79s) | HMM congruent 99%: 16.4%, lsPF error 0.22 vs shuffled 0.59 m (90s) | Bayes sig 8.6% strict 0.2%
+[Gatsby_08282013] saved (396s)

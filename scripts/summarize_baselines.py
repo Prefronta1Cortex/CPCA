@@ -52,7 +52,7 @@ def hits_of(items, key="map"):
 
 # ----------------------------------------------------------------------------- synthetic
 def figure_synthetic(syn):
-    fig, axes = plt.subplots(1, 2, figsize=(18, 6.4), gridspec_kw={"width_ratios": [2.2, 1]})
+    fig, axes = plt.subplots(1, 2, figsize=(21, 7.2), gridspec_kw={"width_ratios": [2.3, 1]})
     ax = axes[0]
     x = np.arange(len(syn))
     methods = [("cPCA uncentred", C_CPCA), ("cPCA centred", C_CPCA2), ("seqNMF", C_SEQ)]
@@ -65,7 +65,7 @@ def figure_synthetic(syn):
         ax.hlines(nulls, pos - width * 0.45, pos + width * 0.45, colors="black", linewidth=2.2, zorder=3,
                   label="chance level (95th percentile of cell-permutation null)" if i == 0 else None)
     ax.set_xticks(x)
-    ax.set_xticklabels([s["condition"].split(" ", 1)[0] + "\n" + wrap(s["condition"].split(" ", 1)[1], 20) for s in syn], fontsize=9.5)
+    ax.set_xticklabels([s["condition"].split(" ", 1)[0] + "\n" + wrap(s["condition"].split(" ", 1)[1], 15) for s in syn], fontsize=9)
     ax.set_ylim(0, 1.05)
     ax.set_ylabel("|Spearman| between a component's (or factor's) member\norder and the planted route (median over routes)")
     ax.set_title("Methods that output a cell order: route recovery on planted data")
@@ -74,9 +74,11 @@ def figure_synthetic(syn):
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2, frameon=False)
     ax = axes[1]
     auc = [s["methods"]["HMM"]["auc_replay"] for s in syn]
-    con = [100 * s["methods"]["HMM"]["congruent_99"] for s in syn]
-    ax.bar(x - 0.2, auc, width=0.4, color=C_HMM, label="AUC: congruence separates planted replays from volleys", zorder=2)
-    ax.bar(x + 0.2, np.array(con) / 100, width=0.4, color="#9fd3bd", label="fraction of all events called congruent (99%)", zorder=2)
+    rep = [s["methods"]["HMM"].get("congruent_replays", np.nan) for s in syn]
+    vol = [s["methods"]["HMM"].get("congruent_volleys", np.nan) for s in syn]
+    ax.bar(x - 0.27, auc, width=0.26, color=C_HMM, label="AUC: congruence separates planted replays from volleys", zorder=2)
+    ax.bar(x, rep, width=0.26, color="#9fd3bd", label="fraction of planted replays called congruent (99%)", zorder=2)
+    ax.bar(x + 0.27, vol, width=0.26, color="#d9d9d9", label="fraction of volleys called congruent (false alarms)", zorder=2)
     ax.axhline(0.5, color="black", lw=1.2, ls="--", label="AUC of a random detector")
     ax.set_xticks(x)
     ax.set_xticklabels([s["condition"].split(" ", 1)[0] for s in syn])
@@ -99,7 +101,7 @@ def load_cpca(name):
 
 def figure_hc11(base):
     cp = {b["name"]: load_cpca(b["name"]) for b in base}
-    fig, axes = plt.subplots(2, 3, figsize=(20, 11))
+    fig, axes = plt.subplots(2, 3, figsize=(23, 13))
     x = np.arange(len(base))
     labels = [label(b["name"]) for b in base]
 
@@ -122,23 +124,23 @@ def figure_hc11(base):
     pre = [hits_of(cp[b["name"]]["epochs"]["pre"]["variants"][v]["components"])[0] if cp[b["name"]] else np.nan for b in base]
     cpost = [0.05 * hits_of(cp[b["name"]]["epochs"]["post"]["variants"][v]["components"])[1] if cp[b["name"]] else np.nan for b in base]
     cpre = [0.05 * hits_of(cp[b["name"]]["epochs"]["pre"]["variants"][v]["components"])[1] if cp[b["name"]] else np.nan for b in base]
-    post_pre_bars(axes[0, 0], post, pre, cpost, cpre, "(component, direction) pairs whose order matches the place fields",
-                  "cPCA (centred): components whose internal order matches the map", C_CPCA)
+    post_pre_bars(axes[0, 0], post, pre, cpost, cpre, "(component, direction) pairs whose\norder matches the place fields",
+                  "cPCA (centred)\ncomponents whose internal order matches the map", C_CPCA)
     # (b) seqNMF factors matching the map
     post = [hits_of(b["epochs"]["post"]["seqNMF"]["factors"])[0] for b in base]
     pre = [hits_of(b["epochs"]["pre"]["seqNMF"]["factors"])[0] for b in base]
     cpost = [0.05 * hits_of(b["epochs"]["post"]["seqNMF"]["factors"])[1] for b in base]
     cpre = [0.05 * hits_of(b["epochs"]["pre"]["seqNMF"]["factors"])[1] for b in base]
-    post_pre_bars(axes[0, 1], post, pre, cpost, cpre, "(factor, direction) pairs whose lag order matches the place fields",
-                  "seqNMF: factors whose cell lags match the map", C_SEQ)
+    post_pre_bars(axes[0, 1], post, pre, cpost, cpre, "(factor, direction) pairs whose\nlag order matches the place fields",
+                  "seqNMF\nfactors whose cell lags match the map", C_SEQ)
     for xi, b in zip(x, base):
         n_sig = sum(f["significant"] for f in b["epochs"]["post"]["seqNMF"]["factors"])
         axes[0, 1].annotate(f"{n_sig} sig.", (xi - 0.2, post[int(xi)] + 0.05), ha="center", va="bottom", fontsize=8.5, color=C_SEQ)
     # (c) HMM congruence
     post = [100 * b["epochs"]["post"]["HMM"]["congruent_99"] for b in base]
     pre = [100 * b["epochs"]["pre"]["HMM"]["congruent_99"] for b in base]
-    post_pre_bars(axes[0, 2], post, pre, [1.0] * len(base), [1.0] * len(base), "% of events congruent with the model (99% of shuffles)",
-                  "HMM: events with sequential structure (label-free)", C_HMM)
+    post_pre_bars(axes[0, 2], post, pre, [1.0] * len(base), [1.0] * len(base), "% of events congruent with the model\n(likelihood above 99% of transition shuffles)",
+                  "HMM (Maboudi et al.)\nevents with sequential structure, label-free", C_HMM)
     # (d) HMM latent map: decoding error of running position via lsPF
     post = [b["epochs"]["post"]["HMM"]["lspf"]["median_error_m"] for b in base]
     pre = [b["epochs"]["pre"]["HMM"]["lspf"]["median_error_m"] for b in base]
@@ -151,15 +153,15 @@ def figure_hc11(base):
     ax.hlines(sh_pre, x + 0.01, x + 0.39, colors="black", linewidth=2.2, zorder=3)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=10)
-    ax.set_ylabel("median error decoding running position through the states (m)")
-    ax.set_title("HMM: does the latent space carry the map? (lower is better; uses behaviour post hoc)")
+    ax.set_ylabel("median error decoding running position\nthrough the hidden states (m); lower is better")
+    ax.set_title("HMM latent map\nposition decoded via latent-state place fields (behaviour used post hoc)")
     ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
     # (e) Bayesian decoding reference
     post = [100 * b["epochs"]["post"]["Bayes"]["frac_sig"] for b in base]
     pre = [100 * b["epochs"]["pre"]["Bayes"]["frac_sig"] for b in base]
-    post_pre_bars(axes[1, 1], post, pre, [5.0] * len(base), [5.0] * len(base), "% of events with a significant decoded trajectory (p < 0.05)",
-                  "Reference: Bayesian decoding (uses the map as input)", C_BAYES)
+    post_pre_bars(axes[1, 1], post, pre, [5.0] * len(base), [5.0] * len(base), "% of events with a significant\ndecoded trajectory (p < 0.05)",
+                  "Reference: Bayesian decoding\n(takes the place map as input)", C_BAYES)
     # (f) runtime
     ax = axes[1, 2]
     names = ["cPCA", "seqNMF", "HMM", "Bayes"]
@@ -172,14 +174,14 @@ def figure_hc11(base):
     ax.set_yscale("log")
     ax.set_xticks(np.arange(4))
     ax.set_xticklabels(names)
-    ax.set_ylabel("run time per session, POST (s, log scale)")
-    ax.set_title("Cost (median over sessions; includes each method's null/shuffle tests)")
+    ax.set_ylabel("run time per session, POST\n(seconds, log scale)")
+    ax.set_title("Cost\nmedian over sessions, including each method's shuffle tests")
     ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
     handles, labels_ = axes[0, 0].get_legend_handles_labels()
     fig.legend(handles, labels_, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, -0.02))
-    fig.suptitle("hc-11, eight sessions: every method on the same POST and PRE sleep events, each scored on its own output", y=1.0, fontsize=15)
-    fig.tight_layout(rect=(0, 0.03, 1, 0.98))
+    fig.suptitle("hc-11, eight sessions: every method on the same POST and PRE sleep events, each scored on its own output", y=0.995, fontsize=16)
+    fig.subplots_adjust(left=0.06, right=0.985, top=0.9, bottom=0.11, hspace=0.5, wspace=0.32)
     fig.savefig(FIG / "baselines_hc11.png", dpi=170, bbox_inches="tight")
     plt.close(fig)
 
@@ -253,7 +255,7 @@ def write_summary(syn, base):
              "Bayesian decoding takes the map as input and is the reference ceiling. PP-Seq (Julia) and convSeq (research code) were not run; see docs/baselines.md.", ""]
     if syn:
         lines += ["## Synthetic planted routes (one draw per condition, 80 cells, 3000 events)", "",
-                  "| condition | replay | cPCA uncentred | cPCA centred | seqNMF (significant factors / K) | HMM congruence: AUC replay vs volley; % congruent | count PCA/ICA |",
+                  "| condition | replay | cPCA uncentred | cPCA centred | seqNMF (significant factors / K) | HMM congruence: AUC replay vs volley; % replays / % volleys flagged | count PCA/ICA |",
                   "|---|---|---|---|---|---|---|"]
         for s in syn:
             m = s["methods"]
@@ -261,7 +263,7 @@ def write_summary(syn, base):
                 return "; ".join(f"{abs(r[0]):.2f} [{r[1]:.2f}]{'*' if np.isfinite(r[1]) and abs(r[0]) > r[1] else ''}" for r in routes)
             lines.append(f"| {s['condition']} | {100*s['fraction_replay']:.0f}% | {fmt(m['cPCA uncentred']['routes'])} (k={m['cPCA uncentred']['k']}) | "
                          f"{fmt(m['cPCA centred']['routes'])} (k={m['cPCA centred']['k']}) | {fmt(m['seqNMF']['routes'])} ({m['seqNMF']['n_significant']}/{m['seqNMF']['n_factors']}, λ={m['seqNMF']['lambda']:.1e}) | "
-                         f"AUC {m['HMM']['auc_replay']:.2f}; {100*m['HMM']['congruent_99']:.0f}% | {m['count PCA/ICA']['n_assemblies']} assemblies, no order |")
+                         f"AUC {m['HMM']['auc_replay']:.2f}; {100*m['HMM'].get('congruent_replays', np.nan):.0f}% / {100*m['HMM'].get('congruent_volleys', np.nan):.0f}% | {m['count PCA/ICA']['n_assemblies']} assemblies, no order |")
     if base:
         cp = {b["name"]: load_cpca(b["name"]) for b in base}
         v = "centred, T = event duration"

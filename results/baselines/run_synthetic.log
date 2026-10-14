@@ -1,3 +1,8 @@
-A one route, every event a replay: cPCA uncentred: 1.00[0.20] | cPCA centred: 0.00[nan] | seqNMF: 0.99[0.21] | HMM AUC nan, congruent 0% | 505s
-B one route, forward and backward 60/40, span 25 ms: cPCA uncentred: 0.99[0.20] | cPCA centred: 0.79[0.21] | seqNMF: 0.81[0.23] | HMM AUC nan, congruent 0% | 447s
-C one route, forward and backward 60/40, span 80 ms: cPCA uncentred: 1.00[0.21] | cPCA centred: 0.76[0.24] | seqNMF: 0.98[0.38] | HMM AUC nan, congruent 0% | 213s
+A one route, every event a replay: cPCA uncentred: 1.00[0.20] | cPCA centred: 0.00[nan] | seqNMF: 0.99[0.21] | HMM AUC nan, replays flagged 99%, volleys nan% | 158s
+B one route, forward and backward 60/40, span 25 ms: cPCA uncentred: 0.99[0.20] | cPCA centred: 0.79[0.21] | seqNMF: 0.81[0.23] | HMM AUC nan, replays flagged 60%, volleys nan% | 153s
+C one route, forward and backward 60/40, span 80 ms: cPCA uncentred: 1.00[0.21] | cPCA centred: 0.76[0.24] | seqNMF: 0.98[0.38] | HMM AUC nan, replays flagged 100%, volleys nan% | 182s
+D two routes on different cells, 40% replay: cPCA uncentred: 1.00[0.33], 1.00[0.29] | cPCA centred: 1.00[0.27], 1.00[0.31] | seqNMF: 0.99[0.61], 0.98[0.33] | HMM AUC 0.86, replays flagged 100%, volleys 29% | 163s
+E two routes sharing half their cells, 40% replay: cPCA uncentred: 0.90[0.29], 0.85[0.33] | cPCA centred: 0.94[0.30], 0.93[0.30] | seqNMF: 0.97[0.33], 0.97[0.35] | HMM AUC 0.81, replays flagged 100%, volleys 37% | 170s
+F two routes, both directions, 15% replay, 15% cells: cPCA uncentred: 0.95[0.46], 0.99[0.33] | cPCA centred: 0.99[0.37], 0.98[0.32] | seqNMF: 0.52[0.50], 0.47[0.41] | HMM AUC 0.79, replays flagged 99%, volleys 40% | 168s
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: cPCA uncentred: 0.50[0.27], 0.57[0.54] | cPCA centred: 0.37[0.32], 0.38[0.32] | seqNMF: 0.23[0.51], 0.35[0.53] | HMM AUC 0.49, replays flagged 30%, volleys 31% | 152s
+H realistic at 40% replay: cPCA uncentred: 0.37[0.32], 0.64[0.29] | cPCA centred: 0.46[0.29], 0.36[0.33] | seqNMF: 0.01[0.26], 0.11[0.25] | HMM AUC 0.65, replays flagged 48%, volleys 26% | 163s

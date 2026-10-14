@@ -26,6 +26,10 @@ A record of what was tried before the current pipeline, what the numbers were, a
 - A per-condition random seed used Python's `hash()`, which changes between runs, so one realistic result moved from 0.72/0.80 to 0.42/0.34 between two executions; seeds are now fixed and conditions are repeated.
 - Timing-consistency $z$ was expected to identify route components label-free; it does not (route components rank 5–8 of 9 in the realistic condition). It is kept as a diagnostic, not a selector.
 
+## The baseline comparison, redone (October)
+
+The September comparison was criticised, correctly, for using the other methods inappropriately. It was redone with the authors' procedures (`docs/baselines.md`): seqNMF with the λ-crossover rule, penalty-driven factor count, held-out skewness significance and peak-lag read-out; the HMM with Maboudi's settings, congruence against transition shuffles and latent-state place fields; Bayesian decoding kept as the map-using reference; PP-Seq and convSeq excluded rather than re-implemented. Two of my own implementation mistakes surfaced and were fixed on the way: hmmlearn's element-wise Poisson likelihood made a fit take minutes (replaced by the identical matrix product), and empty flank bins made every event trivially "congruent" (removed, as the test concerns transitions between active states). Baselines validated on the planted routes before touching real data; conclusions in `docs/plan.md`.
+
 ## What held up
 
 - The library mathematics (shift invariance, exact phases under partial coverage, the delay-line reading) and the test suite.

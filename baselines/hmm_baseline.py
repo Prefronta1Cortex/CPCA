@@ -41,6 +41,11 @@ def _stack(blocks):
     return usable, np.vstack(usable), [b.shape[0] for b in usable]
 
 
+def kept_events(blocks):
+    """Boolean mask of the events that _stack keeps (at least two non-empty bins)."""
+    return np.array([(b.sum(axis=1) > 0).sum() >= 2 for b in blocks])
+
+
 def _repair(model):
     """States never visited in training leave zero rows in the transition matrix; make them uniform."""
     row = model.transmat_.sum(axis=1)
@@ -194,7 +199,7 @@ def run(blocks, rng, n_states=30, session=None, run_info=None, cell_ids=None, n_
     model, events = fit(blocks, rng, n_states=n_states)
     p = congruence(model, events, rng, n_shuffles=n_shuffles)
     out = {"n_states": n_states, "n_events": len(events), "congruent_99": float(np.mean(p < 0.01)), "congruent_95": float(np.mean(p < 0.05)),
-           "p_values": p, "cv_gain": cross_validated_gain(blocks, rng, n_states=n_states)}
+           "p_values": p, "kept": kept_events(blocks), "cv_gain": cross_validated_gain(blocks, rng, n_states=n_states)}
     if session is not None:
         out["lspf"] = latent_place_fields(model, session, run_info, cell_ids, rng)
     out["runtime_s"] = time.perf_counter() - t0

@@ -66,10 +66,19 @@ def auc(scores, labels):
 
 
 # ----------------------------------------------------------------------------- synthetic
-def run_synthetic():
+def run_synthetic(only=None):
+    """Run the planted-route conditions (all, or those whose name starts with one of `only`); one pickle per condition."""
     OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "synthetic").mkdir(exist_ok=True)
     results = []
     for index, (name, (gen_kwargs, route_kwargs)) in enumerate(CONDITIONS.items()):
+        target = OUT / "synthetic" / f"{name[0]}.pkl"
+        if only and not any(name.startswith(o) for o in only):
+            continue
+        if target.exists():
+            results.append(pickle.load(open(target, "rb")))
+            print(f"{name}: cached", flush=True)
+            continue
         t0 = time.perf_counter()
         data_rng = np.random.default_rng(1000 * index)
         rng = np.random.default_rng(index + 1)
@@ -105,20 +114,27 @@ def run_synthetic():
                                     "lambda": sq["lambda"], "routes": per_route, "runtime_s": sq["runtime_s"]}
         # HMM: congruence as a replay detector
         blocks20 = blocks_from_times(data["times"], T, 0.020)
-        hm = hmm_baseline.run(blocks20, rng, n_states=30, n_shuffles=60)
-        usable_mask = np.array([b.shape[0] >= 2 and b.sum() > 0 for b in blocks20])
+        hm = hmm_baseline.run(blocks20, rng, n_states=30, n_shuffles=100)
+        kept = hm["kept"]
         res["methods"]["HMM"] = {"congruent_99": hm["congruent_99"], "congruent_95": hm["congruent_95"],
-                                 "auc_replay": auc(-hm["p_values"], replay[usable_mask]), "cv_gain": hm["cv_gain"], "runtime_s": hm["runtime_s"]}
+                                 "auc_replay": auc(-hm["p_values"], replay[kept]),
+                                 "congruent_replays": float(np.mean(hm["p_values"][replay[kept]] < 0.01)) if replay[kept].any() else np.nan,
+                                 "congruent_volleys": float(np.mean(hm["p_values"][~replay[kept]] < 0.01)) if (~replay[kept]).any() else np.nan,
+                                 "p_values": hm["p_values"], "is_replay": replay[kept],
+                                 "cv_gain": hm["cv_gain"], "runtime_s": hm["runtime_s"]}
         # count PCA/ICA: number of assemblies (no order)
         _, n_asm, _, _ = assemblies(event_counts(data["times"]), rng)
         res["methods"]["count PCA/ICA"] = {"n_assemblies": n_asm}
         results.append(res)
+        with open(target, "wb") as fh:
+            pickle.dump(res, fh)
         print(f"{name}: " + " | ".join(
             [f"{m}: " + ", ".join(f"{abs(r[0]):.2f}[{r[1]:.2f}]" for r in v["routes"]) for m, v in res["methods"].items() if "routes" in v]
-            + [f"HMM AUC {res['methods']['HMM']['auc_replay']:.2f}, congruent {100*res['methods']['HMM']['congruent_99']:.0f}%"])
+            + [f"HMM AUC {res['methods']['HMM']['auc_replay']:.2f}, replays flagged {100*res['methods']['HMM']['congruent_replays']:.0f}%, volleys {100*res['methods']['HMM']['congruent_volleys']:.0f}%"])
             + f" | {time.perf_counter() - t0:.0f}s", flush=True)
-    with open(OUT / "synthetic.pkl", "wb") as fh:
-        pickle.dump(results, fh)
+    if len(results) == len(CONDITIONS):
+        with open(OUT / "synthetic.pkl", "wb") as fh:
+            pickle.dump(results, fh)
 
 
 # ----------------------------------------------------------------------------- hc-11
@@ -177,6 +193,6 @@ def run_hc11(prefixes):
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "synthetic"
     if mode == "synthetic":
-        run_synthetic()
+        run_synthetic(sys.argv[2:] or None)
     else:
         run_hc11(sys.argv[2:])
