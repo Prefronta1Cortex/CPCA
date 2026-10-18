@@ -1,0 +1,9 @@
+[deps]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+PPSeq = "bde08ef1-7bcc-48ee-8e40-33ae55139814"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+
+[sources]
+PPSeq = {rev = "master", url = "https://github.com/lindermanlab/PPSeq.jl"}

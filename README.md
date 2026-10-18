@@ -9,14 +9,14 @@ Assemblies with internal timing from hippocampal reactivation events, found from
 
 ## Results in one paragraph
 
-On synthetic events with planted routes the pipeline recovers every route in all clean conditions (median |Spearman| 0.97–1.00 between a component's member times and the route positions), including two routes played in both directions in 15% of events with 15% of cells firing per event. On the eight hc-11 sessions (Grosmark & Buzsáki 2016), with centred components and the event duration as the half-circle scale, 21 of 118 (component, direction) tests match the place map in sleep after the novel maze (POST; chance ≈ 6) against 4 of 104 in sleep before it (PRE; chance ≈ 5); the effect is carried by the two sessions with 50 or more place cells. Against the other methods run with their authors' procedures (`docs/baselines.md`), seqNMF matches cPCA when replays are common but not at 15% replay and finds no map-ordered factor on hc-11 (its main factor is the population burst), the Maboudi HMM detects sequential events but not which map they belong to, and only its behaviour-labelled latent space shows the POST/PRE dissociation that cPCA shows label-free. One-figure summary of the comparison: `figures/baselines_hc11_integrated.png`. Full tables: `results/summary.md`, `results/synthetic/summary.md`, `results/baselines/summary.md`; figures: `figures/`.
+On synthetic events with planted routes the pipeline recovers every route in all clean conditions (median |Spearman| 0.97–1.00 between a component's member times and the route positions), including two routes played in both directions in 15% of events with 15% of cells firing per event. On the eight hc-11 sessions (Grosmark & Buzsáki 2016), with centred components and the event duration as the half-circle scale, 21 of 118 (component, direction) tests match the place map in sleep after the novel maze (POST; chance ≈ 6) against 4 of 104 in sleep before it (PRE; chance ≈ 5); the effect is carried by the two sessions with 50 or more place cells. Against the other methods run with their authors' procedures (`docs/baselines.md`): seqNMF and PP-Seq match cPCA on planted routes when replays are common, PP-Seq also at 15% replay for one of two routes, and neither finds a map-ordered factor or sequence type on hc-11 (their dominant factor/type is the population burst, which PP-Seq models as a zero-duration sequence); the Maboudi HMM detects sequential events in both sleeps alike, and only its behaviour-labelled latent space shows the POST/PRE dissociation that cPCA shows label-free. One-figure summary: `figures/comparison_hc11.png`; planted routes: `figures/comparison_synthetic.png`; outputs side by side: `figures/comparison_example.png`. Full tables: `results/summary.md`, `results/synthetic/summary.md`, `results/baselines/summary.md`; figures: `figures/`.
 
 ## Layout
 
 ```text
 cpca/        library (encode, decompose, ica, decode, evaluate, stats, events, hc11, pipeline, theory)
 sim/         synthetic routes with a planted answer
-baselines/   count PCA/ICA, seqNMF, HMM (Maboudi), Bayesian decoding reference
+baselines/   count PCA/ICA, seqNMF, HMM (Maboudi), PP-Seq (authors' Julia package), Bayesian decoding reference
 scripts/     run_synthetic.py, run_hc11.py, summarize.py
 tests/       pytest
 docs/        method, plan, lessons learned, baselines, rendering
@@ -39,10 +39,13 @@ python scripts/run_hc11.py             # ~3 min: all sessions, POST and PRE, 4 v
 python scripts/summarize.py            # tables -> results/summary.md, figures -> figures/
 python scripts/plot_component_circle.py  # components and data on the unit half-circle
 
-# method comparison (needs the extra packages: python -m venv --system-site-packages .venv; .venv/bin/pip install hmmlearn seqnmf "setuptools<80")
-.venv/bin/python scripts/run_baselines.py synthetic     # ~25 min, resumable per condition
+# method comparison (extra packages: python -m venv --system-site-packages .venv; .venv/bin/pip install hmmlearn seqnmf "setuptools<80";
+# PP-Seq needs Julia: curl -fsSL https://install.julialang.org | sh, then julia --project=baselines/ppseq -e 'using Pkg; Pkg.instantiate()')
+.venv/bin/python scripts/run_baselines.py synthetic     # ~25 min, resumable per condition: seqNMF, HMM, Bayes, count PCA/ICA, cPCA
 .venv/bin/python scripts/run_baselines.py hc11          # ~1.5 h, all sessions, POST and PRE
-.venv/bin/python scripts/summarize_baselines.py         # results/baselines/summary.md, figures/baselines_*.png
+python scripts/run_ppseq.py synthetic                    # ~35 min, PP-Seq on the same planted data
+python scripts/run_ppseq.py hc11                         # ~1 h, PP-Seq on the same events
+.venv/bin/python scripts/summarize_baselines.py         # results/baselines/summary.md, figures/comparison_*.png
 ```
 
 Minimal use of the method on your own events:

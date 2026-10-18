@@ -1,0 +1,55 @@
+A one route, every event a replay: fitting PP-Seq
+A one route, every event a replay: routes 0.96[0.21] (type 2) | R=2 | types: 24 cells, span 118 ms, 0 events; 80 cells, span 218 ms, 1466 events | sequence-type detection AUC nan (any type nan), flagged 97% replays / nan% volleys | 225s
+B one route, forward and backward 60/40, span 25 ms: fitting PP-Seq
+B one route, forward and backward 60/40, span 25 ms: routes 1.00[0.23] (type 2) | R=2 | types: 80 cells, span 21 ms, 642 events; 80 cells, span 21 ms, 957 events | sequence-type detection AUC nan (any type nan), flagged 100% replays / nan% volleys | 274s
+C one route, forward and backward 60/40, span 80 ms: fitting PP-Seq
+C one route, forward and backward 60/40, span 80 ms: routes 1.00[0.22] (type 1) | R=2 | types: 80 cells, span 75 ms, 887 events; 80 cells, span 76 ms, 643 events | sequence-type detection AUC nan (any type nan), flagged 100% replays / nan% volleys | 259s
+D two routes on different cells, 40% replay: cached
+E two routes sharing half their cells, 40% replay: fitting PP-Seq
+E two routes sharing half their cells, 40% replay: routes 1.00[0.32] (type 3), 0.99[0.30] (type 1) | R=3 | types: 53 cells, span 76 ms, 324 events; 80 cells, span 5 ms, 1036 events; 51 cells, span 77 ms, 328 events | sequence-type detection AUC 1.00 (any type 0.50), flagged 100% replays / 0% volleys | 131s
+F two routes, both directions, 15% replay, 15% cells: fitting PP-Seq
+F two routes, both directions, 15% replay, 15% cells: routes 0.82[0.33] (type 1), 0.10[0.60] (type 2) | R=3 | types: 59 cells, span 32 ms, 144 events; 23 cells, span 244 ms, 0 events; 80 cells, span 6 ms, 1423 events | sequence-type detection AUC 0.69 (any type 0.55), flagged 45% replays / 2% volleys | 114s
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: fitting PP-Seq
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: routes 0.15[0.25] (type 3), 0.76[0.45] (type 2) | R=4 | types: 80 cells, span 10 ms, 713 events; 33 cells, span 21 ms, 279 events; 55 cells, span 23 ms, 413 events; 41 cells, span 19 ms, 281 events | sequence-type detection AUC 0.76 (any type 0.53), flagged 84% replays / 33% volleys | 110s
+H realistic at 40% replay: fitting PP-Seq
+H realistic at 40% replay: routes 0.15[0.24] (type 1), 0.19[0.27] (type 2) | R=2 | types: 80 cells, span 5 ms, 1282 events; 72 cells, span 12 ms, 782 events | sequence-type detection AUC 0.50 (any type 0.55), flagged 0% replays / 0% volleys | 106s
+[Achilles_10252013] post: 3260 events, fitting PP-Seq
+[Achilles_10252013] post: R=2, map hits 0/4, types: 99 cells span 25 ms (2508 events); 32 cells span 37 ms (745 events), flagged 100% of events | 393s
+[Achilles_10252013] pre: 6009 events, fitting PP-Seq
+[Achilles_10252013] pre: R=2, map hits 0/4, types: 87 cells span 25 ms (2458 events); 52 cells span 41 ms (861 events), flagged 100% of events | 505s
+[Achilles_10252013] saved (900s)
+[Achilles_11012013] post: 2678 events, fitting PP-Seq
+[Achilles_11012013] post: R=2, map hits 0/4, types: 52 cells span 14 ms (1497 events); 61 cells span 18 ms (1647 events), flagged 0% of events | 227s
+[Achilles_11012013] pre: 3928 events, fitting PP-Seq
+[Achilles_11012013] pre: R=2, map hits 0/4, types: 77 cells span 15 ms (2749 events); 11 cells span 18 ms (413 events), flagged 0% of events | 189s
+[Achilles_11012013] saved (418s)
+[Buddy_06272013] post: 1483 events, fitting PP-Seq
+[Buddy_06272013] post: R=3, map hits 0/4, types: 22 cells span 200 ms (667 events); 10 cells span 18 ms (315 events); 32 cells span 32 ms (863 events), flagged 79% of events | 106s
+[Buddy_06272013] pre: 3391 events, fitting PP-Seq
+[Buddy_06272013] pre: R=3, map hits 0/2, types: 35 cells span 22 ms (823 events); 9 cells span 21 ms (282 events); 14 cells span 24 ms (365 events), flagged 74% of events | 90s
+[Buddy_06272013] saved (197s)
+[Cicero_09012014] post: 3702 events, fitting PP-Seq
+[Cicero_09012014] post: R=2, map hits 0/3, types: 17 cells span 8 ms (2145 events); 8 cells span 14 ms (361 events), flagged 0% of events | 129s
+[Cicero_09012014] pre: 4153 events, fitting PP-Seq
+[Cicero_09012014] pre: R=3, map hits 1/2, types: 4 cells span 226 ms (114 events); 5 cells span 18 ms (125 events); 29 cells span 13 ms (1510 events), flagged 7% of events | 112s
+[Cicero_09012014] saved (242s)
+[Cicero_09102014] post: 4892 events, fitting PP-Seq
+[Cicero_09102014] post: R=2, map hits 0/4, types: 14 cells span 23 ms (468 events); 49 cells span 11 ms (2852 events), flagged 23% of events | 198s
+[Cicero_09102014] pre: 3289 events, fitting PP-Seq
+[Cicero_09102014] pre: R=2, map hits 0/3, types: 9 cells span 20 ms (506 events); 47 cells span 13 ms (2733 events), flagged 0% of events | 204s
+[Cicero_09102014] saved (403s)
+[Cicero_09172014] post: 3462 events, fitting PP-Seq
+[Cicero_09172014] post: R=2, map hits 0/3, types: 10 cells span 23 ms (328 events); 27 cells span 13 ms (2840 events), flagged 17% of events | 234s
+[Cicero_09172014] pre: 4059 events, fitting PP-Seq
+[Cicero_09172014] pre: R=2, map hits 0/2, types: 28 cells span 12 ms (2867 events); 9 cells span 10 ms (343 events), flagged 0% of events | 217s
+[Cicero_09172014] saved (452s)
+[Gatsby_08022013] post: 2782 events, fitting PP-Seq
+[Gatsby_08022013] post: R=2, map hits 1/4, types: 22 cells span 22 ms (721 events); 14 cells span 8 ms (1869 events), flagged 38% of events | 194s
+[Gatsby_08022013] pre: 3775 events, fitting PP-Seq
+[Gatsby_08022013] pre: R=2, map hits 0/4, types: 14 cells span 15 ms (584 events); 14 cells span 10 ms (1938 events), flagged 0% of events | 194s
+[Gatsby_08022013] saved (389s)
+[Gatsby_08282013] post: 4940 events, fitting PP-Seq
+[Gatsby_08282013] post: R=2, map hits 0/4, types: 9 cells span 4 ms (1100 events); 19 cells span 13 ms (1404 events), flagged 0% of events | 113s
+[Gatsby_08282013] pre: 4364 events, fitting PP-Seq
+[Gatsby_08282013] pre: R=2, map hits 0/4, types: 6 cells span 8 ms (951 events); 19 cells span 9 ms (1750 events), flagged 0% of events | 107s
+[Gatsby_08282013] saved (221s)

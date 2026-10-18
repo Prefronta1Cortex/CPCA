@@ -16,3 +16,6 @@ __pycache__/
 # os / editor
 .DS_Store
 fontlist-*.json
+
+# Julia project state for PP-Seq (Project.toml is committed; Manifest is machine-specific)
+baselines/ppseq/Manifest.toml

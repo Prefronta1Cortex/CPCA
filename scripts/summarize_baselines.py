@@ -1,4 +1,13 @@
-"""Tables (results/baselines/summary.md) and figures (figures/baselines_*.png) for the method comparison."""
+"""Tables (results/baselines/summary.md) and figures for the method comparison.
+
+Figures
+- figures/comparison_synthetic.png : planted routes; order recovery for the order-producing methods
+                                      (cPCA, seqNMF, PP-Seq) and per-event detection for HMM and PP-Seq.
+- figures/comparison_hc11.png      : hc-11, every method relative to its own chance level, POST vs PRE,
+                                      per-session points, and maze specificity.
+- figures/comparison_example.png   : one session, what each method's output looks like.
+Earlier figures (6-panel hc-11 grid, map-match bars) are superseded and no longer produced.
+"""
 
 import glob
 import pickle
@@ -17,11 +26,13 @@ from cpca.decode import readout  # noqa: E402
 RES, FIG = ROOT / "results", ROOT / "figures"
 ORDER = ["Achilles_10252013", "Achilles_11012013", "Buddy_06272013", "Cicero_09012014",
          "Cicero_09102014", "Cicero_09172014", "Gatsby_08022013", "Gatsby_08282013"]
-C_CPCA, C_CPCA2, C_SEQ, C_HMM, C_BAYES, C_PRE = "#1f4e79", "#6aa7d8", "#d4652f", "#1f8a65", "#7a5195", "#b9c0ca"
+COL = {"cpca": "#1f4e79", "cpca2": "#6aa7d8", "seq": "#d4652f", "pp": "#c9a227", "hmm": "#1f8a65", "hmm2": "#9fd3bd", "bayes": "#7a5195", "pre": "#c3c9d2"}
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 12, "axes.titlesize": 13.5, "axes.labelsize": 12.5,
-                     "legend.fontsize": 11.5, "axes.spines.top": False, "axes.spines.right": False, "figure.facecolor": "white"})
+                     "legend.fontsize": 11, "axes.spines.top": False, "axes.spines.right": False, "figure.facecolor": "white"})
+CPCA_VARIANT = "centred, T = event duration"
 
 
+# ----------------------------------------------------------------------------- helpers
 def label(name):
     rat, day = name.split("_")
     return f"{rat}\n{day[:2]}/{day[2:4]}"
@@ -39,262 +50,209 @@ def wrap(text, width=18):
     return "\n".join(lines)
 
 
-def hits_of(items, key="map"):
-    """(hits, tests) over components/factors and directions."""
+def hits_of(items):
+    """(hits, tests) over components/factors/types and directions."""
     h = t = 0
     for c in items:
-        for s, m in c[key].items():
+        for s, m in c["map"].items():
             if np.isfinite(m["rho"]):
                 t += 1
                 h += int(abs(m["rho"]) > m["null95"])
     return h, t
 
 
-# ----------------------------------------------------------------------------- synthetic
-def figure_synthetic(syn):
-    fig, axes = plt.subplots(1, 2, figsize=(21, 7.2), gridspec_kw={"width_ratios": [2.3, 1]})
-    ax = axes[0]
-    x = np.arange(len(syn))
-    methods = [("cPCA uncentred", C_CPCA), ("cPCA centred", C_CPCA2), ("seqNMF", C_SEQ)]
-    width = 0.8 / len(methods)
-    for i, (m, colour) in enumerate(methods):
-        vals = [np.median([abs(r[0]) for r in s["methods"][m]["routes"]]) for s in syn]
-        nulls = [np.nanmedian([r[1] for r in s["methods"][m]["routes"]]) for s in syn]
-        pos = x - 0.4 + width * (i + 0.5)
-        ax.bar(pos, vals, width=width * 0.9, color=colour, label=m, zorder=2)
-        ax.hlines(nulls, pos - width * 0.45, pos + width * 0.45, colors="black", linewidth=2.2, zorder=3,
-                  label="chance level (95th percentile of cell-permutation null)" if i == 0 else None)
-    ax.set_xticks(x)
-    ax.set_xticklabels([s["condition"].split(" ", 1)[0] + "\n" + wrap(s["condition"].split(" ", 1)[1], 15) for s in syn], fontsize=9)
-    ax.set_ylim(0, 1.05)
-    ax.set_ylabel("|Spearman| between a component's (or factor's) member\norder and the planted route (median over routes)")
-    ax.set_title("Methods that output a cell order: route recovery on planted data")
-    ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-    ax.set_axisbelow(True)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2, frameon=False)
-    ax = axes[1]
-    auc = [s["methods"]["HMM"]["auc_replay"] for s in syn]
-    rep = [s["methods"]["HMM"].get("congruent_replays", np.nan) for s in syn]
-    vol = [s["methods"]["HMM"].get("congruent_volleys", np.nan) for s in syn]
-    ax.bar(x - 0.27, auc, width=0.26, color=C_HMM, label="AUC: congruence separates planted replays from volleys", zorder=2)
-    ax.bar(x, rep, width=0.26, color="#9fd3bd", label="fraction of planted replays called congruent (99%)", zorder=2)
-    ax.bar(x + 0.27, vol, width=0.26, color="#d9d9d9", label="fraction of volleys called congruent (false alarms)", zorder=2)
-    ax.axhline(0.5, color="black", lw=1.2, ls="--", label="AUC of a random detector")
-    ax.set_xticks(x)
-    ax.set_xticklabels([s["condition"].split(" ", 1)[0] for s in syn])
-    ax.set_ylim(0, 1.05)
-    ax.set_title("HMM (Maboudi et al.): per-event congruence as a replay detector")
-    ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-    ax.set_axisbelow(True)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=1, frameon=False)
-    fig.suptitle("Synthetic planted routes: each method scored on what it outputs", y=1.0)
-    fig.tight_layout()
-    fig.savefig(FIG / "baselines_synthetic.png", dpi=170, bbox_inches="tight")
-    plt.close(fig)
-
-
-# ----------------------------------------------------------------------------- hc-11
 def load_cpca(name):
     f = RES / "hc11" / f"{name}.pkl"
     return pickle.load(open(f, "rb")) if f.exists() else None
 
 
-def figure_hc11(base):
-    cp = {b["name"]: load_cpca(b["name"]) for b in base}
-    fig, axes = plt.subplots(2, 3, figsize=(23, 13))
-    x = np.arange(len(base))
-    labels = [label(b["name"]) for b in base]
+def load_ppseq_synthetic():
+    out = {}
+    for f in glob.glob(str(RES / "baselines" / "ppseq_synthetic" / "*.pkl")):
+        r = pickle.load(open(f, "rb"))
+        out[r["condition"]] = r
+    return out
 
-    def post_pre_bars(ax, post, pre, chance_post=None, chance_pre=None, ylabel="", title="", colour=C_CPCA):
-        ax.bar(x - 0.2, post, width=0.38, color=colour, label="POST sleep (after the novel maze)", zorder=2)
-        ax.bar(x + 0.2, pre, width=0.38, color=C_PRE, label="PRE sleep (before, control)", zorder=2)
-        if chance_post is not None:
-            ax.hlines(chance_post, x - 0.39, x - 0.01, colors="black", linewidth=2.2, zorder=3, label="expected by chance")
-            ax.hlines(chance_pre, x + 0.01, x + 0.39, colors="black", linewidth=2.2, zorder=3)
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels, fontsize=10)
-        ax.set_ylabel(ylabel)
-        ax.set_title(title)
-        ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-        ax.set_axisbelow(True)
 
-    # (a) cPCA centred: components matching the map
-    v = "centred, T = event duration"
-    post = [hits_of(cp[b["name"]]["epochs"]["post"]["variants"][v]["components"])[0] if cp[b["name"]] else np.nan for b in base]
-    pre = [hits_of(cp[b["name"]]["epochs"]["pre"]["variants"][v]["components"])[0] if cp[b["name"]] else np.nan for b in base]
-    cpost = [0.05 * hits_of(cp[b["name"]]["epochs"]["post"]["variants"][v]["components"])[1] if cp[b["name"]] else np.nan for b in base]
-    cpre = [0.05 * hits_of(cp[b["name"]]["epochs"]["pre"]["variants"][v]["components"])[1] if cp[b["name"]] else np.nan for b in base]
-    post_pre_bars(axes[0, 0], post, pre, cpost, cpre, "(component, direction) pairs whose\norder matches the place fields",
-                  "cPCA (centred)\ncomponents whose internal order matches the map", C_CPCA)
-    # (b) seqNMF factors matching the map
-    post = [hits_of(b["epochs"]["post"]["seqNMF"]["factors"])[0] for b in base]
-    pre = [hits_of(b["epochs"]["pre"]["seqNMF"]["factors"])[0] for b in base]
-    cpost = [0.05 * hits_of(b["epochs"]["post"]["seqNMF"]["factors"])[1] for b in base]
-    cpre = [0.05 * hits_of(b["epochs"]["pre"]["seqNMF"]["factors"])[1] for b in base]
-    post_pre_bars(axes[0, 1], post, pre, cpost, cpre, "(factor, direction) pairs whose\nlag order matches the place fields",
-                  "seqNMF\nfactors whose cell lags match the map", C_SEQ)
-    for xi, b in zip(x, base):
-        n_sig = sum(f["significant"] for f in b["epochs"]["post"]["seqNMF"]["factors"])
-        axes[0, 1].annotate(f"{n_sig} sig.", (xi - 0.2, post[int(xi)] + 0.05), ha="center", va="bottom", fontsize=8.5, color=C_SEQ)
-    # (c) HMM congruence
-    post = [100 * b["epochs"]["post"]["HMM"]["congruent_99"] for b in base]
-    pre = [100 * b["epochs"]["pre"]["HMM"]["congruent_99"] for b in base]
-    post_pre_bars(axes[0, 2], post, pre, [1.0] * len(base), [1.0] * len(base), "% of events congruent with the model\n(likelihood above 99% of transition shuffles)",
-                  "HMM (Maboudi et al.)\nevents with sequential structure, label-free", C_HMM)
-    # (d) HMM latent map: decoding error of running position via lsPF
-    post = [b["epochs"]["post"]["HMM"]["lspf"]["median_error_m"] for b in base]
-    pre = [b["epochs"]["pre"]["HMM"]["lspf"]["median_error_m"] for b in base]
-    sh_post = [b["epochs"]["post"]["HMM"]["lspf"]["shuffled_median_error_m"] for b in base]
-    sh_pre = [b["epochs"]["pre"]["HMM"]["lspf"]["shuffled_median_error_m"] for b in base]
-    ax = axes[1, 0]
-    ax.bar(x - 0.2, post, width=0.38, color=C_HMM, label="POST model", zorder=2)
-    ax.bar(x + 0.2, pre, width=0.38, color=C_PRE, label="PRE model", zorder=2)
-    ax.hlines(sh_post, x - 0.39, x - 0.01, colors="black", linewidth=2.2, zorder=3, label="error with shuffled positions (chance)")
-    ax.hlines(sh_pre, x + 0.01, x + 0.39, colors="black", linewidth=2.2, zorder=3)
+def load_ppseq_hc11(name):
+    f = RES / "baselines" / f"ppseq_{name}.pkl"
+    return pickle.load(open(f, "rb")) if f.exists() else None
+
+
+def chance_bar(ax, pos, vals, nulls, width, colour, lab, first):
+    ax.bar(pos, vals, width=width * 0.9, color=colour, label=lab, zorder=2)
+    ax.hlines(nulls, pos - width * 0.45, pos + width * 0.45, colors="black", linewidth=2.2, zorder=3,
+              label="chance level (95th percentile of the cell-permutation null)" if first else None)
+
+
+# ----------------------------------------------------------------------------- synthetic
+def figure_synthetic(syn, pps):
+    fig, axes = plt.subplots(2, 1, figsize=(17, 11.5), gridspec_kw={"height_ratios": [1.35, 1]})
+    x = np.arange(len(syn))
+    # top: order recovery
+    ax = axes[0]
+    series = [("cPCA, uncentred", COL["cpca"], lambda s, p: s["methods"]["cPCA uncentred"]["routes"]),
+              ("cPCA, centred", COL["cpca2"], lambda s, p: s["methods"]["cPCA centred"]["routes"]),
+              ("seqNMF", COL["seq"], lambda s, p: s["methods"]["seqNMF"]["routes"]),
+              ("PP-Seq", COL["pp"], lambda s, p: p["routes"] if p else [])]
+    width = 0.8 / len(series)
+    for i, (name, colour, get) in enumerate(series):
+        vals, nulls = [], []
+        for s in syn:
+            routes = get(s, pps.get(s["condition"]))
+            vals.append(np.median([abs(r[0]) for r in routes]) if routes else np.nan)
+            nulls.append(np.nanmedian([r[1] for r in routes]) if routes else np.nan)
+        chance_bar(ax, x - 0.4 + width * (i + 0.5), vals, nulls, width, colour, name, i == 0)
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=10)
-    ax.set_ylabel("median error decoding running position\nthrough the hidden states (m); lower is better")
-    ax.set_title("HMM latent map\nposition decoded via latent-state place fields (behaviour used post hoc)")
+    ax.set_xticklabels([s["condition"].split(" ", 1)[0] + "\n" + wrap(s["condition"].split(" ", 1)[1], 17) for s in syn], fontsize=9.5)
+    ax.set_ylim(0, 1.08)
+    ax.set_ylabel("|Spearman|, member order vs planted route\n(median over the planted routes)")
+    ax.set_title("Methods that output a cell order: how well is each planted route recovered?")
     ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
-    # (e) Bayesian decoding reference
-    post = [100 * b["epochs"]["post"]["Bayes"]["frac_sig"] for b in base]
-    pre = [100 * b["epochs"]["pre"]["Bayes"]["frac_sig"] for b in base]
-    post_pre_bars(axes[1, 1], post, pre, [5.0] * len(base), [5.0] * len(base), "% of events with a significant\ndecoded trajectory (p < 0.05)",
-                  "Reference: Bayesian decoding\n(takes the place map as input)", C_BAYES)
-    # (f) runtime
-    ax = axes[1, 2]
-    names = ["cPCA", "seqNMF", "HMM", "Bayes"]
-    rt = np.array([[cp[b["name"]]["epochs"]["post"]["variants"][v]["runtime_s"] if cp[b["name"]] else np.nan,
-                    b["epochs"]["post"]["seqNMF"]["runtime_s"], b["epochs"]["post"]["HMM"]["runtime_s"], b["epochs"]["post"]["Bayes"]["runtime_s"]] for b in base])
-    med = np.nanmedian(rt, axis=0)
-    ax.bar(np.arange(4), med, color=[C_CPCA, C_SEQ, C_HMM, C_BAYES], zorder=2)
-    for i, m in enumerate(med):
-        ax.text(i, m * 1.15, f"{m:.0f} s", ha="center", va="bottom", fontsize=11)
-    ax.set_yscale("log")
-    ax.set_xticks(np.arange(4))
-    ax.set_xticklabels(names)
-    ax.set_ylabel("run time per session, POST\n(seconds, log scale)")
-    ax.set_title("Cost\nmedian over sessions, including each method's shuffle tests")
+    ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), frameon=False)
+    # bottom: per-event detection
+    ax = axes[1]
+    hmm_auc = [s["methods"]["HMM"]["auc_replay"] for s in syn]
+    hmm_fa = [s["methods"]["HMM"].get("congruent_volleys", np.nan) for s in syn]
+    hmm_hit = [s["methods"]["HMM"].get("congruent_replays", np.nan) for s in syn]
+    pp_auc = [pps[s["condition"]]["auc_replay"] if s["condition"] in pps else np.nan for s in syn]
+    pp_hit = [pps[s["condition"]]["flagged_replays"] if s["condition"] in pps else np.nan for s in syn]
+    pp_fa = [pps[s["condition"]]["flagged_volleys"] if s["condition"] in pps else np.nan for s in syn]
+    w = 0.13
+    ax.bar(x - 2.5 * w, hmm_auc, width=w * 0.92, color=COL["hmm"], label="HMM congruence: AUC (replays vs volleys)", zorder=2)
+    ax.bar(x - 1.5 * w, hmm_hit, width=w * 0.92, color=COL["hmm2"], label="HMM: share of planted replays flagged", zorder=2)
+    ax.bar(x - 0.5 * w, hmm_fa, width=w * 0.92, color=COL["hmm2"], hatch="////", edgecolor="white", label="HMM: share of volleys flagged (false alarms)", zorder=2)
+    ax.bar(x + 0.5 * w, pp_auc, width=w * 0.92, color=COL["pp"], label="PP-Seq sequence types: AUC (replays vs volleys)", zorder=2)
+    ax.bar(x + 1.5 * w, pp_hit, width=w * 0.92, color="#e8d58a", label="PP-Seq: share of planted replays flagged", zorder=2)
+    ax.bar(x + 2.5 * w, pp_fa, width=w * 0.92, color="#e8d58a", hatch="////", edgecolor="white", label="PP-Seq: share of volleys flagged (false alarms)", zorder=2)
+    ax.axhline(0.5, color="black", lw=1.3, ls="--", label="AUC of a random detector", zorder=3)
+    ax.set_xticks(x)
+    ax.set_xticklabels([s["condition"].split(" ", 1)[0] for s in syn])
+    ax.set_ylim(0, 1.08)
+    ax.set_ylabel("per-event detection")
+    ax.set_title("Methods that mark single events as sequences: can they tell planted replays from synchronous volleys?\n"
+                 "(conditions A–C have no volleys, so only the flagged share is defined)", fontsize=12.5)
     ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
-    handles, labels_ = axes[0, 0].get_legend_handles_labels()
-    fig.legend(handles, labels_, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, -0.02))
-    fig.suptitle("hc-11, eight sessions: every method on the same POST and PRE sleep events, each scored on its own output", y=0.995, fontsize=16)
-    fig.subplots_adjust(left=0.06, right=0.985, top=0.9, bottom=0.11, hspace=0.5, wspace=0.32)
-    fig.savefig(FIG / "baselines_hc11.png", dpi=170, bbox_inches="tight")
+    ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), frameon=False)
+    fig.suptitle("Synthetic planted routes (80 cells, 3000 events): each method scored on what it outputs", y=0.995, fontsize=15)
+    fig.tight_layout(rect=(0, 0, 1, 0.98))
+    fig.savefig(FIG / "comparison_synthetic.png", dpi=170, bbox_inches="tight")
     plt.close(fig)
 
 
-def figure_integrated(base):
-    """All methods on one plot: each method's score relative to its own chance level, POST vs PRE.
-
-    cPCA / seqNMF: map-matching (component|factor, direction) tests divided by 5% of tests.
-    HMM congruence: % congruent events divided by 1% (the 99% criterion).
-    HMM latent map: decoding error with shuffled positions divided by the real error (uses behaviour post hoc).
-    Bayesian decoding: % significant events divided by 5% (uses the map as input).
-    Bars: pooled over sessions (sums for counts, median for the error ratio). Dots: single sessions.
-    Right panel: maze specificity = log2(POST ratio) - log2(PRE ratio) per session.
-    """
+# ----------------------------------------------------------------------------- hc-11, integrated
+def figure_hc11(base, pps):
+    """Every method relative to its own chance level, POST vs PRE; per-session points; maze specificity."""
     cp = {b["name"]: load_cpca(b["name"]) for b in base}
-    v = "centred, T = event duration"
-    FLOOR = 0.15                                                   # zero counts are drawn at this floor with an open marker
+    FLOOR = 0.15
     methods = [
-        ("cPCA (centred)\ncomponents whose order\nmatches the map\n[label-free]", C_CPCA, "label-free"),
-        ("seqNMF\nfactors whose lags\nmatch the map\n[label-free]", C_SEQ, "label-free"),
-        ("HMM congruence\nevents with sequential\nstructure\n[label-free]", C_HMM, "label-free"),
-        ("HMM latent map\nposition decoded via\nstate place fields\n[behaviour used post hoc]", "#9fd3bd", "behaviour used post hoc"),
-        ("Bayesian decoding\nevents with a decoded\ntrajectory\n[place map as input]", C_BAYES, "map as input"),
+        ("cPCA (centred)\ncomponents whose order\nmatches the map\n[label-free]", COL["cpca"]),
+        ("PP-Seq\nsequence types whose\noffsets match the map\n[label-free]", COL["pp"]),
+        ("seqNMF\nfactors whose lags\nmatch the map\n[label-free]", COL["seq"]),
+        ("HMM congruence\nevents with sequential\nstructure\n[label-free]", COL["hmm"]),
+        ("HMM latent map\nposition decoded via\nstate place fields\n[behaviour used post hoc]", COL["hmm2"]),
+        ("Bayesian decoding\nevents with a decoded\ntrajectory\n[place map as input]", COL["bayes"]),
     ]
 
     def per_session(b, epoch):
         e = b["epochs"][epoch]
         c = cp[b["name"]]
-        out = []
-        h, t = hits_of(c["epochs"][epoch]["variants"][v]["components"]) if c else (np.nan, 0)
-        out.append((h, 0.05 * t))
+        p = pps.get(b["name"])
+        rows = []
+        h, t = hits_of(c["epochs"][epoch]["variants"][CPCA_VARIANT]["components"]) if c else (np.nan, 0)
+        rows.append((h, 0.05 * t))
+        if p and epoch in p["epochs"]:
+            h, t = hits_of(p["epochs"][epoch]["types"])
+            rows.append((h, 0.05 * t))
+        else:
+            rows.append((np.nan, 0))
         h, t = hits_of(e["seqNMF"]["factors"])
-        out.append((h, 0.05 * t))
-        out.append((100 * e["HMM"]["congruent_99"], 1.0))
+        rows.append((h, 0.05 * t))
+        rows.append((100 * e["HMM"]["congruent_99"], 1.0))
         l = e["HMM"]["lspf"]
-        out.append((l["shuffled_median_error_m"], l["median_error_m"]))
-        out.append((100 * e["Bayes"]["frac_sig"], 5.0))
-        return out
+        rows.append((l["shuffled_median_error_m"], l["median_error_m"]))
+        rows.append((100 * e["Bayes"]["frac_sig"], 5.0))
+        return rows
 
     table = {epoch: [per_session(b, epoch) for b in base] for epoch in ("post", "pre")}
-    fig, axes = plt.subplots(1, 2, figsize=(20, 7.6), gridspec_kw={"width_ratios": [2.1, 1]})
+    fig, axes = plt.subplots(1, 2, figsize=(22, 8.2), gridspec_kw={"width_ratios": [2.2, 1]})
     ax = axes[0]
     x = np.arange(len(methods))
-    for i, (epoch, shade, lab) in enumerate((("post", 1.0, "POST sleep (after the novel maze)"), ("pre", 0.35, "PRE sleep (before, control)"))):
+    pooled_all = {}
+    for i, (epoch, shade, lab) in enumerate((("post", 1.0, "POST sleep (after the novel maze), pooled over sessions"), ("pre", 0.35, "PRE sleep (before the maze; control), pooled"))):
         pos = x - 0.2 + 0.4 * i
         pooled = []
         for m in range(len(methods)):
             num = np.array([row[m][0] for row in table[epoch]], float)
             den = np.array([row[m][1] for row in table[epoch]], float)
             ok = np.isfinite(num) & np.isfinite(den) & (den > 0)
-            if m == 3:
-                pooled.append(np.nanmedian(num[ok] / den[ok]))
-            else:
-                pooled.append(num[ok].sum() / den[ok].sum() if den[ok].sum() > 0 else np.nan)
+            pooled.append(np.nanmedian(num[ok] / den[ok]) if m == 4 else (num[ok].sum() / den[ok].sum() if den[ok].sum() > 0 else np.nan))
             ratios = np.where(ok, num / np.where(den > 0, den, np.nan), np.nan)
             zero = ok & (num == 0)
             jitter = np.linspace(-0.12, 0.12, len(ratios))
-            ax.scatter(pos[m] + jitter[~zero & ok], ratios[~zero & ok], s=28, color="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
+            ax.scatter(pos[m] + jitter[~zero & ok], ratios[~zero & ok], s=26, color="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
                        label="single sessions" if (i == 0 and m == 0) else None)
-            ax.scatter(pos[m] + jitter[zero], np.full(zero.sum(), FLOOR), s=34, facecolors="none", edgecolors="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
+            ax.scatter(pos[m] + jitter[zero], np.full(zero.sum(), FLOOR), s=32, facecolors="none", edgecolors="black", alpha=0.75 if epoch == "post" else 0.4, zorder=4,
                        label="session with zero matches (drawn at the floor)" if (i == 0 and m == 0) else None)
-        colours = [c for _, c, _ in methods]
-        ax.bar(pos, np.maximum(pooled, FLOOR), width=0.38, color=colours, alpha=shade, edgecolor="black" if epoch == "pre" else "none", linewidth=0.8, zorder=2,
-               label=lab)
+        pooled_all[epoch] = pooled
+        ax.bar(pos, np.maximum(np.nan_to_num(pooled, nan=FLOOR), FLOOR), width=0.38, color=[c for _, c in methods], alpha=shade,
+               edgecolor="black" if epoch == "pre" else "none", linewidth=0.8, zorder=2, label=lab)
         for p_, val in zip(pos, pooled):
-            ax.text(p_, max(val, FLOOR) * 1.12, f"{val:.1f}×", ha="center", va="bottom", fontsize=10.5, fontweight="bold" if epoch == "post" else "normal")
+            if np.isfinite(val):
+                ax.text(p_, max(val, FLOOR) * 1.12, f"{val:.1f}×", ha="center", va="bottom", fontsize=10.5, fontweight="bold" if epoch == "post" else "normal")
     ax.axhline(1.0, color="black", lw=1.6, ls="--", zorder=3, label="chance level of each method (1×)")
     ax.set_yscale("log")
     ax.set_ylim(FLOOR * 0.8, 60)
     ax.set_xticks(x)
-    ax.set_xticklabels([m for m, _, _ in methods], fontsize=10.5)
+    ax.set_xticklabels([m for m, _ in methods], fontsize=10)
     ax.set_ylabel("score relative to the method's own chance level (×, log scale)")
     ax.set_title("hc-11, eight sessions: every method against its own chance level, POST vs PRE sleep", pad=12)
     ax.yaxis.grid(True, which="both", color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
     handles, labels_ = ax.get_legend_handles_labels()
-    order = [labels_.index(l) for l in ("POST sleep (after the novel maze)", "PRE sleep (before, control)", "chance level of each method (1×)", "single sessions", "session with zero matches (drawn at the floor)") if l in labels_]
+    want = ("POST sleep (after the novel maze), pooled over sessions", "PRE sleep (before the maze; control), pooled", "chance level of each method (1×)", "single sessions", "session with zero matches (drawn at the floor)")
+    order = [labels_.index(l) for l in want if l in labels_]
     ax.legend([handles[o] for o in order], [labels_[o] for o in order], loc="upper left", frameon=False, fontsize=10)
-    # right: specificity to the experienced maze
+    # right: specificity
     ax = axes[1]
-    for m, (name, colour, _) in enumerate(methods):
+    for m, (name, colour) in enumerate(methods):
         spec = []
-        for row_post, row_pre in zip(table["post"], table["pre"]):
-            a = row_post[m][0] / row_post[m][1] if row_post[m][1] > 0 else np.nan
-            b_ = row_pre[m][0] / row_pre[m][1] if row_pre[m][1] > 0 else np.nan
+        for rp, rr in zip(table["post"], table["pre"]):
+            a = rp[m][0] / rp[m][1] if rp[m][1] > 0 else np.nan
+            b_ = rr[m][0] / rr[m][1] if rr[m][1] > 0 else np.nan
             if np.isfinite(a) and np.isfinite(b_):
                 spec.append(np.log2(max(a, FLOOR)) - np.log2(max(b_, FLOOR)))
         spec = np.array(spec)
-        jitter = np.linspace(-0.15, 0.15, spec.size)
-        ax.scatter(np.full(spec.size, m) + jitter, spec, s=40, color=colour, edgecolors="black", linewidths=0.5, zorder=3)
-        ax.hlines(np.median(spec), m - 0.3, m + 0.3, colors="black", linewidth=2.6, zorder=4)
+        if spec.size:
+            jitter = np.linspace(-0.15, 0.15, spec.size)
+            ax.scatter(np.full(spec.size, m) + jitter, np.clip(spec, -4.3, 4.3), s=40, color=colour, edgecolors="black", linewidths=0.5, zorder=3)
+            ax.hlines(np.median(spec), m - 0.3, m + 0.3, colors="black", linewidth=2.6, zorder=4)
     ax.axhline(0, color="black", lw=1.2, ls="--")
-    ax.set_xticks(x)
-    ax.set_xticklabels([m.split("\n")[0] for m, _, _ in methods], fontsize=10.5, rotation=15, ha="right")
-    ax.set_ylabel("specificity to the experienced maze:\nlog₂(POST ÷ chance) − log₂(PRE ÷ chance), per session")
-    ax.set_title("Is the signal about the maze the animal just ran?\n(above 0 = stronger in POST than PRE; thick line = median)", pad=12)
     ax.set_ylim(-4.5, 4.5)
-    ax.text(0.5, -0.3, "seqNMF has 0 or 1 map match per session, so its points are ±(floor) artefacts and sit off the plotted range.",
-            transform=ax.transAxes, ha="center", va="top", fontsize=9, color="#555555")
+    ax.set_xticks(x)
+    ax.set_xticklabels([m.split("\n")[0] for m, _ in methods], fontsize=10, rotation=15, ha="right")
+    ax.set_ylabel("specificity to the experienced maze:\nlog₂(POST ÷ chance) − log₂(PRE ÷ chance), per session")
+    ax.set_title("Is the signal about the maze the animal just ran?\n(above 0: stronger in POST than PRE; thick line: median)", pad=12)
     ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
     ax.set_axisbelow(True)
+    ax.text(0.5, -0.33, "Sessions with 0 or 1 matches give floor artefacts; points are clipped to ±4.3.", transform=ax.transAxes, ha="center", va="top", fontsize=9, color="#555555")
     fig.tight_layout()
-    fig.savefig(FIG / "baselines_hc11_integrated.png", dpi=170, bbox_inches="tight")
+    fig.savefig(FIG / "comparison_hc11.png", dpi=170, bbox_inches="tight")
     plt.close(fig)
+    return pooled_all
 
 
-def figure_example(base, name="Achilles_11012013"):
-    """One session: the best map-matching cPCA component, the best seqNMF factor, and the HMM latent map."""
+# ----------------------------------------------------------------------------- example session
+def figure_example(base, pps, name="Achilles_11012013"):
+    """One session: the best map-matching cPCA component, PP-Seq type and seqNMF factor, and the HMM latent map."""
     from cpca import event_spike_times, fit, population_bursts
     from cpca.hc11 import load_session, nrem_intervals, place_centres, pyramidal_spikes, running, session_paths
     b = next(x for x in base if x["name"] == name)
     cpr = load_cpca(name)
-    path = next(p for p in session_paths() if p.name.startswith(name))
+    p = pps.get(name)
+    path = next(q for q in session_paths() if q.name.startswith(name))
     session = load_session(path)
     run = running(session)
     intervals = nrem_intervals(session, "post")
@@ -303,116 +261,137 @@ def figure_example(base, name="Achilles_11012013"):
     duration = np.diff(bursts, axis=1).ravel()
     times, _ = event_spike_times(by_cell, cell_ids, peaks - duration / 2, peaks + duration / 2)
     centres = place_centres(session, cell_ids, run)
-    fig, axes = plt.subplots(1, 3, figsize=(19, 5.8))
-    # (a) cPCA
-    v = "centred, T = event duration"
-    res = fit(times, duration * 1000, rng=np.random.default_rng(0), center=True, scale=True, ica=False)
-    comps = cpr["epochs"]["post"]["variants"][v]["components"]
-    best = max(((abs(c["map"][s]["rho"]) - c["map"][s]["null95"], c, s) for c in comps for s in c["map"] if np.isfinite(c["map"][s]["rho"])), key=lambda t: t[0])
-    _, c, s = best
-    _, t, _, inc, _ = readout(res["patterns"][:, c["index"]], res["T_read_ms"], min_weight=0.2)
-    use = inc & np.isfinite(t) & np.isfinite(centres[s])
-    axes[0].scatter(centres[s][use], t[use], s=55, color=C_CPCA, zorder=3)
-    axes[0].set_title(f"cPCA component {c['index'] + 1}: {use.sum()} member cells\nSpearman {c['map'][s]['rho']:+.2f} (chance {c['map'][s]['null95']:.2f})")
-    axes[0].set_xlabel(f"place-field centre, direction {'+' if s > 0 else '−'} (m)")
-    axes[0].set_ylabel("member's relative time in the component (ms)")
-    # (b) seqNMF
-    factors = b["epochs"]["post"]["seqNMF"]["factors"]
-    cands = [(abs(f["map"][s]["rho"]) - f["map"][s]["null95"], f, s) for f in factors for s in f["map"] if np.isfinite(f["map"][s]["rho"])]
-    if cands:
-        _, f, s = max(cands, key=lambda t: t[0])
-        lag = np.asarray(f["lag_ms"])
+    fig, axes = plt.subplots(1, 4, figsize=(23, 5.8))
+
+    def scatter_best(ax, items, lag_of, colour, title_fn, ylabel):
+        cands = [(abs(c["map"][s]["rho"]) - c["map"][s]["null95"], c, s) for c in items for s in c["map"] if np.isfinite(c["map"][s]["rho"])]
+        if not cands:
+            ax.text(0.5, 0.5, "no component with enough\nmembers to test", ha="center", va="center", transform=ax.transAxes)
+            ax.set_title(title_fn(None, None))
+            return
+        _, c, s = max(cands, key=lambda t: t[0])
+        lag = np.asarray(lag_of(c), float)
         use = np.isfinite(lag) & np.isfinite(centres[s])
-        jitter = np.random.default_rng(0).uniform(-2, 2, size=use.sum())
-        axes[1].scatter(centres[s][use], lag[use] + jitter, s=55, color=C_SEQ, zorder=3)
-        axes[1].set_title(f"seqNMF factor {f['k'] + 1}: {use.sum()} member cells{' (significant)' if f['significant'] else ' (not significant)'}\nSpearman {f['map'][s]['rho']:+.2f} (chance {f['map'][s]['null95']:.2f})")
-        axes[1].set_xlabel(f"place-field centre, direction {'+' if s > 0 else '−'} (m)")
-        axes[1].set_ylabel("cell's peak lag in the factor (ms, 10 ms bins)")
-    # (c) HMM lsPF
+        ax.scatter(centres[s][use], lag[use], s=55, color=colour, zorder=3)
+        ax.set_title(title_fn(c, s) + f"\nSpearman {c['map'][s]['rho']:+.2f} (chance {c['map'][s]['null95']:.2f}), {use.sum()} cells")
+        ax.set_xlabel(f"place-field centre, running direction {'+' if s > 0 else '−'} (m)")
+        ax.set_ylabel(ylabel)
+        ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
+        ax.set_axisbelow(True)
+
+    res = fit(times, duration * 1000, rng=np.random.default_rng(0), center=True, scale=True, ica=False)
+    comps = cpr["epochs"]["post"]["variants"][CPCA_VARIANT]["components"]
+
+    def cpca_lag(c):
+        _, t, _, inc, _ = readout(res["patterns"][:, c["index"]], res["T_read_ms"], min_weight=0.2)
+        return np.where(inc, t, np.nan)
+
+    scatter_best(axes[0], comps, cpca_lag, COL["cpca"], lambda c, s: f"cPCA component {c['index'] + 1 if c else '—'} (centred)", "member's relative time in the component (ms)")
+    if p:
+        scatter_best(axes[1], p["epochs"]["post"]["types"], lambda c: c["lag_ms"], COL["pp"], lambda c, s: f"PP-Seq sequence type {c['r'] + 1 if c else '—'} (R = {p['epochs']['post']['best_setting']['num_sequence_types']})", "neuron offset in the sequence type (ms)")
+    scatter_best(axes[2], b["epochs"]["post"]["seqNMF"]["factors"], lambda c: c["lag_ms"], COL["seq"], lambda c, s: f"seqNMF factor {c['k'] + 1 if c else '—'}" + (" (significant)" if c and c["significant"] else ""), "cell's peak lag in the factor (ms, 10 ms bins)")
     lspf = np.asarray(b["epochs"]["post"]["HMM"]["lspf"]["lspf"])
     mass = np.asarray(b["epochs"]["post"]["HMM"]["lspf"]["state_mass"])
     keep = mass > 0.005 * mass.sum()
     order = np.argsort(np.argmax(lspf[keep], axis=1))
-    im = axes[2].imshow(lspf[keep][order], aspect="auto", cmap="magma", extent=(0, run["length"], keep.sum(), 0))
-    axes[2].set_xlabel("position on the track (m)")
-    axes[2].set_ylabel("hidden state (sorted by preferred position)")
+    im = axes[3].imshow(lspf[keep][order], aspect="auto", cmap="magma", extent=(0, run["length"], keep.sum(), 0))
+    axes[3].set_xlabel("position on the track (m)")
+    axes[3].set_ylabel("hidden state (sorted by preferred position)")
     e = b["epochs"]["post"]["HMM"]["lspf"]
-    axes[2].set_title(f"HMM latent-state place fields (POST model)\ndecoding error {e['median_error_m']:.2f} m vs {e['shuffled_median_error_m']:.2f} m with shuffled positions")
-    fig.colorbar(im, ax=axes[2], fraction=0.04, pad=0.02, label="P(state | position)")
-    for ax in axes[:2]:
-        ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-        ax.set_axisbelow(True)
-    fig.suptitle(f"{name.replace('_', ' ')}, POST sleep: what each method's output looks like", y=1.03, fontsize=14)
+    axes[3].set_title(f"HMM latent-state place fields (POST model)\ndecoding error {e['median_error_m']:.2f} m vs {e['shuffled_median_error_m']:.2f} m with shuffled positions")
+    fig.colorbar(im, ax=axes[3], fraction=0.04, pad=0.02, label="P(state | position)")
+    fig.suptitle(f"{name.replace('_', ' ')}, POST sleep: what each method's output looks like (behaviour used only on the x-axes)", y=1.03, fontsize=14)
     fig.tight_layout()
-    fig.savefig(FIG / "baselines_example.png", dpi=170, bbox_inches="tight")
+    fig.savefig(FIG / "comparison_example.png", dpi=170, bbox_inches="tight")
     plt.close(fig)
 
 
 # ----------------------------------------------------------------------------- tables
-def write_summary(syn, base):
+def write_summary(syn, pps, base, pph):
     lines = ["# Method comparison: results", "",
              "All methods see the same events and cells; the waking map is used only to score. "
-             "Order-producing methods (cPCA, seqNMF) are scored per component/factor by the Spearman correlation between member order and the answer key "
+             "Order-producing methods (cPCA, seqNMF, PP-Seq) are scored per component/factor/sequence type by the Spearman correlation between member order and the answer key "
              "against a cell-permutation null; the HMM is scored on per-event congruence and on latent-state place-field decoding; "
-             "Bayesian decoding takes the map as input and is the reference ceiling. PP-Seq (Julia) and convSeq (research code) were not run; see docs/baselines.md.", ""]
+             "Bayesian decoding takes the map as input and is the reference ceiling. convSeq was not run; see docs/baselines.md.", ""]
     if syn:
         lines += ["## Synthetic planted routes (one draw per condition, 80 cells, 3000 events)", "",
-                  "| condition | replay | cPCA uncentred | cPCA centred | seqNMF (significant factors / K) | HMM congruence: AUC replay vs volley; % replays / % volleys flagged | count PCA/ICA |",
-                  "|---|---|---|---|---|---|---|"]
+                  "| condition | replay | cPCA uncentred | cPCA centred | seqNMF (significant / K) | PP-Seq (R chosen) | detection AUC, replays vs volleys: HMM congruence / PP-Seq sequence types | count PCA/ICA |",
+                  "|---|---|---|---|---|---|---|---|"]
         for s in syn:
             m = s["methods"]
+            p = pps.get(s["condition"])
+
             def fmt(routes):
                 return "; ".join(f"{abs(r[0]):.2f} [{r[1]:.2f}]{'*' if np.isfinite(r[1]) and abs(r[0]) > r[1] else ''}" for r in routes)
+            pp_cell = f"{fmt(p['routes'])} (R={p['best_setting']['num_sequence_types']})" if p else "—"
+            pp_auc = f"{p['auc_replay']:.2f}" if p and np.isfinite(p["auc_replay"]) else "—"
             lines.append(f"| {s['condition']} | {100*s['fraction_replay']:.0f}% | {fmt(m['cPCA uncentred']['routes'])} (k={m['cPCA uncentred']['k']}) | "
-                         f"{fmt(m['cPCA centred']['routes'])} (k={m['cPCA centred']['k']}) | {fmt(m['seqNMF']['routes'])} ({m['seqNMF']['n_significant']}/{m['seqNMF']['n_factors']}, λ={m['seqNMF']['lambda']:.1e}) | "
-                         f"AUC {m['HMM']['auc_replay']:.2f}; {100*m['HMM'].get('congruent_replays', np.nan):.0f}% / {100*m['HMM'].get('congruent_volleys', np.nan):.0f}% | {m['count PCA/ICA']['n_assemblies']} assemblies, no order |")
+                         f"{fmt(m['cPCA centred']['routes'])} (k={m['cPCA centred']['k']}) | {fmt(m['seqNMF']['routes'])} ({m['seqNMF']['n_significant']}/{m['seqNMF']['n_factors']}) | {pp_cell} | "
+                         f"{m['HMM']['auc_replay']:.2f} / {pp_auc} | {m['count PCA/ICA']['n_assemblies']} assemblies, no order |")
     if base:
         cp = {b["name"]: load_cpca(b["name"]) for b in base}
-        v = "centred, T = event duration"
         lines += ["", "## hc-11: POST vs PRE sleep", "",
-                  "| session | cells / place (+,−) | cPCA (centred) map hits POST / PRE [tests] | seqNMF map hits POST / PRE [tests] (significant factors) | HMM congruent 99% POST / PRE | HMM lsPF error POST (shuffled) / PRE (shuffled), m | Bayes significant POST / PRE (strict) |",
-                  "|---|---|---|---|---|---|---|"]
-        tot = {k: [0, 0, 0, 0] for k in ("cpca", "seq")}
+                  "| session | cells / place (+,−) | cPCA (centred) map hits POST / PRE [tests] | PP-Seq map hits POST / PRE [tests] (R) | seqNMF map hits POST / PRE [tests] (significant) | HMM congruent 99% POST / PRE | HMM lsPF error POST (shuffled) / PRE (shuffled), m | Bayes significant POST / PRE |",
+                  "|---|---|---|---|---|---|---|---|"]
+        tot = {k: [0, 0, 0, 0] for k in ("cpca", "pp", "seq")}
         for b in base:
             e = b["epochs"]
             c = cp[b["name"]]
-            cph, cpt = hits_of(c["epochs"]["post"]["variants"][v]["components"]) if c else (np.nan, np.nan)
-            crh, crt = hits_of(c["epochs"]["pre"]["variants"][v]["components"]) if c else (np.nan, np.nan)
+            p = pph.get(b["name"])
+            cph, cpt = hits_of(c["epochs"]["post"]["variants"][CPCA_VARIANT]["components"]) if c else (0, 0)
+            crh, crt = hits_of(c["epochs"]["pre"]["variants"][CPCA_VARIANT]["components"]) if c else (0, 0)
             sph, spt = hits_of(e["post"]["seqNMF"]["factors"])
             srh, srt = hits_of(e["pre"]["seqNMF"]["factors"])
-            if c:
-                tot["cpca"] = [a + x for a, x in zip(tot["cpca"], (cph, cpt, crh, crt))]
-            tot["seq"] = [a + x for a, x in zip(tot["seq"], (sph, spt, srh, srt))]
+            if p:
+                pph_, ppt = hits_of(p["epochs"]["post"]["types"])
+                prh, prt = hits_of(p["epochs"]["pre"]["types"])
+                tot["pp"] = [a + v for a, v in zip(tot["pp"], (pph_, ppt, prh, prt))]
+                pp_cell = f"{pph_} / {prh} [{ppt}/{prt}] ({p['epochs']['post']['best_setting']['num_sequence_types']}/{p['epochs']['pre']['best_setting']['num_sequence_types']})"
+            else:
+                pp_cell = "—"
+            tot["cpca"] = [a + v for a, v in zip(tot["cpca"], (cph, cpt, crh, crt))]
+            tot["seq"] = [a + v for a, v in zip(tot["seq"], (sph, spt, srh, srt))]
             nsig = (sum(f["significant"] for f in e["post"]["seqNMF"]["factors"]), sum(f["significant"] for f in e["pre"]["seqNMF"]["factors"]))
             lp, lr = e["post"]["HMM"]["lspf"], e["pre"]["HMM"]["lspf"]
-            lines.append(f"| {b['name']} | {e['post']['n_cells']} / {e['post']['n_place'][1.0]},{e['post']['n_place'][-1.0]} | {cph} / {crh} [{cpt}/{crt}] | "
+            lines.append(f"| {b['name']} | {e['post']['n_cells']} / {e['post']['n_place'][1.0]},{e['post']['n_place'][-1.0]} | {cph} / {crh} [{cpt}/{crt}] | {pp_cell} | "
                          f"{sph} / {srh} [{spt}/{srt}] ({nsig[0]}/{nsig[1]}) | {100*e['post']['HMM']['congruent_99']:.1f}% / {100*e['pre']['HMM']['congruent_99']:.1f}% | "
                          f"{lp['median_error_m']:.2f} ({lp['shuffled_median_error_m']:.2f}) / {lr['median_error_m']:.2f} ({lr['shuffled_median_error_m']:.2f}) | "
-                         f"{100*e['post']['Bayes']['frac_sig']:.1f}% / {100*e['pre']['Bayes']['frac_sig']:.1f}% ({100*e['post']['Bayes']['frac_strict']:.1f}% / {100*e['pre']['Bayes']['frac_strict']:.1f}%) |")
+                         f"{100*e['post']['Bayes']['frac_sig']:.1f}% / {100*e['pre']['Bayes']['frac_sig']:.1f}% |")
         lines.append(f"| **total** | | **{tot['cpca'][0]} / {tot['cpca'][2]}** [{tot['cpca'][1]}/{tot['cpca'][3]}] (chance ≈ {0.05*tot['cpca'][1]:.1f} / {0.05*tot['cpca'][3]:.1f}) | "
+                     f"**{tot['pp'][0]} / {tot['pp'][2]}** [{tot['pp'][1]}/{tot['pp'][3]}] (chance ≈ {0.05*tot['pp'][1]:.1f} / {0.05*tot['pp'][3]:.1f}) | "
                      f"**{tot['seq'][0]} / {tot['seq'][2]}** [{tot['seq'][1]}/{tot['seq'][3]}] (chance ≈ {0.05*tot['seq'][1]:.1f} / {0.05*tot['seq'][3]:.1f}) | | | |")
-        lines += ["", "seqNMF λ chosen by the crossover rule (2 λ₀), per session POST/PRE: " +
-                  "; ".join(f"{b['name'].split('_')[0]}: {b['epochs']['post']['seqNMF']['lambda']:.1e}/{b['epochs']['pre']['seqNMF']['lambda']:.1e}" for b in base),
-                  "", "HMM cross-validated likelihood gain per bin over surrogates (POST), temporal shuffle / time swap: " +
-                  "; ".join(f"{b['name'].split('_')[0]}: {b['epochs']['post']['HMM']['cv_gain']['temporal_shuffle']:.2f}/{b['epochs']['post']['HMM']['cv_gain']['time_swap']:.2f}" for b in base)]
+        if pph:
+            lines += ["", "### PP-Seq sequence types on hc-11 (POST): members, offset span, latent events per posterior sample", ""]
+            for b in base:
+                p = pph.get(b["name"])
+                if not p:
+                    continue
+                for epoch in ("post", "pre"):
+                    ep = p["epochs"][epoch]
+                    lines.append(f"- {b['name']} {epoch.upper()} (R={ep['best_setting']['num_sequence_types']}, {ep['n_events_fitted']} events fitted, {100*ep['flagged_fraction']:.0f}% of events carry a sequence type that spans ≥ 20 ms): " +
+                                 "; ".join(f"type {t['r'] + 1}: {t['n_members']} cells, span {t['lag_span_ms']:.0f} ms, width {t['width_ms']:.0f} ms, {t['mean_latent_events']:.0f} events" for t in ep["types"]))
     (RES / "baselines" / "summary.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 
 
 def main():
     FIG.mkdir(exist_ok=True)
+    for stale in ("baselines_hc11.png", "baselines_synthetic.png", "baselines_example.png", "baselines_hc11_integrated.png", "hc11_map_matches.png"):
+        (FIG / stale).unlink(missing_ok=True)
     syn_f = RES / "baselines" / "synthetic.pkl"
     syn = pickle.load(open(syn_f, "rb")) if syn_f.exists() else []
-    base = [pickle.load(open(f, "rb")) for f in glob.glob(str(RES / "baselines" / "*.pkl")) if not f.endswith("synthetic.pkl")]
+    pps = load_ppseq_synthetic()
+    base = [pickle.load(open(f, "rb")) for f in glob.glob(str(RES / "baselines" / "*.pkl")) if not Path(f).name.startswith(("synthetic", "ppseq_"))]
     base.sort(key=lambda b: ORDER.index(b["name"]))
+    pph = {b["name"]: load_ppseq_hc11(b["name"]) for b in base}
+    pph = {k: v for k, v in pph.items() if v}
     if syn:
-        figure_synthetic(syn)
+        figure_synthetic(syn, pps)
     if base:
-        figure_hc11(base)
-        figure_integrated(base)
+        figure_hc11(base, pph)
         if any(b["name"] == "Achilles_11012013" for b in base):
-            figure_example(base)
-    write_summary(syn, base)
+            figure_example(base, pph)
+    write_summary(syn, pps, base, pph)
 
 
 if __name__ == "__main__":

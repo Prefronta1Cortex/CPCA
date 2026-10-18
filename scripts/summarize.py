@@ -1,4 +1,7 @@
-"""Tables (results/summary.md) and figures (figures/) from results/synthetic and results/hc11."""
+"""Tables (results/summary.md) and figures (figures/) from results/synthetic and results/hc11.
+
+Figures: synthetic_routes.png (cPCA variants on planted routes), hc11_spectrum.png, hc11_example_components.png.
+The method comparison figures are made by scripts/summarize_baselines.py."""
 
 import glob
 import pickle
@@ -119,32 +122,6 @@ def hc11_tables(sessions, lines):
         lines.append(f"| {s['name']} | {b['n_assemblies']} | {compact} | {jac:.2f} |")
 
 
-def hc11_hits_figure(sessions):
-    variants = list(next(iter(sessions[0]["epochs"].values()))["variants"])
-    shown = (variants[0], variants[1])
-    fig, axes = plt.subplots(1, 2, figsize=(17, 6.2))
-    for ax, v in zip(axes, shown):
-        x = np.arange(len(sessions))
-        for i, (epoch, colour) in enumerate((("post", "#1f4e79"), ("pre", "#9aa4b2"))):
-            vals = [hits(s["epochs"][epoch]["variants"][v])[0] for s in sessions]
-            chance = [0.05 * hits(s["epochs"][epoch]["variants"][v])[1] for s in sessions]
-            pos = x - 0.2 + 0.4 * i
-            ax.bar(pos, vals, width=0.38, color=colour, label=f"{epoch.upper()} sleep", zorder=2)
-            ax.hlines(chance, pos - 0.19, pos + 0.19, colors="black", linewidth=2.2, zorder=3, label="expected by chance (5% of tests)" if i == 0 else None)
-        ax.set_xticks(x)
-        ax.set_xticklabels([label(s["name"]) for s in sessions], fontsize=11)
-        ax.set_title(v, fontsize=13)
-        ax.set_ylabel("(component, direction) pairs whose order matches the place fields")
-        ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-        ax.set_axisbelow(True)
-    handles, labels_ = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels_, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, -0.04))
-    fig.suptitle("hc-11: components whose internal order matches the waking place map, sleep after (POST) vs before (PRE) the novel maze", y=1.0)
-    fig.tight_layout(rect=(0, 0.03, 1, 0.97))
-    fig.savefig(FIGURES / "hc11_map_matches.png", dpi=170, bbox_inches="tight")
-    plt.close(fig)
-
-
 def hc11_example_figure(name="Achilles_11012013", variant="centred, T = event duration", n_show=4):
     """Recompute one variant for one session and draw the components that match the map above chance."""
     settings = {"uncentred, T = event duration": dict(center=False, scale=False), "centred, T = event duration": dict(center=True, scale=True)}[variant]
@@ -220,7 +197,6 @@ def main():
     if sessions:
         sessions.sort(key=lambda s: ORDER.index(s["name"]))
         hc11_tables(sessions, lines)
-        hc11_hits_figure(sessions)
         hc11_spectrum_figure(sessions)
         hc11_example_figure()
     (RESULTS / "summary.md").write_text("\n".join(lines) + "\n")
