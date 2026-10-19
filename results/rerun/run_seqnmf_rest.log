@@ -1,0 +1,45 @@
+A one route, every event a replay: seqnmf
+   K=5 L=60: 0.96[0.23] | K=10 L=60: 0.97[0.24] | K=15 L=60: 0.96[0.22] | K=5 L=120: 0.98[0.22] | K=10 L=120: 0.98[0.23] | K=15 L=120: 0.98[0.22] | K=5 L=200: 0.98[0.34] | K=10 L=200: 0.98[0.22] | K=15 L=200: 0.98[0.24] (1157s)
+A one route, every event a replay: done
+B one route, forward and backward 60/40, span 25 ms: seqnmf
+   K=5 L=60: 0.87[0.25] | K=10 L=60: 0.21[0.27] | K=15 L=60: 0.86[0.21] | K=5 L=120: 0.75[0.23] | K=10 L=120: 0.46[0.22] | K=15 L=120: 0.77[0.21] | K=5 L=200: 0.71[0.21] | K=10 L=200: 0.19[0.26] | K=15 L=200: 0.86[0.22] (1097s)
+B one route, forward and backward 60/40, span 25 ms: done
+C one route, forward and backward 60/40, span 80 ms: seqnmf
+   K=5 L=60: 0.97[0.21] | K=10 L=60: 0.97[0.21] | K=15 L=60: 0.97[0.24] | K=5 L=120: 0.97[0.23] | K=10 L=120: 0.99[0.21] | K=15 L=120: 0.98[0.21] | K=5 L=200: 0.97[0.23] | K=10 L=200: 0.98[0.22] | K=15 L=200: 0.98[0.22] (1100s)
+C one route, forward and backward 60/40, span 80 ms: done
+D two routes on different cells, 40% replay: seqnmf
+   K=5 L=60: 0.95[0.33], 0.94[0.32] | K=10 L=60: 0.96[0.29], 0.95[0.33] | K=15 L=60: 0.93[0.32], 0.97[0.36] | K=5 L=120: 0.98[0.31], 0.98[0.31] | K=10 L=120: 0.98[0.33], 0.98[0.33] | K=15 L=120: 0.98[0.33], 0.98[0.30] | K=5 L=200: 0.97[0.31], 0.97[0.29] | K=10 L=200: 0.98[0.33], 0.98[0.33] | K=15 L=200: 0.99[0.32], 0.98[0.30] (1150s)
+D two routes on different cells, 40% replay: done
+E two routes sharing half their cells, 40% replay: seqnmf
+   K=5 L=60: 0.97[0.37], 0.95[0.29] | K=10 L=60: 0.43[0.32], 0.94[0.31] | K=15 L=60: 0.71[0.31], 0.75[0.31] | K=5 L=120: 0.96[0.32], 0.54[0.29] | K=10 L=120: 0.76[0.36], 0.80[0.31] | K=15 L=120: 0.98[0.33], 0.98[0.31] | K=5 L=200: 0.98[0.32], 0.97[0.31] | K=10 L=200: 0.92[0.29], 0.60[0.32] | K=15 L=200: 0.98[0.31], 0.97[0.33] (1162s)
+E two routes sharing half their cells, 40% replay: done
+[Buddy_06272013] post: seqnmf on 1483 events
+   K=5 L=60: hits 0/2, sig 2 | K=10 L=60: hits 1/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 2 | K=10 L=120: hits 0/0, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/0, sig 0 (790s)
+[Buddy_06272013] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/0, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/0, sig 0 (893s)
+[Buddy_06272013] done
+[Cicero_09012014] post: seqnmf on 1500 events
+   K=5 L=60: hits 1/2, sig 2 | K=10 L=60: hits 0/0, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/1, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/0, sig 0 (970s)
+[Cicero_09012014] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/2, sig 0 (955s)
+[Cicero_09012014] done
+[Cicero_09102014] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/0, sig 0 | K=15 L=120: hits 0/2, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1179s)
+[Cicero_09102014] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/0, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 1/2, sig 1 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/2, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/2, sig 0 (1451s)
+[Cicero_09102014] done
+[Cicero_09172014] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 1/2, sig 1 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/2, sig 0 | K=5 L=200: hits 0/2, sig 3 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/2, sig 0 (1032s)
+[Cicero_09172014] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 2 | K=10 L=60: hits 0/0, sig 0 | K=15 L=60: hits 0/2, sig 0 | K=5 L=120: hits 0/2, sig 2 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1078s)
+[Cicero_09172014] done
+[Gatsby_08022013] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 2 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 2 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1005s)
+[Gatsby_08022013] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 2 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 2 | K=10 L=120: hits 0/0, sig 0 | K=15 L=120: hits 0/2, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1144s)
+[Gatsby_08022013] done
+[Gatsby_08282013] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/1, sig 2 | K=10 L=60: hits 0/0, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/1, sig 1 | K=10 L=120: hits 0/0, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/0, sig 3 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/0, sig 0 (733s)
+[Gatsby_08282013] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/0, sig 2 | K=10 L=60: hits 0/1, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/0, sig 2 | K=10 L=120: hits 0/1, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 0/0, sig 0 | K=15 L=200: hits 0/0, sig 0 (706s)
+[Gatsby_08282013] done

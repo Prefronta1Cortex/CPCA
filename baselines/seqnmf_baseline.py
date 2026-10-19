@@ -46,21 +46,18 @@ def _normalise(X):
 
 
 def _reconstruct(W, H):
-    N, K, L = W.shape
-    T = H.shape[1]
-    Xhat = np.zeros((N, T))
-    for l in range(L):
-        Xhat[:, l:] += W[:, :, l] @ H[:, :T - l]
-    return Xhat
+    """The package's own reconstruction (its lag index l is applied at shift l - 1, a MATLAB carry-over)."""
+    from seqnmf.helpers import reconstruct
+    return reconstruct(W, H)
 
 
 def _xortho_cost(W, H, X):
-    """Cross-orthogonality cost of the paper: || (W^T (*) X) S H^T ||_1 off the diagonal."""
+    """Cross-orthogonality cost of the paper, || (W^T (*) X) S H^T ||_1 off the diagonal, with the package's shift convention."""
     N, K, L = W.shape
     T = X.shape[1]
     WTX = np.zeros((K, T))
     for l in range(L):
-        WTX[:, :T - l] += W[:, :, l].T @ X[:, l:]
+        WTX += W[:, :, l].T @ np.roll(X, -l + 1, axis=1)
     S = np.ones(2 * L - 1)
     smoothed = np.array([np.convolve(row, S, mode="same") for row in WTX])
     C = smoothed @ H.T
@@ -68,6 +65,11 @@ def _xortho_cost(W, H, X):
 
 
 def choose_lambda(X, K, L, rng, lambdas=np.logspace(-5, -1, 9), iters=30):
+    """Crossover of normalised reconstruction and cross-orthogonality costs; returns (2*lambda_0, sweep table)."""
+    return _choose_lambda(X, K, L, rng, lambdas, iters)
+
+
+def _choose_lambda(X, K, L, rng, lambdas, iters):
     """Crossover of normalised reconstruction and cross-orthogonality costs; returns (2*lambda_0, sweep table)."""
     import seqnmf
     recon, xortho = [], []
@@ -111,8 +113,12 @@ def significance(W, X_test, rng, n_shuffles=100):
     return p, real
 
 
-def run(blocks, bin_s, rng, K=5, L=12, iters=100, restarts=3, max_events=1500, test_frac=0.25):
-    """Fit seqNMF to zero-padded event blocks; return factors with orders, significance, and settings."""
+def run(blocks, bin_s, rng, K=5, L=12, iters=100, restarts=3, max_events=1500, test_frac=0.25, lambda_iters=30, n_lambdas=9):
+    """Fit seqNMF to zero-padded event blocks; return factors with orders, significance, and settings.
+
+    blocks: list of (bins + L, cells) count arrays, already the fixed event subset shared by all methods
+    (max_events is a safety cap only). A quarter of the events is held out for the significance test.
+    """
     import seqnmf
     t0 = time.perf_counter()
     idx_all = np.arange(len(blocks))
@@ -124,7 +130,7 @@ def run(blocks, bin_s, rng, K=5, L=12, iters=100, restarts=3, max_events=1500, t
     scale = X_train.std(axis=1, keepdims=True)
     scale[scale == 0] = 1.0
     X_train, X_test = X_train / scale, X_test / scale
-    lam, sweep = choose_lambda(X_train, K, L, rng)
+    lam, sweep = _choose_lambda(X_train, K, L, rng, np.logspace(-5, -1, n_lambdas), lambda_iters)
     best = None
     for _ in range(restarts):
         np.random.seed(int(rng.integers(1 << 31)))
@@ -150,3 +156,17 @@ def run(blocks, bin_s, rng, K=5, L=12, iters=100, restarts=3, max_events=1500, t
     return {"factors": factors, "lambda": float(lam), "sweep": sweep, "K": K, "L_ms": L * bin_s * 1000,
             "n_train_events": int(len(used)), "n_test_events": int(min(n_test, max_events // 3)),
             "runtime_s": time.perf_counter() - t0}
+
+
+def run_grid(blocks_by_L, bin_s, rng, Ks=(5, 10, 15), **kwargs):
+    """Sensitivity grid over K and L. blocks_by_L maps L (bins) to zero-padded blocks for that L.
+
+    Returns a list of run() results, one per (K, L), each tagged with its K and L.
+    """
+    out = []
+    for L, blocks in blocks_by_L.items():
+        for K in Ks:
+            seed_rng = np.random.default_rng(int(rng.integers(1 << 30)))
+            res = run(blocks, bin_s, seed_rng, K=K, L=L, **kwargs)
+            out.append(res)
+    return out

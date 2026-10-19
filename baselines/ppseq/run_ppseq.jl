@@ -43,7 +43,6 @@ function main(args)
     spikes_path, num_neurons, max_time, config_path, out_path = args[1], parse(Int, args[2]), parse(Float64, args[3]), args[4], args[5]
     masked = length(args) >= 6 && args[6] == "masked"
     cfg = load_config(config_path)
-    Random.seed!(get(cfg, :seed, 0))
 
     spikes = seq.Spike[]
     for row in eachrow(readdlm(spikes_path, '\t', Float64, '\n'))
@@ -54,18 +53,31 @@ function main(args)
     t0 = time()
 
     if masked
+        # The mask is drawn from its own seed so that every candidate hyperparameter setting is
+        # validated on the same held-out spikes; the sampler then gets the run seed.
+        Random.seed!(get(cfg, :mask_seed, 12345))
         masks = seq.create_random_mask(num_neurons, max_time + 1e-6, cfg[:mask_lengths] + 1e-9, cfg[:percent_masked])
         masks = seq.merge_contiguous_masks(masks, num_neurons)
+        Random.seed!(get(cfg, :seed, 0))
         res = seq.easy_sample_masked!(model, spikes, masks, init, cfg)
         test = res[:test_log_p_hist]
         train = res[:train_log_p_hist]
         n_held = length(seq.split_spikes_by_mask(spikes, masks)[1])
+        half = (length(test) ÷ 2 + 1):length(test)
+        events_hist = res[:latent_event_hist]
+        final_assign = res[:assignment_hist][:, end]
         out = Dict(
             "mode" => "masked",
-            "heldout_log_like_per_spike" => sum(test[(length(test) ÷ 2 + 1):end]) / max(length(test) - length(test) ÷ 2, 1) / max(n_held, 1),
+            # the package's statistic: (log-likelihood of the held-out spikes minus that of a homogeneous
+            # Poisson process on the same masked neuron-time volume) / masked neuron-time volume,
+            # averaged over post-anneal samples
+            "heldout_log_like" => sum(test[half]) / max(length(half), 1),
             "heldout_log_like_hist" => test,
             "train_log_like_hist" => train,
             "n_heldout_spikes" => n_held,
+            "n_latent_events_hist" => [length(ev) for ev in events_hist],
+            "n_background_final" => count(==(-1), final_assign),
+            "n_unmasked_spikes" => length(final_assign),
             "runtime_s" => time() - t0,
         )
         open(out_path, "w") do io
@@ -74,6 +86,7 @@ function main(args)
         return
     end
 
+    Random.seed!(get(cfg, :seed, 0))
     res = seq.easy_sample!(model, spikes, init, cfg)
     g = res[:globals_hist][end]
     saved_events = [[Dict("t" => e.timestamp, "type" => e.seq_type, "amp" => e.amplitude, "warp" => e.seq_warp) for e in ev]
@@ -108,4 +121,4 @@ function main(args)
     end
 end
 
-main(ARGS)
+length(ARGS) >= 5 && main(ARGS)

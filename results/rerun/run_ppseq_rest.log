@@ -1,0 +1,79 @@
+A one route, every event a replay: cpca
+   uncentred: k=1 1.00[0.22] | centred: k=0 0.00[nan]
+A one route, every event a replay: ppseq
+   R=2 warp=no | type rule: 1.00[0.21] | package rule: 1.00[0.34] | types: 80 cells span 78 ms (1500 ev); 80 cells span 75 ms (176 ev) | AUC nan (3871s)
+A one route, every event a replay: done
+B one route, forward and backward 60/40, span 25 ms: cpca
+   uncentred: k=2 0.99[0.21] | centred: k=1 0.81[0.24]
+B one route, forward and backward 60/40, span 25 ms: ppseq
+   R=4 warp=yes | type rule: 1.00[0.22] | package rule: 1.00[0.69] | types: 34 cells span 63 ms (0 ev); 80 cells span 29 ms (977 ev); 40 cells span 135 ms (0 ev); 80 cells span 28 ms (618 ev) | AUC nan (4379s)
+B one route, forward and backward 60/40, span 25 ms: done
+C one route, forward and backward 60/40, span 80 ms: cpca
+   uncentred: k=2 1.00[0.21] | centred: k=1 0.80[0.23]
+C one route, forward and backward 60/40, span 80 ms: ppseq
+   R=7 warp=no | type rule: 1.00[0.22] | package rule: 0.36[0.52] | types: 44 cells span 98 ms (0 ev); 30 cells span 127 ms (0 ev); 80 cells span 75 ms (606 ev); 25 cells span 144 ms (0 ev); 40 cells span 97 ms (0 ev); 41 cells span 110 ms (0 ev); 80 cells span 77 ms (852 ev) | AUC nan (4688s)
+C one route, forward and backward 60/40, span 80 ms: done
+D two routes on different cells, 40% replay: cpca
+   uncentred: k=3 1.00[0.29], 1.00[0.28] | centred: k=2 1.00[0.34], 1.00[0.31]
+D two routes on different cells, 40% replay: ppseq
+   R=8 warp=no | type rule: 1.00[0.32], 1.00[0.30] | package rule: 1.00[0.83], 0.95[0.67] | types: 44 cells span 75 ms (340 ev); 30 cells span 112 ms (1 ev); 23 cells span 95 ms (1 ev); 80 cells span 4 ms (1142 ev); 27 cells span 169 ms (0 ev); 46 cells span 75 ms (319 ev); 35 cells span 140 ms (1 ev); 26 cells span 104 ms (2 ev) | AUC 1.00 (1396s)
+D two routes on different cells, 40% replay: done
+E two routes sharing half their cells, 40% replay: cpca
+   uncentred: k=3 0.90[0.32], 0.85[0.32] | centred: k=2 0.92[0.30], 0.94[0.32]
+E two routes sharing half their cells, 40% replay: ppseq
+   R=3 warp=no | type rule: 1.00[0.34], 1.00[0.29] | package rule: 1.00[0.38], 0.99[0.37] | types: 44 cells span 77 ms (345 ev); 80 cells span 4 ms (1193 ev); 51 cells span 79 ms (334 ev) | AUC 1.00 (1061s)
+E two routes sharing half their cells, 40% replay: done
+[Buddy_06272013] post: cpca on 1483 events
+   uncentred: k=8, hits 0/7 | centred: k=5, hits 0/10
+[Buddy_06272013] post: ppseq on 1483 events
+   R=6 warp=yes | hits type rule 0/3, package rule 0/0 | types: 16/8 cells span 14 ms (398 ev); 6/6 cells span 9 ms (450 ev); 7/5 cells span 16 ms (248 ev); 8/7 cells span 19 ms (403 ev); 27/7 cells span 14 ms (761 ev); 8/5 cells span 13 ms (418 ev) (964s)
+[Buddy_06272013] pre: cpca on 1500 events
+   uncentred: k=6, hits 0/6 | centred: k=3, hits 1/6
+[Buddy_06272013] pre: ppseq on 1500 events
+   R=3 warp=yes | hits type rule 0/4, package rule 0/2 | types: 24/16 cells span 15 ms (629 ev); 8/10 cells span 16 ms (340 ev); 34/12 cells span 14 ms (1496 ev) (747s)
+[Buddy_06272013] done
+[Cicero_09012014] post: cpca on 1500 events
+   uncentred: k=6, hits 2/12 | centred: k=3, hits 0/6
+[Cicero_09012014] post: ppseq on 1500 events
+   R=5 warp=yes | hits type rule 1/8, package rule 0/1 | types: 13/11 cells span 14 ms (151 ev); 8/1 cells span 21 ms (119 ev); 16/12 cells span 9 ms (683 ev); 15/9 cells span 12 ms (866 ev); 7/11 cells span 15 ms (271 ev) (1088s)
+[Cicero_09012014] pre: cpca on 1500 events
+   uncentred: k=7, hits 0/14 | centred: k=4, hits 1/8
+[Cicero_09012014] pre: ppseq on 1500 events
+   R=8 warp=no | hits type rule 0/8, package rule 0/0 | types: 21/6 cells span 42 ms (232 ev); 1/2 cells span nan ms (93 ev); 26/5 cells span 15 ms (563 ev); 4/3 cells span 11 ms (88 ev); 2/4 cells span 7 ms (171 ev); 17/8 cells span 29 ms (82 ev); 5/6 cells span 23 ms (67 ev); 15/10 cells span 9 ms (593 ev) (637s)
+[Cicero_09012014] done
+[Cicero_09102014] post: cpca on 1500 events
+   uncentred: k=8, hits 1/15 | centred: k=5, hits 2/10
+[Cicero_09102014] post: ppseq on 1500 events
+   R=2 warp=yes | hits type rule 0/4, package rule 0/3 | types: 45/37 cells span 15 ms (1622 ev); 19/27 cells span 18 ms (379 ev) (1058s)
+[Cicero_09102014] pre: cpca on 1500 events
+   uncentred: k=6, hits 0/12 | centred: k=4, hits 0/8
+[Cicero_09102014] pre: ppseq on 1500 events
+   R=4 warp=no | hits type rule 1/6, package rule 0/4 | types: 46/14 cells span 11 ms (1003 ev); 8/14 cells span 16 ms (318 ev); 12/13 cells span 24 ms (369 ev); 37/23 cells span 22 ms (603 ev) (980s)
+[Cicero_09102014] done
+[Cicero_09172014] post: cpca on 1500 events
+   uncentred: k=2, hits 0/4 | centred: k=5, hits 0/10
+[Cicero_09172014] post: ppseq on 1500 events
+   R=3 warp=yes | hits type rule 0/4, package rule 0/3 | types: 28/16 cells span 19 ms (497 ev); 24/22 cells span 7 ms (1844 ev); 6/9 cells span 10 ms (212 ev) (1890s)
+[Cicero_09172014] pre: cpca on 1500 events
+   uncentred: k=4, hits 0/8 | centred: k=4, hits 0/8
+[Cicero_09172014] pre: ppseq on 1500 events
+   R=3 warp=yes | hits type rule 0/4, package rule 0/2 | types: 7/11 cells span 14 ms (199 ev); 32/25 cells span 11 ms (1676 ev); 15/11 cells span 17 ms (469 ev) (1335s)
+[Cicero_09172014] done
+[Gatsby_08022013] post: cpca on 1500 events
+   uncentred: k=6, hits 1/12 | centred: k=5, hits 4/10
+[Gatsby_08022013] post: ppseq on 1500 events
+   R=6 warp=no | hits type rule 0/7, package rule 0/2 | types: 8/11 cells span 8 ms (586 ev); 19/12 cells span 12 ms (1122 ev); 5/4 cells span 8 ms (102 ev); 5/3 cells span 6 ms (292 ev); 20/9 cells span 17 ms (605 ev); 12/13 cells span 25 ms (428 ev) (1252s)
+[Gatsby_08022013] pre: cpca on 1500 events
+   uncentred: k=6, hits 1/11 | centred: k=5, hits 1/10
+[Gatsby_08022013] pre: ppseq on 1500 events
+   R=2 warp=no | hits type rule 0/2, package rule 0/2 | types: 3/9 cells span 2 ms (408 ev); 15/43 cells span 10 ms (1886 ev) (937s)
+[Gatsby_08022013] done
+[Gatsby_08282013] post: cpca on 1500 events
+   uncentred: k=7, hits 0/14 | centred: k=5, hits 0/10
+[Gatsby_08282013] post: ppseq on 1500 events
+   R=3 warp=no | hits type rule 0/5, package rule 0/4 | types: 18/13 cells span 13 ms (714 ev); 6/11 cells span 13 ms (540 ev); 8/8 cells span 18 ms (212 ev) (539s)
+[Gatsby_08282013] pre: cpca on 1500 events
+   uncentred: k=6, hits 0/12 | centred: k=4, hits 1/8
+[Gatsby_08282013] pre: ppseq on 1500 events
+   R=7 warp=no | hits type rule 0/6, package rule 0/2 | types: 12/6 cells span 17 ms (490 ev); 10/8 cells span 11 ms (452 ev); 7/6 cells span 201 ms (284 ev); 5/4 cells span 5 ms (427 ev); 4/2 cells span 29 ms (135 ev); 5/2 cells span 6 ms (403 ev); 3/4 cells span 2 ms (382 ev) (640s)
+[Gatsby_08282013] done

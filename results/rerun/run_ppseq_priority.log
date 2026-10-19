@@ -1,0 +1,33 @@
+F two routes, both directions, 15% replay, 15% cells: cpca
+   uncentred: k=4 0.82[0.30], 0.94[0.32] | centred: k=4 0.95[0.32], 0.93[0.33]
+F two routes, both directions, 15% replay, 15% cells: ppseq
+   R=4 warp=yes | type rule: 0.56[0.34], 0.99[0.28] | package rule: 0.52[0.37], 0.99[0.43] | types: 80 cells span 6 ms (1295 ev); 62 cells span 35 ms (119 ev); 53 cells span 97 ms (79 ev); 59 cells span 90 ms (75 ev) | AUC 1.00 (908s)
+F two routes, both directions, 15% replay, 15% cells: done
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: cpca
+   uncentred: k=8 0.31[0.30], 0.26[0.30] | centred: k=8 0.33[0.43], 0.28[0.27]
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: ppseq
+   R=6 warp=no | type rule: 0.31[0.45], 0.54[0.47] | package rule: 0.60[0.83], 1.00[0.83] | types: 59 cells span 9 ms (424 ev); 55 cells span 63 ms (41 ev); 67 cells span 24 ms (206 ev); 69 cells span 12 ms (456 ev); 23 cells span 3 ms (201 ev); 21 cells span 8 ms (250 ev) | AUC 1.00 (754s)
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: done
+H realistic at 40% replay: cpca
+   uncentred: k=9 0.47[0.29], 0.45[0.28] | centred: k=10 0.54[0.29], 0.46[0.24]
+H realistic at 40% replay: ppseq
+   R=8 warp=yes | type rule: 0.89[0.32], 0.81[0.34] | package rule: 0.95[0.72], 1.00[0.71] | types: 43 cells span 119 ms (62 ev); 60 cells span 86 ms (104 ev); 51 cells span 85 ms (62 ev); 44 cells span 30 ms (220 ev); 41 cells span 117 ms (53 ev); 41 cells span 15 ms (217 ev); 58 cells span 96 ms (70 ev); 80 cells span 13 ms (893 ev) | AUC 0.80 (1480s)
+H realistic at 40% replay: done
+[Achilles_10252013] post: cpca on 1500 events
+   uncentred: k=7, hits 4/14 | centred: k=9, hits 4/18
+[Achilles_10252013] post: ppseq on 1500 events
+   R=6 warp=no | hits type rule 1/12, package rule 1/7 | types: 36/21 cells span 68 ms (191 ev); 19/17 cells span 24 ms (160 ev); 85/10 cells span 18 ms (1242 ev); 29/18 cells span 20 ms (283 ev); 79/11 cells span 69 ms (378 ev); 47/19 cells span 37 ms (303 ev) (3823s)
+[Achilles_10252013] pre: cpca on 1500 events
+   uncentred: k=7, hits 0/14 | centred: k=8, hits 1/16
+[Achilles_10252013] pre: ppseq on 1500 events
+   R=4 warp=no | hits type rule 0/8, package rule 0/8 | types: 35/22 cells span 37 ms (292 ev); 38/25 cells span 20 ms (294 ev); 32/24 cells span 33 ms (339 ev); 86/25 cells span 15 ms (1664 ev) (3067s)
+[Achilles_10252013] done
+[Achilles_11012013] post: cpca on 1500 events
+   uncentred: k=8, hits 2/16 | centred: k=8, hits 4/16
+[Achilles_11012013] post: ppseq on 1500 events
+   R=2 warp=yes | hits type rule 0/4, package rule 0/4 | types: 76/52 cells span 13 ms (1985 ev); 17/21 cells span 30 ms (242 ev) (1926s)
+[Achilles_11012013] pre: cpca on 1500 events
+   uncentred: k=7, hits 0/12 | centred: k=5, hits 0/10
+[Achilles_11012013] pre: ppseq on 1500 events
+   R=3 warp=yes | hits type rule 1/6, package rule 0/6 | types: 15/25 cells span 21 ms (259 ev); 55/25 cells span 46 ms (368 ev); 77/23 cells span 12 ms (1562 ev) (1729s)
+[Achilles_11012013] done

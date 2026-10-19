@@ -1,0 +1,19 @@
+F two routes, both directions, 15% replay, 15% cells: seqnmf
+   K=5 L=60: 0.05[0.32], 0.00[0.31] | K=10 L=60: 0.10[0.32], 0.25[0.30] | K=15 L=60: 0.32[0.36], 0.07[0.32] | K=5 L=120: 0.16[0.33], 0.01[0.29] | K=10 L=120: 0.20[0.31], 0.04[0.29] | K=15 L=120: 0.35[0.32], 0.28[0.27] | K=5 L=200: 0.22[0.36], 0.00[0.31] | K=10 L=200: 0.12[0.32], 0.26[0.30] | K=15 L=200: 0.13[0.36], 0.42[0.35] (948s)
+F two routes, both directions, 15% replay, 15% cells: done
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: seqnmf
+   K=5 L=60: 0.48[0.70], 0.67[0.67] | K=10 L=60: 0.45[0.76], 0.43[0.83] | K=15 L=60: 0.10[0.25], 0.11[0.27] | K=5 L=120: 0.08[0.26], 0.13[0.25] | K=10 L=120: 0.16[0.53], 0.23[0.50] | K=15 L=120: 0.21[0.71], 0.22[0.29] | K=5 L=200: 0.36[0.65], 0.45[0.62] | K=10 L=200: 0.48[0.74], 0.62[0.74] | K=15 L=200: 0.26[0.24], 0.12[0.25] (1069s)
+G realistic: direction maps, segments, assemblies, non-place cells, 15% replay: done
+H realistic at 40% replay: seqnmf
+   K=5 L=60: 0.05[0.25], 0.01[0.25] | K=10 L=60: 0.14[0.24], 0.15[0.24] | K=15 L=60: 0.32[0.67], 0.14[0.56] | K=5 L=120: 0.14[0.25], 0.01[0.24] | K=10 L=120: 0.11[0.24], 0.00[0.26] | K=15 L=120: 0.05[0.26], 0.02[0.25] | K=5 L=200: 0.03[0.22], 0.00[0.26] | K=10 L=200: 0.14[0.26], 0.11[0.23] | K=15 L=200: 0.15[0.27], 0.13[0.25] (1101s)
+H realistic at 40% replay: done
+[Achilles_10252013] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/2, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 1 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/2, sig 0 (2210s)
+[Achilles_10252013] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/2, sig 0 | K=15 L=60: hits 0/2, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/1, sig 0 | K=15 L=120: hits 0/2, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 1/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1998s)
+[Achilles_10252013] done
+[Achilles_11012013] post: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 1 | K=10 L=60: hits 0/3, sig 0 | K=15 L=60: hits 1/2, sig 0 | K=5 L=120: hits 0/2, sig 2 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 1/2, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 0/0, sig 0 (1777s)
+[Achilles_11012013] pre: seqnmf on 1500 events
+   K=5 L=60: hits 0/2, sig 2 | K=10 L=60: hits 0/0, sig 0 | K=15 L=60: hits 0/0, sig 0 | K=5 L=120: hits 0/2, sig 1 | K=10 L=120: hits 0/2, sig 0 | K=15 L=120: hits 0/0, sig 0 | K=5 L=200: hits 0/2, sig 2 | K=10 L=200: hits 0/2, sig 0 | K=15 L=200: hits 1/2, sig 0 (1611s)
+[Achilles_11012013] done
