@@ -1,0 +1,15 @@
+336 jobs on 9 workers
+[1/336     466s] i01_maze05_MS.005 aligned r2 f1 ppseq: {'type_rule': (0.38, 0.161), 'package_rule': (0.78, 0.001)} (466s)
+[2/336     501s] i01_maze05_MS.005 aligned r1 f0 ppseq: {'type_rule': (0.57, 0.078), 'package_rule': (0.76, 0.01)} (500s)
+[3/336     513s] i01_maze05_MS.005 aligned r2 f0 ppseq: {'type_rule': (0.56, 0.115), 'package_rule': (-0.29, 0.796)} (513s)
+[4/336     594s] i01_maze05_MS.005 aligned r1 f1 ppseq: {'type_rule': (0.37, 0.278), 'package_rule': (0.35, 0.432)} (593s)
+[5/336     595s] i01_maze05_MS.005 aligned r0 f0 ppseq: {'type_rule': (0.51, 0.077), 'package_rule': (0.55, 0.034)} (595s)
+[6/336     616s] i01_maze05_MS.005 shuffled r0 f0 ppseq: {'type_rule': (0.28, 0.143), 'package_rule': (0.25, 0.267)} (616s)
+[7/336     660s] i01_maze05_MS.005 shuffled r0 f1 ppseq: {'type_rule': (0.06, 0.861), 'package_rule': (-0.1, 0.938)} (660s)
+[8/336     773s] i01_maze05_MS.005 unaligned r0 f0 ppseq: {'type_rule': (0.09, 0.652), 'package_rule': (0.47, 0.115)} (772s)
+[9/336     907s] i01_maze05_MS.005 aligned r0 f1 ppseq: {'type_rule': (0.7, 0.017), 'package_rule': (0.54, 0.113)} (906s)
+[10/336    1053s] i01_maze05_MS.005 unaligned r1 f0 ppseq: {'type_rule': (0.4, 0.169), 'package_rule': (0.63, 0.019)} (552s)
+[11/336    1289s] i01_maze05_MS.005 unaligned r1 f1 ppseq: {'type_rule': (0.75, 0.039), 'package_rule': (0.81, 0.057)} (776s)
+[12/336    1311s] i01_maze05_MS.005 unaligned r2 f0 ppseq: {'type_rule': (0.37, 0.225), 'package_rule': (None, None)} (717s)
+/opt/miniconda3/envs/CPCA/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

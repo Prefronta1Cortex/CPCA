@@ -57,6 +57,8 @@ function main(args)
         # validated on the same held-out spikes; the sampler then gets the run seed.
         Random.seed!(get(cfg, :mask_seed, 12345))
         masks = seq.create_random_mask(num_neurons, max_time + 1e-6, cfg[:mask_lengths] + 1e-9, cfg[:percent_masked])
+        # the package's complementary-mask step requires every mask to end at or before max_time
+        masks = [(n, (t0, min(t1, max_time))) for (n, (t0, t1)) in masks]
         masks = seq.merge_contiguous_masks(masks, num_neurons)
         Random.seed!(get(cfg, :seed, 0))
         res = seq.easy_sample_masked!(model, spikes, masks, init, cfg)

@@ -135,44 +135,56 @@ def _config(setting, seed, mask_seed, threads, schedule=None):
     return cfg
 
 
-def fit(times_ms, T_ms, rng, sweep_size=SWEEP_SIZE, sweep_events=SWEEP_EVENTS, verbose=True):
+def fit(times_ms, T_ms, rng, sweep_size=SWEEP_SIZE, sweep_events=SWEEP_EVENTS, verbose=True,
+        unit_ms=UNIT_MS, gap_units=GAP_UNITS, sweep_workers=SWEEP_WORKERS, threads=THREADS,
+        sweep_schedule=SWEEP_SCHEDULE, final_schedule=None, refits_if_empty=0):
     """Sweep hyperparameters on one shared mask, refit the best on all given events, return parsed results.
 
     times_ms: (events, cells, spikes); the caller passes the fixed event subset shared by all methods.
+    unit_ms is the model time unit, gap_units the silent gap between concatenated events; threads=0
+    runs the final fit single-threaded (for callers that parallelise over fits). sweep_schedule and
+    final_schedule override BASE_CONFIG's sampler schedule for the sweep runs and the final fit.
+    refits_if_empty: if the refit of the best candidate ends with no latent events (every spike
+    background), refit the next-best candidate, up to this many times.
     Returns per-type orders under both membership rules, per-event posterior probabilities, the sweep table
     and the chosen setting.
     """
     t_all = time.perf_counter()
     n_all, n_cells, _ = times_ms.shape
     T_ms = np.broadcast_to(np.asarray(T_ms, float), (n_all,))
-    spikes, starts, ends, max_time = build_timeline(times_ms, T_ms)
+    spikes, starts, ends, max_time = build_timeline(times_ms, T_ms, unit_ms, gap_units)
     spikes_per_unit = spikes.shape[0] / max_time
     active_per_event = np.isfinite(times_ms).sum(axis=(1, 2))
     mean_spikes_per_event = float(active_per_event[active_per_event > 0].mean())
     settings = sample_settings(rng, sweep_size, spikes_per_unit, mean_spikes_per_event)
     sweep_idx = np.sort(rng.choice(n_all, sweep_events, replace=False)) if n_all > sweep_events else np.arange(n_all)
-    sw_spikes, _, _, sw_max_time = build_timeline(times_ms[sweep_idx], T_ms[sweep_idx])
+    sw_spikes, _, _, sw_max_time = build_timeline(times_ms[sweep_idx], T_ms[sweep_idx], unit_ms, gap_units)
     mask_seed = int(rng.integers(1 << 30))
     seeds = rng.integers(1 << 30, size=sweep_size + 1)
     with tempfile.TemporaryDirectory() as wd:
         def one(i):
-            cfg = _config(settings[i], seeds[i], mask_seed, 0, SWEEP_SCHEDULE)
+            cfg = _config(settings[i], seeds[i], mask_seed, 0, sweep_schedule)
             try:
                 res = _run_julia(sw_spikes, n_cells, sw_max_time, cfg, True, Path(wd) / f"sweep_{i}", 1)
                 return {"setting": settings[i], "heldout_log_like": res["heldout_log_like"], "n_heldout_spikes": res["n_heldout_spikes"], "runtime_s": res["runtime_s"]}
             except RuntimeError as err:
                 return {"setting": settings[i], "heldout_log_like": -np.inf, "error": str(err)[-300:], "runtime_s": np.nan}
-        with ThreadPoolExecutor(max_workers=SWEEP_WORKERS) as pool:
+        with ThreadPoolExecutor(max_workers=sweep_workers) as pool:
             sweep = list(pool.map(one, range(sweep_size)))
         if verbose:
             for i, r in enumerate(sweep):
                 s = r["setting"]
                 print(f"    PP-Seq sweep {i + 1}/{sweep_size}: R={s['num_sequence_types']} warp={'yes' if s['num_warp_values'] > 1 else 'no'} amp={s['mean_event_amplitude']:.0f} "
                       f"bkgd={s['mean_bkgd_spike_rate']:.1f} rate={s['seq_event_rate']:.3f} width={s['neuron_width_prior']:.3f} -> held-out {r['heldout_log_like']:.4f} per masked neuron-unit ({r['runtime_s']:.0f}s)", flush=True)
-        best = max(sweep, key=lambda r: r["heldout_log_like"])["setting"]
-        full = _run_julia(spikes, n_cells, max_time, _config(best, seeds[-1], mask_seed, THREADS), False, Path(wd) / "final", THREADS)
-    parsed = parse(full, starts, ends, n_all)
-    return parsed | {"sweep": sweep, "best_setting": best, "runtime_s": time.perf_counter() - t_all,
+        ranked = sorted(range(sweep_size), key=lambda i: -sweep[i]["heldout_log_like"])
+        for attempt, i in enumerate(ranked[:1 + refits_if_empty]):
+            best = sweep[i]["setting"]
+            full = _run_julia(spikes, n_cells, max_time, _config(best, seeds[-1], mask_seed, threads, final_schedule), False,
+                              Path(wd) / f"final_{attempt}", max(threads, 1))
+            parsed = parse(full, starts, ends, n_all, unit_ms, gap_units)
+            if any(t["spikes_final"] > 0 or t["mean_latent_events"] > 0 for t in parsed["types"]):
+                break
+    return parsed | {"sweep": sweep, "best_setting": best, "runtime_s": time.perf_counter() - t_all, "refit_attempts": attempt + 1,
                      "n_spikes": int(spikes.shape[0]), "n_events_fitted": int(n_all), "max_time_units": max_time}
 
 
@@ -192,7 +204,7 @@ def membership_package(props):
     return has, preferred
 
 
-def parse(full, starts, ends, n_events):
+def parse(full, starts, ends, n_events, unit_ms=UNIT_MS, gap_units=GAP_UNITS):
     n_cells = int(full["num_neurons"])
     offsets = _n_by_r(full["neuron_offsets"], n_cells)                # N x R
     props = _n_by_r(full["neuron_response_proportions"], n_cells)     # N x R
@@ -207,7 +219,7 @@ def parse(full, starts, ends, n_events):
         hit = np.zeros((n_events, R), bool)
         for e in ev:
             i = np.searchsorted(starts, e["t"], side="right") - 1
-            if 0 <= i < n_events and starts[i] - GAP_UNITS / 2 <= e["t"] <= ends[i] + GAP_UNITS / 2:
+            if 0 <= i < n_events and starts[i] - gap_units / 2 <= e["t"] <= ends[i] + gap_units / 2:
                 hit[i, e["type"] - 1] = True
         contains += hit
     contains /= max(n_saved, 1)
@@ -216,12 +228,12 @@ def parse(full, starts, ends, n_events):
     for r in range(R):
         m_type = props[:, r] >= MEMBER_FRAC * props[:, r].max() if props[:, r].max() > 0 else np.zeros(n_cells, bool)
         m_pkg = has_pkg & (preferred == r)
-        lag_type = np.where(m_type, offsets[:, r] * UNIT_MS, np.nan)
-        lag_pkg = np.where(m_pkg, offsets[:, r] * UNIT_MS, np.nan)
+        lag_type = np.where(m_type, offsets[:, r] * unit_ms, np.nan)
+        lag_pkg = np.where(m_pkg, offsets[:, r] * unit_ms, np.nan)
         n_latent = float(np.mean([sum(1 for e in ev if e["type"] == r + 1) for ev in saved])) if n_saved else 0.0
         types.append({"r": r, "lag_ms": lag_type, "lag_ms_package": lag_pkg, "n_members": int(m_type.sum()), "n_members_package": int(m_pkg.sum()),
                       "lag_span_ms": float(np.nanmax(lag_type) - np.nanmin(lag_type)) if m_type.sum() > 1 else np.nan,
-                      "width_ms": float(np.sqrt(np.nanmedian(widths[m_type, r])) * UNIT_MS) if m_type.any() else np.nan,
+                      "width_ms": float(np.sqrt(np.nanmedian(widths[m_type, r])) * unit_ms) if m_type.any() else np.nan,
                       "type_proportion": float(type_prop[r]), "spikes_final": int(spikes_per_type[r]), "mean_latent_events": n_latent})
     spread = np.array([t["lag_span_ms"] >= MIN_SPREAD_MS if np.isfinite(t["lag_span_ms"]) else False for t in types])
     p_seq = contains[:, spread].max(axis=1) if spread.any() else np.zeros(n_events)

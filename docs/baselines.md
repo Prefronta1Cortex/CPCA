@@ -57,6 +57,10 @@ After review, six flaws in the first comparison were fixed and the order-produci
 
 Outcome. On planted routes the corrected PP-Seq is as good as or better than cPCA: perfect on A–E, one of two routes at 15% replay (F: 0.56 / 0.99), and in the realistic conditions clearly ahead at matched event counts (G: 0.31 / 0.54 and 0.60 / 1.00 against cPCA at chance on the same 1,500 events; H: 0.89 / 0.81 against 0.54 / 0.46). seqNMF is insensitive to $K$ and $L$: at chance from F onward. On hc-11, pooled over sessions, cPCA on the matched subsets has 14/90 map-matching tests in POST (16%, CI 9–25%) against 5/74 in PRE (7%, CI 2–15%); with all events 21/118 (18%, CI 11–26%) against 4/104 (4%, CI 1–10%); PP-Seq 2/47 (4%) against 2/44 (5%); seqNMF 1/6 against 0/6 (too few testable factors). PP-Seq's types on hc-11 are the burst and sub-bursts (offset spans 2–46 ms) in every session, under either membership rule.
 
+## The real-data benchmark on hc-5 (October 19)
+
+The comparison of the three order-producing methods was repeated on real sequences with an answer key: CA1 wheel-running sequences in hc-5, every method fit on half of a session's runs and scored on the other half, with aligned windows, unaligned windows and a shuffled control (`docs/benchmark_hc5.md`, `results/hc5/summary.md`, `figures/hc5_*.png`). Two changes to the PP-Seq wrapper came out of it and apply to any future PP-Seq run: mask ends are clipped to the timeline (a crash that made sweeps fall back on their first candidate whenever the timeline was a whole number of mask lengths; the hc-11 runs were not affected), and `ppseq_baseline.fit(refits_if_empty=...)` refits the next-best candidate when a refit ends with no latent events.
+
 ## What was wrong with the earlier comparison (September)
 
 Baselines were scored on whole-population order against the map, which none of them outputs; seqNMF ran with hand-picked $\lambda$, $K$, $L$ and a centre-of-mass read-out; the HMM was given a label-free "state seriation" that its authors never proposed; Bayesian decoding and rank order were treated as competitors although they take the map as input. The current comparison fixes each of these.

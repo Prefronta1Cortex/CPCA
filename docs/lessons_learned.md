@@ -34,6 +34,16 @@ The September comparison was criticised, correctly, for using the other methods 
 
 A reviewer's list of six comparison flaws (different windows and event sets per method, a PP-Seq sweep that never varied R and validated each candidate on a different mask, a mislabelled statistic, a membership rule wrongly attributed to the package, a one-bin shift in the seqNMF cost helper, a fixed K and L) was confirmed point by point against the sources and fixed. Two things I got wrong on the way: I first read the package's held-out statistic (per unit of masked neuron-time) as an uninformative total of 0.4 nats, when it is 5,700 nats in total, and I attributed PP-Seq's failures to model selection when the sampler schedule was the limiting factor. With the corrections PP-Seq became the strongest extractor on realistic planted data, and the conclusion about hc-11 had to be restated at the representation level: cPCA's centred, event-normalised representation finds POST-specific order there; the other methods, run properly, do not. Practical: PP-Seq costs 15 minutes to 1.5 hours per dataset on this laptop even after capping the sweep; the sweep candidates run as parallel single-threaded processes because the package's masked sampler is not multi-threaded.
 
+## The hc-5 wheel benchmark (October 19)
+
+The comparison was moved to real data with a known sequence (`docs/benchmark_hc5.md`): CA1 wheel-running sequences in hc-5, scored on held-out runs. Three things went wrong or nearly did, and each was caught before a figure was made:
+
+- **The left/right test was planned before the data were checked.** The intended headline (does a method separate the sequence before a left choice from the one before a right choice) rests on a difference that a supervised decoder cannot find in these six sessions. Checking that first saved building a benchmark on nothing.
+- **The first "unaligned" condition measured the wrong thing.** Windows that started after onset also cut off the start of the sequence; complex PCA scored the same with one common late start as with jittered starts, so its loss was the cut, not the misalignment. A direct control (same window length, no jitter) exposed it; windows now start before onset and contain the whole run.
+- **The PP-Seq wrapper had a latent bug** (masks overrunning the end of the timeline when it is a whole number of mask lengths), which made every sweep candidate crash and the sweep silently fall back on its first candidate. Found because the first test fit returned types with no spikes; the runner now refuses a fit whose sweep mostly failed. A second PP-Seq behaviour, refits that end with no latent events, is handled by refitting the next-best candidate, in PP-Seq's favour.
+
+Practical: on 10 cores, 9 single-threaded worker processes ran the 336 fits in about 3 hours; nearly all of it was PP-Seq (16 minutes per fit with the paper's schedule, against 50 s for a seqNMF fit and 3 ms for complex PCA).
+
 ## What held up
 
 - The library mathematics (shift invariance, exact phases under partial coverage, the delay-line reading) and the test suite.

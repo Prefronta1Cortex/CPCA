@@ -1,6 +1,11 @@
 # data (never committed)
 data/
 hc-11/
+hc-5/
+hc-3/
+
+# third-party code and example data (FeeLab seqNMF repository copy; the method itself is used through the seqnmf package)
+seqNMF-master/
 
 # generated binaries (tables and figures are committed; regenerate with scripts/)
 results/**/*.pkl
@@ -12,6 +17,7 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 .venv/
+.mplcache/
 
 # os / editor
 .DS_Store

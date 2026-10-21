@@ -91,6 +91,64 @@ def order_vs_place(times, centres, circular, length, rng, min_members=6, n_null=
     return rho, float(np.nanpercentile(null, 95)), n
 
 
+def best_order(orders, key, rng, min_members=6, n_null=1000):
+    """Score a method's outputs against a one-dimensional answer key, with a null that is fair across output counts.
+
+    orders: list of per-cell times (NaN = not a member), one per output (component, factor, type).
+    key: per-cell true time (NaN = no field). The statistic is the signed Spearman correlation
+    between an output's member times and their key, over members with a key (at least
+    `min_members`); a sequence recovered backwards counts as wrong. Recovery is the best output.
+    The null permutes the key among all cells that have one, scores every output under the same
+    permutation and keeps the best, so a method gains nothing from producing more outputs.
+
+    Returns rho (best output), p (against the max-over-outputs null), null95 (of that null),
+    index of the best output, n (its members with a key), coverage (n / cells with a key),
+    and per output: rho, its own null 95th percentile, n; `precision` is the fraction of testable
+    outputs above their own null95.
+    """
+    from scipy.stats import rankdata
+
+    key = np.asarray(key, float)
+    has = np.isfinite(key)
+    n_key = int(has.sum())
+    rows, tests = [], []
+    for j, times in enumerate(orders):
+        times = np.asarray(times, float)
+        use = np.isfinite(times) & has
+        n = int(use.sum())
+        rows.append({"index": j, "n": n, "rho": np.nan, "null95": np.nan})
+        if n >= min_members:
+            tests.append((j, np.flatnonzero(use), rankdata(times[use])))
+    out = {"rho": np.nan, "p": np.nan, "null95": np.nan, "index": -1, "n": 0, "coverage": 0.0, "n_key": n_key,
+           "n_outputs": len(orders), "n_testable": len(tests), "outputs": rows, "precision": np.nan}
+    if not tests:
+        return out
+    key_cells = np.flatnonzero(has)
+    perms = np.array([rng.permutation(key_cells) for _ in range(n_null)])        # (n_null, n_key)
+    lookup = np.full(key.size, -1)
+    lookup[key_cells] = np.arange(n_key)
+
+    def corr(a, b):
+        a = a - a.mean(-1, keepdims=True)
+        b = b - b.mean(-1, keepdims=True)
+        d = np.sqrt((a ** 2).sum(-1) * (b ** 2).sum(-1))
+        return (a * b).sum(-1) / np.where(d > 0, d, np.nan)
+
+    null_max = np.full(n_null, -np.inf)
+    for j, cells, rank_t in tests:
+        rho = float(corr(rank_t, rankdata(key[cells])))
+        permuted = key[perms[:, lookup[cells]]]                                    # (n_null, n)
+        null = corr(rank_t[None, :], np.apply_along_axis(rankdata, 1, permuted))
+        null = np.nan_to_num(null, nan=-1.0)
+        null_max = np.maximum(null_max, null)
+        rows[j].update(rho=rho, null95=float(np.percentile(null, 95)))
+    best = max((r for r in rows if np.isfinite(r["rho"])), key=lambda r: r["rho"])
+    out.update(rho=best["rho"], index=best["index"], n=best["n"], coverage=best["n"] / max(n_key, 1),
+               p=float((1 + np.sum(null_max >= best["rho"])) / (n_null + 1)), null95=float(np.percentile(null_max, 95)),
+               precision=float(np.mean([r["rho"] > r["null95"] for r in rows if np.isfinite(r["rho"])])))
+    return out
+
+
 def member_field_compactness(component, centres, circular, length, rng, frac=0.2, n_null=500):
     """Mean pairwise distance between members' field centres, and the same for random cells with fields.
 

@@ -14,11 +14,13 @@ Population bursts in NREM → one arrow per cell per event, window = the event c
 
 Done:
 
-- Library (`cpca/`), 40 tests, synthetic route generator (`sim/routes.py`), hc-11 loader and event detection, count PCA/ICA baseline.
+- Library (`cpca/`), 45 tests, synthetic route generator (`sim/routes.py`), hc-11 loader and event detection, count PCA/ICA baseline.
 - Synthetic benchmark (`results/synthetic/summary.md`): all clean conditions recovered (median $|\rho|$ 0.97–1.00), including two routes in both directions at 15% replay and 15% participation; the realistic condition recovered above chance in 83% of draws at median $|\rho| \approx 0.5$.
 - hc-11 (`results/summary.md`, `figures/`): with centring, 21 of 118 (component, direction) tests match the place map in POST sleep (chance ≈ 6) vs 4 of 104 in PRE (chance ≈ 5); the effect is carried by the two sessions with 50+ place cells.
 - Matched rerun after review (`docs/baselines.md`, "Corrections", `results/rerun/summary.md`): with identical 1,500-event subsets, a proper PP-Seq sweep and sampler, and a seqNMF K × L grid, PP-Seq matches or beats cPCA on planted routes (clearly ahead in the realistic conditions G and H) while remaining at chance on hc-11 in both sleeps (2/47 POST, 2/44 PRE); seqNMF is at chance from 15% replay onward whatever K and L; cPCA keeps POST > PRE on the matched subsets (14/90 vs 5/74) and on all events (21/118 vs 4/104). The claim this supports is representation-level: cPCA's centred, event-normalised representation finds POST-specific map order on these recordings, which the other methods do not; it does not show that cPCA is a better sequence extractor in general, and on realistic planted data PP-Seq is the stronger extractor.
 - First method comparison with the authors' procedures (`docs/baselines.md`, `results/baselines/summary.md`, `figures/baselines_*.png`): seqNMF recovers planted routes as well as cPCA when replays are common (A–E) but not at 15% replay (F: 0.5 vs 0.97–0.99) and not in the realistic conditions; on hc-11 its one large factor per session is the synchronous burst (lag span 30–50 ms) and no factor orders place cells above chance. The Maboudi HMM detects planted replays (99–100%) with 29–40% false alarms; on hc-11 it calls 14–30% of events congruent in POST and 10–32% in PRE (not maze-specific), while its latent space, labelled with behaviour post hoc, decodes position far better from POST than PRE models in the two large sessions (0.21 vs 0.50 m; 0.10 vs 0.57 m), the same POST/PRE dissociation cPCA shows label-free. Bayesian decoding (map as input) marks 10–22% of POST and 8–22% of PRE events. PP-Seq (authors' Julia package, held-out hyperparameter selection as in the paper) recovers planted routes as well as cPCA when replays are common (A–E: 0.96–1.00) and one of two routes at 15% replay (F: 0.82 / 0.10); it models synchronous volleys as a zero-duration sequence type; on hc-11 its types are the population burst and small sub-bursts (spans 4–41 ms) and 1/30 map tests pass in POST, 1/25 in PRE. convSeq was not run (`docs/baselines.md`).
+
+- Real-data benchmark with an answer key (`docs/benchmark_hc5.md`, `results/hc5/summary.md`, `figures/hc5_*.png`): hc-5 CA1 wheel sequences, six sessions, cross-fitted on held-out runs, cPCA vs seqNMF vs PP-Seq with each method's own settings procedure. Aligned windows: cPCA 33/36 fits recover the sequence, seqNMF 29/36, PP-Seq 14/36 (averaging the runs, ρ 0.71, is the ceiling). Unaligned windows: cPCA 36/36 (ρ 0.63), seqNMF 26/36, PP-Seq 13/36, averaging falls to ρ 0.47. Shuffled control at chance for all. cPCA 3 ms per fit, seqNMF 50 s, PP-Seq 16 min. The upcoming left/right choice is not decodable from wheel activity in these sessions, so choice-specific sequences could not be tested.
 
 Open (in order of value):
 
@@ -27,6 +29,7 @@ Open (in order of value):
 3. **Power.** Apply to a recording with several hundred simultaneous CA1 cells (public Neuropixels datasets); the POST/PRE difference should strengthen with the number of place cells. This is the single most valuable step for a biological result.
 4. **Biology (if 3 succeeds).** Internal order of components across the night (early vs late POST), and by cell class (fast-firing rigid vs slow-firing plastic cells, following Grosmark & Buzsáki 2016 on these same sessions).
 5. **Benchmark hygiene.** More draws per condition; a condition with speed variability; report the component-level false-positive rate of the answer-key test on PRE as the empirical null.
+6. **A second real benchmark with several sequences.** hc-5 tests one dominant sequence per event. A dataset with two or more distinct sequences in the same recording (for example the Mizuseki et al. 2013 rat with separate left and right delay sequences, or convSeq's own real data) would test whether cPCA separates them onto different components on real spikes; convSeq should join that comparison through a thin adapter around the authors' model and loss.
 
 ## Decisions taken (with the evidence)
 
@@ -42,13 +45,13 @@ Methods paper: "the count-based assembly pipeline with time added": the half-cir
 ## Workspace layout
 
 ```text
-cpca/        library: encode, decompose, ica, decode, evaluate, stats, events, hc11, pipeline, theory
+cpca/        library: encode, decompose, ica, decode, evaluate, stats, events, hc11, hc5, pipeline, theory
 sim/         synthetic routes with a planted answer
-baselines/   count PCA/ICA (Lopes-dos-Santos et al. 2013)
-scripts/     run_synthetic.py, run_hc11.py, summarize.py
-tests/       pytest (theory, library, pipeline)
-docs/        method.md, plan.md, lessons_learned.md, rendering.md
-results/     generated: synthetic/, hc11/, summary.md     (pickles are not committed)
-figures/     generated by scripts/summarize.py
-data/, hc-11/  recordings (never committed)
+baselines/   count PCA/ICA, seqNMF, HMM, PP-Seq (authors' Julia package), Bayesian decoding reference
+scripts/     run_synthetic.py, run_hc11.py, summarize.py; run_baselines/run_rerun/run_ppseq (comparisons); run_hc5.py, summarize_hc5.py
+tests/       pytest (theory, library, pipeline, hc5)
+docs/        method.md, plan.md, lessons_learned.md, baselines.md, benchmark_hc5.md, rendering.md
+results/     generated: synthetic/, hc11/, baselines/, rerun/, hc5/, summary.md     (pickles are not committed)
+figures/     generated by the summarize scripts
+data/, hc-11/, hc-5/  recordings (never committed)
 ```
