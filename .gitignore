@@ -9,6 +9,7 @@ seqNMF-master/
 
 # generated binaries (tables and figures are committed; regenerate with scripts/)
 results/**/*.pkl
+results/ladder/ppseq_sweep/
 
 # python
 __pycache__/

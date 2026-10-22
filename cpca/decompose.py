@@ -12,9 +12,19 @@ Two conventions, chosen by the clock of the events.
   then describe how events differ from each other, which is where different
   routes live.
 
-The number of components to keep is set by the Marchenko-Pastur bound, the
-largest eigenvalue a matrix of the same size made of independent noise would
-produce.
+The number of components to keep is set against a shuffle null (permutation
+parallel analysis, Horn 1965; Buja & Eyuboglu 1992): each cell's arrows are
+permuted across events independently, which keeps every cell's participation,
+arrow lengths, mean arrow and phase distribution and destroys only the
+coordination between cells. A component is kept if its eigenvalue exceeds the
+95th percentile of the largest *noise* eigenvalue of the shuffled matrix.
+
+The Marchenko-Pastur bound, the largest eigenvalue of independent noise with
+equal variance in every cell, gives the same number for centred and scaled
+arrows (zero mean, unit variance per cell). It does not hold for uncentred
+arrows, whose cells have very different variances (participation) and a
+non-zero mean: there it keeps components even on pure noise. It is kept here
+for comparison.
 """
 
 import numpy as np
@@ -43,6 +53,42 @@ def n_significant(eigenvalues, n_events, n_cells):
     eigenvalues = np.asarray(eigenvalues, dtype=float)
     bound = marchenko_pastur_bound(n_events, n_cells, variance=eigenvalues.mean())
     return int((eigenvalues > bound).sum()), float(bound)
+
+
+def shuffle_null(prepared, rng, n_shuffles=100):
+    """Eigenvalues (n_shuffles, cells), largest first, of the matrix with each cell's column permuted across events.
+
+    Centring and scaling act on each column separately and are unchanged by permuting the
+    rows of that column, so shuffling the prepared matrix equals shuffling the arrows and
+    preparing them again.
+    """
+    X = np.asarray(prepared)
+    M, N = X.shape
+    rows = np.broadcast_to(np.arange(M)[:, None], (M, N))
+    null = np.empty((n_shuffles, N))
+    for s in range(n_shuffles):
+        P = np.take_along_axis(X, rng.permuted(rows, axis=0), axis=0)
+        null[s] = eigh_desc(lag_matrix(P))[0]
+    return null
+
+
+def n_above_null(eigenvalues, null, centred, quantile=95.0):
+    """Components to keep against a shuffle null; returns (k, ceiling).
+
+    The shuffle keeps each cell's mean arrow, so for uncentred arrows its first eigenvalue is
+    the mean pattern, not noise, and is present in the data for the same reason (in the hc-5
+    wheel runs that mean pattern is the sequence itself). There the first component is always
+    kept and the noise ceiling is the shuffle's second eigenvalue. Centred arrows have no mean,
+    and the ceiling is the shuffle's first eigenvalue. Components are counted in order until
+    the first one below the ceiling.
+    """
+    eigenvalues = np.asarray(eigenvalues, dtype=float)
+    structural = 0 if centred else 1
+    ceiling = float(np.percentile(null[:, structural], quantile))
+    k = structural
+    while k < eigenvalues.size and eigenvalues[k] > ceiling:
+        k += 1
+    return min(k, eigenvalues.size), ceiling
 
 
 def decompose(encoded, n_components=None, center=False, scale=False):

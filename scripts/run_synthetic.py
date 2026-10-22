@@ -1,6 +1,7 @@
 """Run the pipeline on synthetic events with planted routes.
 
-Four variants are compared on every condition in sim.routes.CONDITIONS:
+Four variants are compared on every condition in sim.routes.CONDITIONS and on the
+difficulty ladder sim.routes.LADDER (condition H taken apart one difficulty at a time):
   1. uncentred arrows, fixed T = event length       (the original formulation)
   2. centred + scaled, PCA only, fixed T
   3. centred + scaled, PCA only, T = each event's own spike spread
@@ -10,12 +11,19 @@ between its members' relative times and their positions on the route, against
 a null that permutes positions among cells. Each pattern also gets a
 label-free timing-consistency z; the rank of the route's pattern by that z
 says whether the route could have been picked without the answer key.
+Components are kept against the shuffle null (cpca.decompose.n_above_null); the
+Marchenko-Pastur count is recorded alongside. 10 independent draws per condition,
+run in parallel (one process per draw).
+
+Usage: python scripts/run_synthetic.py [--workers=9]
 Results: results/synthetic/.
 """
 
+import os
 import pickle
 import sys
 import time
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -25,7 +33,9 @@ sys.path.insert(0, str(ROOT))
 
 from cpca import event_scale, fit  # noqa: E402
 from cpca.evaluate import member_order_vs_place, members, timing_consistency  # noqa: E402
-from sim.routes import CONDITIONS, generate, make_routes  # noqa: E402
+from sim.routes import CONDITIONS, LADDER, generate, make_routes  # noqa: E402
+
+ALL_CONDITIONS = {**CONDITIONS, **LADDER}
 
 OUT = ROOT / "results" / "synthetic"
 VARIANTS = {
@@ -67,10 +77,11 @@ def score_routes(result, data, rng, T_read):
     return rows, z
 
 
-N_REPEATS = 3
+N_REPEATS = 10
 
 
 def run_condition(index, name, gen_kwargs, route_kwargs, repeat):
+    os.environ.setdefault("OMP_NUM_THREADS", "1")
     data_rng = np.random.default_rng(1000 * index + repeat)   # stable across runs
     rng = np.random.default_rng(index + 7 * repeat)
     routes = make_routes(data_rng, n_cells=80, **route_kwargs)
@@ -85,9 +96,15 @@ def run_condition(index, name, gen_kwargs, route_kwargs, repeat):
             T, times = data["event_ms"], data["times"]
         res = fit(times, T, rng=rng, center=v["center"], scale=v["scale"], ica=v["ica"])
         rows, z = score_routes(res, data, rng, res["T_read_ms"])
-        out["variants"][vname] = {"n_kept": res["n_kept"], "eigen_share": (res["eigenvalues"][:5] / res["eigenvalues"].sum()).tolist(),
-                                  "routes": rows, "timing_z": z.tolist(), "runtime_s": time.perf_counter() - t0}
+        total = res["eigenvalues"].sum()
+        out["variants"][vname] = {"n_kept": res["n_kept"], "n_mp": res["n_mp"], "eigen_share": (res["eigenvalues"][:15] / total).tolist(),
+                                  "null95_share": (res["null_eigenvalues"][95][:15] / total).tolist(), "bound_share": res["noise_bound"] / total,
+                                  "mp_share": res["mp_bound"] / total, "routes": rows, "timing_z": z.tolist(), "runtime_s": time.perf_counter() - t0}
     return out
+
+
+def _job(args):
+    return run_condition(*args)
 
 
 def aggregate(results):
@@ -109,13 +126,18 @@ def aggregate(results):
     return table
 
 
-def main():
+def main(argv):
+    workers = next((int(a.split("=", 1)[1]) for a in argv if a.startswith("--workers=")), max(1, (os.cpu_count() or 2) - 1))
     OUT.mkdir(parents=True, exist_ok=True)
+    jobs = [(index, name, gen_kwargs, route_kwargs, repeat)
+            for index, (name, (gen_kwargs, route_kwargs)) in enumerate(ALL_CONDITIONS.items()) for repeat in range(N_REPEATS)]
+    t0 = time.perf_counter()
     results = []
-    for index, (name, (gen_kwargs, route_kwargs)) in enumerate(CONDITIONS.items()):
-        for repeat in range(N_REPEATS):
-            results.append(run_condition(index, name, gen_kwargs, route_kwargs, repeat))
-        print(f"done: {name}", flush=True)
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        for i, res in enumerate(pool.map(_job, jobs), 1):
+            results.append(res)
+            if res["repeat"] == N_REPEATS - 1:
+                print(f"[{time.perf_counter() - t0:6.0f}s] done: {res['condition']}", flush=True)
     with open(OUT / "results.pkl", "wb") as fh:
         pickle.dump(results, fh)
     write_summary(results)
@@ -126,21 +148,27 @@ def write_summary(results):
     lines = ["# Synthetic routes: results", "",
              f"{N_REPEATS} independent draws per condition, 80 cells, 3000 events. Per planted route and draw, the best pattern is the one whose members' "
              "relative times correlate most with the route positions (|Spearman|). Reported: median |rho| over routes and draws; "
-             "fraction of (route, draw) pairs above the 95th percentile of the cell-permutation null; median number of components kept (Marchenko-Pastur); "
-             "median label-free rank of the route's pattern (1 = would be picked first without the answer key; patterns whose members span under 60 degrees rank last).", "",
+             "fraction of (route, draw) pairs above the 95th percentile of the cell-permutation null; median number of components kept "
+             "(shuffle null; in brackets the Marchenko-Pastur count, which over-counts for uncentred arrows); "
+             "median label-free rank of the route's pattern (1 = would be picked first without the answer key; patterns whose members span under 60 degrees rank last). "
+             "Conditions L0-L6 take condition H apart one difficulty at a time.", "",
              "| condition | replay | " + " | ".join(VARIANTS) + " |", "|---|---|" + "---|" * len(VARIANTS)]
-    for name in CONDITIONS:
+    k_mp = {}
+    for res in results:
+        for vname, v in res["variants"].items():
+            k_mp.setdefault((res["condition"], vname), []).append(v["n_mp"])
+    for name in ALL_CONDITIONS:
         cells = []
         replay = None
         for vname in VARIANTS:
             s = table[(name, vname)]
             replay = np.mean(s["replay"])
             rank = f"{np.median(s['rank']):.0f}" if s["rank"] else "—"
-            cells.append(f"ρ {np.median(s['rho']):.2f}, {100*np.mean(s['hit']):.0f}% above chance, k {np.median(s['k']):.0f}, rank {rank}")
+            cells.append(f"ρ {np.median(s['rho']):.2f}, {100*np.mean(s['hit']):.0f}% above chance, k {np.median(s['k']):.0f} ({np.median(k_mp[(name, vname)]):.0f}), rank {rank}")
         lines.append(f"| {name} | {100*replay:.0f}% | " + " | ".join(cells) + " |")
     (OUT / "summary.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

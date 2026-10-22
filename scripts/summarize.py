@@ -11,6 +11,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,31 +33,75 @@ def label(name):
 
 
 # ----------------------------------------------------------------------------- synthetic
+SYN_STYLE = {"font.family": ["Helvetica Neue", "Arial", "DejaVu Sans"], "font.size": 10.5, "axes.titlesize": 11.5, "axes.labelsize": 10.5,
+             "xtick.labelsize": 9.5, "ytick.labelsize": 9.5, "axes.spines.top": False, "axes.spines.right": False, "axes.edgecolor": "#9aa1ab",
+             "axes.linewidth": 0.8, "xtick.color": "#6b7380", "ytick.color": "#6b7380", "axes.labelcolor": "#1d2430", "text.color": "#1d2430",
+             "axes.titleweight": "bold", "axes.titlelocation": "left", "pdf.fonttype": 42, "figure.facecolor": "white"}
+VARIANT_COLOURS = {"uncentred, fixed T": "#1f4e79", "centred, PCA only": "#d4652f", "centred, T per event": "#f0a37a", "centred, PCA + ICA": "#1f8a65"}
+
+
 def synthetic_figure(results):
-    from scripts.run_synthetic import CONDITIONS, VARIANTS, aggregate
+    """Every planted route in every draw as a dot (|rho| of the best pattern), the median as a bar; right: share above chance."""
+    from matplotlib.lines import Line2D
+    from scripts.run_synthetic import ALL_CONDITIONS, CONDITIONS, N_REPEATS, VARIANTS, aggregate
     table = aggregate(results)
-    conditions, variants = list(CONDITIONS), list(VARIANTS)
-    fig, ax = plt.subplots(figsize=(15, 6.5))
-    x = np.arange(len(conditions))
-    width = 0.8 / len(variants)
-    colours = ["#1f4e79", "#6aa7d8", "#1f8a65", "#d4652f"]
-    for i, v in enumerate(variants):
-        med = [np.median(table[(c, v)]["rho"]) for c in conditions]
-        hit = [np.mean(table[(c, v)]["hit"]) for c in conditions]
-        pos = x - 0.4 + width * (i + 0.5)
-        ax.bar(pos, med, width=width * 0.9, color=colours[i], label=v, zorder=2)
-        for p, h, m in zip(pos, hit, med):
-            ax.text(p, m + 0.02, f"{100*h:.0f}%", ha="center", va="bottom", fontsize=8, rotation=90)
-    ax.set_xticks(x)
-    ax.set_xticklabels([c.split(" ", 1)[0] + "\n" + "\n".join(_wrap(c.split(" ", 1)[1], 22)) for c in conditions], fontsize=9)
-    ax.set_ylim(0, 1.25)
-    ax.set_ylabel("median |Spearman|: pattern members' times vs planted route positions")
-    ax.set_title("Synthetic routes: recovery per planted route (numbers above bars: share of route/draw pairs above chance)")
-    ax.yaxis.grid(True, color="#e6e9ee", zorder=0)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=4, frameon=False)
-    fig.tight_layout()
-    fig.savefig(FIGURES / "synthetic_routes.png", dpi=170, bbox_inches="tight")
-    plt.close(fig)
+    conditions, variants = list(ALL_CONDITIONS), list(VARIANTS)
+    with plt.rc_context(SYN_STYLE):
+        fig = plt.figure(figsize=(15.5, 12.6))
+        gs = fig.add_gridspec(1, 2, left=0.25, right=0.985, top=0.845, bottom=0.06, wspace=0.08, width_ratios=[2.4, 1])
+        ax, axh = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+        fig.text(0.02, 0.97, "Complex PCA on planted routes: four variants, every condition", fontsize=16, fontweight="bold")
+        fig.text(0.02, 0.945, f"{N_REPEATS} independent draws per condition, 80 cells, 3000 events. Each dot is one planted route in one draw: the |Spearman| "
+                 "correlation between the best pattern's member times and the route positions.", fontsize=10.5, color="#6b7380")
+        fig.text(0.02, 0.926, "Components kept against the shuffle null. Conditions L0-L6 take condition H apart one difficulty at a time "
+                 "(figures/synthetic_ladder.png compares the other methods there).", fontsize=10.5, color="#6b7380")
+        n_v = len(variants)
+        offsets = np.linspace(-0.3, 0.3, n_v)
+        ys = np.arange(len(conditions))[::-1].astype(float)
+        ys[len(CONDITIONS):] -= 0.8                                   # gap between A-H and the ladder
+        jitter = np.random.default_rng(0)
+        hit_grid = np.zeros((len(conditions), n_v))
+        for ci, c in enumerate(conditions):
+            if ci % 2 == 0:
+                ax.axhspan(ys[ci] - 0.5, ys[ci] + 0.5, color="#f6f7f9", zorder=0, lw=0)
+                axh.axhspan(ys[ci] - 0.5, ys[ci] + 0.5, color="#f6f7f9", zorder=0, lw=0)
+            for vi, v in enumerate(variants):
+                rho = np.array(table[(c, v)]["rho"])
+                y = ys[ci] + offsets[::-1][vi]
+                ax.scatter(rho, y + jitter.uniform(-0.05, 0.05, rho.size), s=9, color=VARIANT_COLOURS[v], alpha=0.45, lw=0, zorder=2)
+                med = np.median(rho)
+                ax.plot([med, med], [y - 0.11, y + 0.11], color=VARIANT_COLOURS[v], lw=3.2, solid_capstyle="butt", zorder=3)
+                hit_grid[ci, vi] = np.mean(table[(c, v)]["hit"])
+        ax.set_yticks(ys)
+        ax.set_yticklabels([c.split(" ", 1)[0] + "  " + "\n".join(_wrap(c.split(" ", 1)[1], 44)) for c in conditions], fontsize=9.3)
+        ax.tick_params(axis="y", length=0)
+        ax.set_xlim(-0.02, 1.02)
+        ax.set_ylim(ys.min() - 0.6, ys.max() + 0.6)
+        ax.xaxis.grid(True, color="#e9ecf1", zorder=0)
+        ax.set_xlabel("|Spearman|, best pattern vs planted route (dots: routes x draws; bar: median)")
+        ax.set_title("Recovery of each planted route", pad=10)
+        ax.text(-0.02, (ys[len(CONDITIONS) - 1] + ys[len(CONDITIONS)]) / 2, "difficulty ladder (H taken apart)", transform=ax.get_yaxis_transform(),
+                ha="right", va="center", fontsize=9, color="#6b7380", style="italic")
+        from matplotlib.colors import LinearSegmentedColormap
+        cmap = LinearSegmentedColormap.from_list("hit", ["#ffffff", "#9fb6cf", "#1f4e79"])
+        for ci in range(len(conditions)):
+            for vi in range(n_v):
+                h = hit_grid[ci, vi]
+                axh.add_patch(plt.Rectangle((vi - 0.42, ys[ci] - 0.38), 0.84, 0.76, color=cmap(h), lw=0, zorder=2))
+                axh.text(vi, ys[ci], f"{100 * h:.0f}%", ha="center", va="center", fontsize=9, color="white" if h > 0.6 else "#1d2430", zorder=3)
+        axh.set_xlim(-0.6, n_v - 0.4)
+        axh.set_ylim(ax.get_ylim())
+        axh.set_yticks([])
+        axh.set_xticks(range(n_v))
+        axh.set_xticklabels([v.replace(", ", ",\n") for v in variants], fontsize=8.8)
+        axh.tick_params(axis="x", length=0)
+        axh.spines[["left", "bottom"]].set_visible(False)
+        axh.set_title("Routes recovered above chance", pad=10)
+        fig.legend([Line2D([], [], color=VARIANT_COLOURS[v], lw=3.2) for v in variants], variants, loc="upper left", bbox_to_anchor=(0.015, 0.905),
+                   ncol=4, frameon=False, fontsize=9.5, handlelength=1.6, columnspacing=2.0)
+        for ext in ("png", "pdf"):
+            fig.savefig(FIGURES / f"synthetic_routes.{ext}", dpi=200)
+        plt.close(fig)
 
 
 def _wrap(text, width):
@@ -168,20 +213,34 @@ def hc11_example_figure(name="Achilles_11012013", variant="centred, T = event du
 
 def hc11_spectrum_figure(sessions, name="Achilles_11012013"):
     s = next(x for x in sessions if x["name"] == name)
-    fig, ax = plt.subplots(figsize=(9, 5))
-    for v, colour in (("uncentred, T = event duration", "#1f4e79"), ("centred, T = event duration", "#d4652f")):
-        b = s["epochs"]["post"]["variants"][v]
-        share = 100 * np.array(b["eigen_share"])
-        ax.plot(np.arange(1, len(share) + 1), share, marker="o", color=colour, label=f"{v} (k = {b['n_kept']})")
-        ax.axhline(100 * b["noise_bound_share"], color=colour, ls="--", lw=1)
-    ax.set_xlabel("component")
-    ax.set_ylabel("share of total variance (%)")
-    ax.set_title(f"{name.replace('_', ' ')}, POST: eigenvalue spectrum; dashed = Marchenko–Pastur noise bound")
-    ax.legend(frameon=False)
-    ax.yaxis.grid(True, color="#e6e9ee")
-    fig.tight_layout()
-    fig.savefig(FIGURES / "hc11_spectrum.png", dpi=170, bbox_inches="tight")
-    plt.close(fig)
+    with plt.rc_context(SYN_STYLE):
+        fig, ax = plt.subplots(figsize=(9.5, 5.4))
+        for v, colour in (("uncentred, T = event duration", "#1f4e79"), ("centred, T = event duration", "#d4652f")):
+            b = s["epochs"]["post"]["variants"][v]
+            share = 100 * np.array(b["eigen_share"])
+            x = np.arange(1, len(share) + 1)
+            kept = x <= b["n_kept"]
+            ax.plot(x, share, color=colour, lw=1, alpha=0.6)
+            ax.scatter(x[kept], share[kept], s=30, color=colour, edgecolor="white", linewidth=0.6, zorder=3,
+                       label=f"{v}: {b['n_kept']} kept (textbook bound: {b['n_mp']})")
+            ax.scatter(x[~kept], share[~kept], s=26, facecolor="white", edgecolor=colour, linewidth=1.1, zorder=3)
+            ax.axhline(100 * b["noise_bound_share"], color=colour, lw=1.4)
+        ax.axhline(100 * b["mp_bound_share"], color="#1d2430", lw=1, ls=(0, (3, 2)))
+        ax.set_yscale("log")
+        ax.yaxis.set_major_locator(matplotlib.ticker.FixedLocator([1, 2, 5, 10, 20]))
+        ax.yaxis.set_minor_locator(matplotlib.ticker.NullLocator())
+        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:g}%"))
+        ax.set_xticks([1, 5, 10, 15, 20])
+        ax.set_xlabel("component (largest first)")
+        ax.set_ylabel("share of total variance (log scale)")
+        ax.set_title(f"{name.replace('_', ' ')}, POST sleep: eigenvalue spectrum", pad=22)
+        ax.text(0, 1.02, "coloured lines: shuffle-null ceiling of each version (the rule used); black dashed: textbook bound "
+                "(the same share for both versions); filled: kept", transform=ax.transAxes, fontsize=9, color="#6b7380", va="bottom")
+        ax.legend(frameon=False, fontsize=9.2, loc="upper right")
+        ax.yaxis.grid(True, color="#e9ecf1")
+        fig.tight_layout()
+        fig.savefig(FIGURES / "hc11_spectrum.png", dpi=200)
+        plt.close(fig)
 
 
 def main():

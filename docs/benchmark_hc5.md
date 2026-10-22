@@ -52,26 +52,26 @@ A fit *recovers the sequence* if $p < 0.05$. Counts over fits carry 95% Clopper�
 
 ## Results
 
-All 336 fits completed (6 sessions × 14 fits × 4 methods; tables in `results/hc5/summary.md`). Fits that recover the sequence ($p < 0.05$) and median held-out $\rho$:
+All 336 fits completed (6 sessions × 14 fits × 4 methods; tables in `results/hc5/summary.md`). The complex PCA fits were redone on October 21 with the shuffle-null noise bound (`docs/method.md` Section 4); before, with the textbook bound, they were 33/36 aligned, 36/36 unaligned and 1/12 shuffled. Fits that recover the sequence ($p < 0.05$) and median held-out $\rho$:
 
 | | align-and-average (reference) | complex PCA | seqNMF | PP-Seq |
 |---|---|---|---|---|
-| aligned | 36/36, ρ 0.71 | **33/36 (92%)**, ρ 0.58 | 29/36 (81%), ρ 0.60 | 14/36 (39%), ρ 0.55 |
-| unaligned | 32/36, ρ 0.47 | **36/36 (100%)**, ρ 0.63 | 26/36 (72%), ρ 0.52 | 13/36 (36%), ρ 0.43 |
-| shuffled control | 0/12 | 1/12 | 0/12 | 0/12 |
+| aligned | 36/36, ρ 0.71 | **32/36 (89%)**, ρ 0.58 | 29/36 (81%), ρ 0.60 | 14/36 (39%), ρ 0.55 |
+| unaligned | 32/36, ρ 0.47 | **35/36 (97%)**, ρ 0.63 | 26/36 (72%), ρ 0.52 | 13/36 (36%), ρ 0.43 |
+| shuffled control | 0/12 | 0/12 | 0/12 | 0/12 |
 | cells with a field in the best output | — | 40 of 40 | 30 of 40 | 13 of 40 |
-| time per fit (one core) | — | 3 ms | 50 s | 16 min |
+| time per fit (one core) | — | 50 ms (noise bound included) | 50 s | 16 min |
 
 What this says:
 
 - **When the runs share a clock, nothing beats averaging them** (ρ 0.71, every fit). That is expected and is why the aligned condition alone cannot rank the methods.
-- **Without a shared clock, complex PCA is the only method that keeps its performance.** Averaging drops from 0.71 to 0.47, seqNMF from 0.60 to 0.52, PP-Seq from 0.55 to 0.43; complex PCA goes from 0.58 to 0.63 and recovers the sequence in every fit. This is the property the method was built on: the lag matrix $C$ is unchanged by a common clock shift within an event (`docs/method.md`, Section 3), so its first component does not need the onset.
+- **Without a shared clock, complex PCA is the only method that keeps its performance.** Averaging drops from 0.71 to 0.47, seqNMF from 0.60 to 0.52, PP-Seq from 0.55 to 0.43; complex PCA goes from 0.58 to 0.63 and recovers the sequence in 35 of 36 fits. This is the property the method was built on: the lag matrix $C$ is unchanged by a common clock shift within an event (`docs/method.md`, Section 3), so its first component does not need the onset.
 - **Reliability, not peak correlation, separates the methods.** When seqNMF recovers the sequence its ρ is as high as complex PCA's; it fails more often (81% and 72% of fits). PP-Seq splits the run into several short sequence types, each covering about a third of the cells; its best type has a ρ comparable to the others but few members, and with several types per fit its own chance level (best of its outputs) is high, so it clears it in about 40% of fits. Neither PP-Seq membership rule changes this (package rule: 15/36 and 14/36).
 - **Every method is at chance on the shuffled control**, so none of the scores comes from firing rates alone. PP-Seq's median ρ on the shuffled data is 0.34 while 0 of 12 fits pass: that is the max-over-outputs null doing its job.
 - **Settings.** seqNMF's headline cell ($K = 5$, $L$ = one window) is its best in the aligned condition and tied best in the unaligned one; a factor half a window long fails without alignment (9–13 of 36). Centred complex PCA is at chance when aligned (3/36), as the method's own rule predicts for a pattern present in every event; it partly recovers the sequence when unaligned (16/36), where centring no longer removes the whole sequence.
-- **Cost.** Complex PCA fits in milliseconds, four orders of magnitude faster than seqNMF and five faster than PP-Seq, with no settings to choose.
+- **Cost.** Complex PCA fits in about 50 ms including its shuffle-null noise bound, three orders of magnitude faster than seqNMF and four faster than PP-Seq, with no settings to choose.
 
-What it does not say: this is the regime that suits uncentred complex PCA (one dominant sequence in every event). On sleep, where replays are a minority of events, the planted-route benchmark shows PP-Seq as the stronger extractor (`docs/baselines.md`). And the score rewards one output that spans the whole sequence; a method that tiles a sequence into pieces, as PP-Seq does here, is penalised for it (coverage 13 of 40 cells), which is a property of the score as much as of the method.
+What it does not say: this is the regime that suits uncentred complex PCA (one dominant sequence in every event). On sleep-like planted data, where replays are a minority of events, PP-Seq is the more precise extractor when whole routes are replayed, and no method is reliable when only parts of routes are (`docs/baselines.md`, difficulty ladder). And the score rewards one output that spans the whole sequence; a method that tiles a sequence into pieces, as PP-Seq does here, is penalised for it (coverage 13 of 40 cells), which is a property of the score as much as of the method.
 
 ## Implementation notes
 

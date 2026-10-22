@@ -13,7 +13,10 @@ Spearman between members' relative times and their place-field centres against a
 cell-permutation null, and the compactness of members' fields on the track.
 Baseline: count PCA/ICA on the same events (assemblies, no order).
 
-Usage: python scripts/run_hc11.py [session_prefix ...]   (default: all sessions)
+Components are kept against the shuffle null (cpca.decompose.n_above_null); the
+Marchenko-Pastur count is stored alongside for comparison.
+
+Usage: python scripts/run_hc11.py [--workers=8] [session_prefix ...]   (default: all sessions, one process each)
 """
 
 import pickle
@@ -81,8 +84,11 @@ def analyse_variant(ev, settings, run, centres, rng):
             row["map"][sign] = {"rho": rho, "null95": null95, "n_members_with_field": n, "field_spread": spread,
                                 "field_spread_null05": spread05, "field_spread_null_mean": spread_mean}
         comps.append(row)
-    return {"n_kept": k, "noise_bound_share": float(res["noise_bound"] / res["eigenvalues"].sum()) if np.isfinite(res["noise_bound"]) else np.nan,
-            "eigen_share": (res["eigenvalues"][:10] / res["eigenvalues"].sum()).tolist(), "split_half_match": split_match,
+    total = res["eigenvalues"].sum()
+    return {"n_kept": k, "noise_bound_share": float(res["noise_bound"] / total) if np.isfinite(res["noise_bound"]) else np.nan,
+            "n_mp": res["n_mp"], "mp_bound_share": float(res["mp_bound"] / total),
+            "null_share": {q: (v[:20] / total).tolist() for q, v in res["null_eigenvalues"].items()},
+            "eigen_share": (res["eigenvalues"][:20] / total).tolist(), "split_half_match": split_match,
             "components": comps, "runtime_s": time.perf_counter() - t0, "members_masks": res["members"]}
 
 
@@ -115,16 +121,27 @@ def analyse_session(path, rng):
     return out
 
 
-def main(prefixes):
+def run_one(path):
+    import os
+    os.environ.setdefault("OMP_NUM_THREADS", "1")
+    rng = np.random.default_rng(0)
+    t0 = time.perf_counter()
+    result = analyse_session(path, rng)
+    with open(OUT / f"{result['name']}.pkl", "wb") as fh:
+        pickle.dump(result, fh)
+    return f"[{result['name']}] saved ({time.perf_counter() - t0:.0f}s)"
+
+
+def main(argv):
+    import os
+    from concurrent.futures import ProcessPoolExecutor
+    workers = next((int(a.split("=", 1)[1]) for a in argv if a.startswith("--workers=")), max(1, (os.cpu_count() or 2) - 1))
+    prefixes = [a for a in argv if not a.startswith("--")]
     OUT.mkdir(parents=True, exist_ok=True)
     paths = [p for p in session_paths() if not prefixes or any(p.name.startswith(x) for x in prefixes)]
-    for path in paths:
-        rng = np.random.default_rng(0)
-        t0 = time.perf_counter()
-        result = analyse_session(path, rng)
-        with open(OUT / f"{result['name']}.pkl", "wb") as fh:
-            pickle.dump(result, fh)
-        print(f"[{result['name']}] saved ({time.perf_counter() - t0:.0f}s)", flush=True)
+    with ProcessPoolExecutor(max_workers=min(workers, len(paths))) as pool:
+        for line in pool.map(run_one, paths):
+            print(line, flush=True)
 
 
 if __name__ == "__main__":

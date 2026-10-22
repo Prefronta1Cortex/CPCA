@@ -44,6 +44,12 @@ The comparison was moved to real data with a known sequence (`docs/benchmark_hc5
 
 Practical: on 10 cores, 9 single-threaded worker processes ran the 336 fits in about 3 hours; nearly all of it was PP-Seq (16 minutes per fit with the paper's schedule, against 50 s for a seqNMF fit and 3 ms for complex PCA).
 
+## The noise bound (October 21)
+
+The mentor asked how a Marchenko–Pastur bound applies to complex arrows on a half-circle. Checked against a shuffle null (each cell's arrows permuted across events), the textbook bound turned out right for centred, scaled arrows and wrong for uncentred ones: cells with different firing rates have different variances, and the formula then keeps components even on pure noise (16 on a synthetic noise set, 8–14 per hc-11 session against 2–6 by the shuffle). The uncentred hc-11 result of 14/134 map-matching tests was largely made of those noise components; with only real components it is 3/54, at chance, which is what the regime rule predicts for sleep. The centred headline did not move (20/120 against 2/106). Lesson: a bound borrowed from a textbook is an assumption about the data, and the cheapest way to test it is a null built from the data itself. The rule is now the shuffle null for both conventions; `results/_before_step0/` keeps the earlier results.
+
+The difficulty ladder run the same day corrected a second belief. "PP-Seq is clearly ahead on the realistic condition H" rested on one draw (0.89 / 0.81). On three matched draws of the same settings PP-Seq's median is 0.39 and it recovers 3 of 6 maps, against complex PCA's 0.48 and 5 of 6; where PP-Seq is reliably ahead is the clean rungs with whole routes replayed (1.00 against 0.81–0.90). Lesson, again: one draw per condition is an anecdote; the per-draw spread belongs in the figure. Practical: the ladder's 63 fits took about 10.5 hours on 10 cores, nearly all of it PP-Seq (single-threaded refits on 1500 events, about 75 minutes each) and the seqNMF grid (about 50 minutes per fit); running every PP-Seq sweep candidate as its own job, with a priority scheduler, kept all cores busy to the end.
+
 ## What held up
 
 - The library mathematics (shift invariance, exact phases under partial coverage, the delay-line reading) and the test suite.

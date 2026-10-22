@@ -150,6 +150,26 @@ def fit(times_ms, T_ms, rng, sweep_size=SWEEP_SIZE, sweep_events=SWEEP_EVENTS, v
     and the chosen setting.
     """
     t_all = time.perf_counter()
+    plan = plan_fit(times_ms, T_ms, rng, sweep_size, sweep_events, unit_ms, gap_units)
+    with tempfile.TemporaryDirectory() as wd:
+        with ThreadPoolExecutor(max_workers=sweep_workers) as pool:
+            sweep = list(pool.map(lambda i: sweep_candidate(plan, i, Path(wd) / f"sweep_{i}", sweep_schedule), range(sweep_size)))
+        if verbose:
+            for i, r in enumerate(sweep):
+                s = r["setting"]
+                print(f"    PP-Seq sweep {i + 1}/{sweep_size}: R={s['num_sequence_types']} warp={'yes' if s['num_warp_values'] > 1 else 'no'} amp={s['mean_event_amplitude']:.0f} "
+                      f"bkgd={s['mean_bkgd_spike_rate']:.1f} rate={s['seq_event_rate']:.3f} width={s['neuron_width_prior']:.3f} -> held-out {r['heldout_log_like']:.4f} per masked neuron-unit ({r['runtime_s']:.0f}s)", flush=True)
+        parsed, best, attempts = refit_best(plan, sweep, Path(wd), threads, final_schedule, refits_if_empty)
+    return parsed | {"sweep": sweep, "best_setting": best, "runtime_s": time.perf_counter() - t_all, "refit_attempts": attempts,
+                     "n_spikes": int(plan["spikes"].shape[0]), "n_events_fitted": int(plan["n_all"]), "max_time_units": plan["max_time"]}
+
+
+def plan_fit(times_ms, T_ms, rng, sweep_size=SWEEP_SIZE, sweep_events=SWEEP_EVENTS, unit_ms=UNIT_MS, gap_units=GAP_UNITS):
+    """Everything `fit` decides before running Julia: timelines, the candidate settings, the shared mask seed and the run seeds.
+
+    Deterministic given rng, so a caller that runs the candidates as separate jobs can rebuild the
+    same plan in every job (and `fit` is plan_fit + sweep_candidate for each candidate + refit_best).
+    """
     n_all, n_cells, _ = times_ms.shape
     T_ms = np.broadcast_to(np.asarray(T_ms, float), (n_all,))
     spikes, starts, ends, max_time = build_timeline(times_ms, T_ms, unit_ms, gap_units)
@@ -161,31 +181,32 @@ def fit(times_ms, T_ms, rng, sweep_size=SWEEP_SIZE, sweep_events=SWEEP_EVENTS, v
     sw_spikes, _, _, sw_max_time = build_timeline(times_ms[sweep_idx], T_ms[sweep_idx], unit_ms, gap_units)
     mask_seed = int(rng.integers(1 << 30))
     seeds = rng.integers(1 << 30, size=sweep_size + 1)
-    with tempfile.TemporaryDirectory() as wd:
-        def one(i):
-            cfg = _config(settings[i], seeds[i], mask_seed, 0, sweep_schedule)
-            try:
-                res = _run_julia(sw_spikes, n_cells, sw_max_time, cfg, True, Path(wd) / f"sweep_{i}", 1)
-                return {"setting": settings[i], "heldout_log_like": res["heldout_log_like"], "n_heldout_spikes": res["n_heldout_spikes"], "runtime_s": res["runtime_s"]}
-            except RuntimeError as err:
-                return {"setting": settings[i], "heldout_log_like": -np.inf, "error": str(err)[-300:], "runtime_s": np.nan}
-        with ThreadPoolExecutor(max_workers=sweep_workers) as pool:
-            sweep = list(pool.map(one, range(sweep_size)))
-        if verbose:
-            for i, r in enumerate(sweep):
-                s = r["setting"]
-                print(f"    PP-Seq sweep {i + 1}/{sweep_size}: R={s['num_sequence_types']} warp={'yes' if s['num_warp_values'] > 1 else 'no'} amp={s['mean_event_amplitude']:.0f} "
-                      f"bkgd={s['mean_bkgd_spike_rate']:.1f} rate={s['seq_event_rate']:.3f} width={s['neuron_width_prior']:.3f} -> held-out {r['heldout_log_like']:.4f} per masked neuron-unit ({r['runtime_s']:.0f}s)", flush=True)
-        ranked = sorted(range(sweep_size), key=lambda i: -sweep[i]["heldout_log_like"])
-        for attempt, i in enumerate(ranked[:1 + refits_if_empty]):
-            best = sweep[i]["setting"]
-            full = _run_julia(spikes, n_cells, max_time, _config(best, seeds[-1], mask_seed, threads, final_schedule), False,
-                              Path(wd) / f"final_{attempt}", max(threads, 1))
-            parsed = parse(full, starts, ends, n_all, unit_ms, gap_units)
-            if any(t["spikes_final"] > 0 or t["mean_latent_events"] > 0 for t in parsed["types"]):
-                break
-    return parsed | {"sweep": sweep, "best_setting": best, "runtime_s": time.perf_counter() - t_all, "refit_attempts": attempt + 1,
-                     "n_spikes": int(spikes.shape[0]), "n_events_fitted": int(n_all), "max_time_units": max_time}
+    return {"n_all": n_all, "n_cells": n_cells, "spikes": spikes, "starts": starts, "ends": ends, "max_time": max_time,
+            "settings": settings, "sw_spikes": sw_spikes, "sw_max_time": sw_max_time, "mask_seed": mask_seed, "seeds": seeds,
+            "unit_ms": unit_ms, "gap_units": gap_units}
+
+
+def sweep_candidate(plan, i, workdir, sweep_schedule=SWEEP_SCHEDULE):
+    """Run candidate i of the plan on the shared mask (single-threaded); returns its sweep-table row."""
+    cfg = _config(plan["settings"][i], plan["seeds"][i], plan["mask_seed"], 0, sweep_schedule)
+    try:
+        res = _run_julia(plan["sw_spikes"], plan["n_cells"], plan["sw_max_time"], cfg, True, Path(workdir), 1)
+        return {"setting": plan["settings"][i], "heldout_log_like": res["heldout_log_like"], "n_heldout_spikes": res["n_heldout_spikes"], "runtime_s": res["runtime_s"]}
+    except RuntimeError as err:
+        return {"setting": plan["settings"][i], "heldout_log_like": -np.inf, "error": str(err)[-300:], "runtime_s": np.nan}
+
+
+def refit_best(plan, sweep, workdir, threads=THREADS, final_schedule=None, refits_if_empty=0):
+    """Refit the best candidate on all events (the next-best ones if a refit has no latent events); returns (parsed, setting, attempts)."""
+    ranked = sorted(range(len(sweep)), key=lambda i: -sweep[i]["heldout_log_like"])
+    for attempt, i in enumerate(ranked[:1 + refits_if_empty]):
+        best = sweep[i]["setting"]
+        full = _run_julia(plan["spikes"], plan["n_cells"], plan["max_time"], _config(best, plan["seeds"][-1], plan["mask_seed"], threads, final_schedule),
+                          False, Path(workdir) / f"final_{attempt}", max(threads, 1))
+        parsed = parse(full, plan["starts"], plan["ends"], plan["n_all"], plan["unit_ms"], plan["gap_units"])
+        if any(t["spikes_final"] > 0 or t["mean_latent_events"] > 0 for t in parsed["types"]):
+            break
+    return parsed, best, attempt + 1
 
 
 def _n_by_r(value, n_cells):

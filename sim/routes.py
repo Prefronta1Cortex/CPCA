@@ -50,8 +50,12 @@ def route_centres(routes, n_cells):
 
 def generate(rng, n_cells=80, n_events=3000, routes=None, replay_frac=0.4, reverse_frac=0.5, participation=0.15,
              seq_participation=0.6, segment=1.0, span_ms=80.0, jitter_ms=6.0, assemblies=0, extra_rate=0.0,
-             event_ms=EVENT_MS):
-    """Spike times (events, cells, 3) in ms within [0, event_ms]; labels: route index (+1) or 0 for a volley."""
+             event_ms=EVENT_MS, span_range_ms=None):
+    """Spike times (events, cells, 3) in ms within [0, event_ms]; labels: route index (+1) or 0 for a volley.
+
+    span_range_ms: if given as (low, high), each replay is compressed into its own span drawn
+    uniformly from that range (variable pacing), instead of the fixed span_ms.
+    """
     routes = routes if routes is not None else make_routes(rng, n_cells)
     membership = rng.integers(0, assemblies, size=n_cells) if assemblies else None
     times = np.full((n_events, n_cells, 3), np.nan)
@@ -73,7 +77,8 @@ def generate(rng, n_cells=80, n_events=3000, routes=None, replay_frac=0.4, rever
             frac = (route["pos"] - start) / segment
             in_seg = (frac >= 0) & (frac <= 1) & (rng.random(len(route["cells"])) < seq_participation)
             frac = 1 - frac if reverse else frac
-            t = (event_ms - span_ms) / 2 + span_ms * frac
+            span = rng.uniform(*span_range_ms) if span_range_ms is not None else span_ms
+            t = (event_ms - span) / 2 + span * frac
             cells = route["cells"][in_seg]
             times[i, cells, 0] = t[in_seg] + rng.normal(0, jitter_ms, size=cells.size)
             fire[cells] = False
@@ -108,4 +113,24 @@ CONDITIONS = {
     "H realistic at 40% replay":
         (dict(replay_frac=0.4, reverse_frac=0.5, participation=0.15, segment=0.4, jitter_ms=8.0, assemblies=6),
          dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+}
+
+# The difficulty ladder: condition H taken apart, one difficulty at a time. Every rung has 80 cells, 60 of them
+# on the route(s), 40% replay, 15% background participation and 8 ms jitter; each rung adds one thing to L2.
+_LADDER_BASE = dict(replay_frac=0.4, participation=0.15, jitter_ms=8.0)
+LADDER = {
+    "L0 one map on 60 cells, both directions":
+        (dict(_LADDER_BASE, reverse_frac=0.5), dict(n_routes=1, cells_per_route=60)),
+    "L1 two maps on the same 60 cells, forward only":
+        (dict(_LADDER_BASE, reverse_frac=0.0), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+    "L2 two maps on the same cells, both directions":
+        (dict(_LADDER_BASE, reverse_frac=0.5), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+    "L3 L2 + partial replays (40% segments)":
+        (dict(_LADDER_BASE, reverse_frac=0.5, segment=0.4), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+    "L4 L2 + assemblies":
+        (dict(_LADDER_BASE, reverse_frac=0.5, assemblies=6), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+    "L5 L2 + variable pacing (30-90 ms)":
+        (dict(_LADDER_BASE, reverse_frac=0.5, span_range_ms=(30.0, 90.0)), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
+    "L6 L2 + partial replays + assemblies (= H)":
+        (dict(_LADDER_BASE, reverse_frac=0.5, segment=0.4, assemblies=6), dict(n_routes=1, cells_per_route=60, direction_maps=True)),
 }
