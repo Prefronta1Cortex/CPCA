@@ -1,0 +1,26 @@
+25 jobs on 9 workers
+('whole-route replays, 20%', 0): cPCA |ρ| 0.99 p 0.002, timing p 0.020 | count PCA p 0.435
+('40% segment replays, 20%', 2): cPCA |ρ| 0.86 p 0.058, timing p 0.863 | count PCA p 0.002
+('whole-route replays, 20%', 1): cPCA |ρ| 0.82 p 0.002, timing p 0.020 | count PCA p 0.858
+('whole-route replays, 20%', 4): cPCA |ρ| 0.96 p 0.002, timing p 0.020 | count PCA p 0.371
+('40% segment replays, 20%', 1): cPCA |ρ| 0.98 p 0.002, timing p 0.039 | count PCA p 0.002
+('whole-route replays, 20%', 3): cPCA |ρ| 0.96 p 0.002, timing p 0.020 | count PCA p 0.659
+('40% segment replays, 20%', 0): cPCA |ρ| 0.99 p 0.002, timing p 0.020 | count PCA p 0.002
+('whole-route replays, 20%', 2): cPCA |ρ| 0.99 p 0.002, timing p 0.020 | count PCA p 0.291
+('40% segment replays, 20%', 3): cPCA |ρ| 0.99 p 0.002, timing p 0.020 | count PCA p 0.002
+('40% segment replays, 10%, busy events', 0): cPCA |ρ| 0.93 p 0.002, timing p 0.020 | count PCA p 0.024
+('40% segment replays, 10%, busy events', 1): cPCA |ρ| 0.80 p 0.024, timing p 0.176 | count PCA p 0.008
+('40% segment replays, 10%, busy events', 2): cPCA |ρ| 0.91 p 0.002, timing p 0.020 | count PCA p 0.006
+('40% segment replays, 10%, busy events', 3): cPCA |ρ| 0.89 p 0.002, timing p 0.020 | count PCA p 0.066
+('40% segment replays, 20%', 4): cPCA |ρ| 0.99 p 0.002, timing p 0.020 | count PCA p 0.002
+('assemblies along the map, no order', 0): cPCA |ρ| 0.82 p 0.162, timing p 0.902 | count PCA p 0.044
+('assemblies along the map, no order', 1): cPCA |ρ| 0.83 p 0.144, timing p 0.647 | count PCA p 0.072
+('assemblies along the map, no order', 2): cPCA |ρ| 0.88 p 0.052, timing p 0.451 | count PCA p 0.018
+('40% segment replays, 10%, busy events', 4): cPCA |ρ| 0.93 p 0.002, timing p 0.020 | count PCA p 0.010
+('no replays', 3): cPCA |ρ| nan p nan, timing p nan | count PCA p nan
+('no replays', 1): cPCA |ρ| nan p nan, timing p nan | count PCA p nan
+('no replays', 2): cPCA |ρ| nan p nan, timing p nan | count PCA p nan
+('assemblies along the map, no order', 3): cPCA |ρ| 0.82 p 0.096, timing p 0.922 | count PCA p 0.024
+('no replays', 0): cPCA |ρ| nan p nan, timing p nan | count PCA p nan
+('assemblies along the map, no order', 4): cPCA |ρ| 0.86 p 0.046, timing p 0.745 | count PCA p 0.004
+('no replays', 4): cPCA |ρ| nan p nan, timing p nan | count PCA p nan

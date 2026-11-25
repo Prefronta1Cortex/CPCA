@@ -18,8 +18,8 @@ import numpy as np
 _HOW = ("mean", "sum", "first")
 
 
-def encode(times, T, how="mean", t0=0.0, rescale=False):
-    """Encode spike times (ms) as arrows at angular frequency pi/T.
+def encode(times, T, how="mean", t0=0.0, rescale=False, arc=np.pi):
+    """Encode spike times (ms) as arrows at angular frequency arc/T (default pi: the half-circle).
 
     times has shape (events, cells) or (events, cells, spikes); non-finite
     entries are missing spikes. T is a scalar or one value per event. t0 is a
@@ -33,7 +33,7 @@ def encode(times, T, how="mean", t0=0.0, rescale=False):
     times = np.asarray(times, dtype=float)
     if times.ndim not in (2, 3):
         raise ValueError("times must have shape (events, cells) or (events, cells, spikes)")
-    phasors = _phasors(times, T, t0)
+    phasors = _phasors(times, T, t0, arc)
     finite = np.isfinite(times)
     if how == "first":
         encoded = _first(times, phasors, finite)
@@ -82,11 +82,11 @@ def _per_event(value, times, name):
     raise ValueError(f"{name} must be a scalar or one value per event")
 
 
-def _phasors(times, T, t0):
+def _phasors(times, T, t0, arc=np.pi):
     T = _per_event(T, times, "T")
     t0 = _per_event(t0, times, "t0")
     with np.errstate(invalid="ignore", divide="ignore"):
-        phasors = np.exp(1j * np.pi * (times - t0) / T)
+        phasors = np.exp(1j * arc * (times - t0) / T)
     phasors[~np.isfinite(times)] = 0
     return phasors
 

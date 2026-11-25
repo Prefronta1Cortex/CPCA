@@ -1,0 +1,9 @@
+8 jobs on 2 workers
+('Achilles_10252013', 'ppseq', 0.05): 0/1 (|ρ| 0.30, 945s per fit)
+('Achilles_10252013', 'ppseq', 0.0): 0/1 (|ρ| 0.35, 967s per fit)
+('Achilles_10252013', 'ppseq', 0.1): 0/1 (|ρ| 0.37, 711s per fit)
+('Achilles_10252013', 'ppseq', 0.2): 0/1 (|ρ| 0.32, 764s per fit)
+('Achilles_11012013', 'ppseq', 0.0): 0/1 (|ρ| 0.73, 735s per fit)
+('Achilles_11012013', 'ppseq', 0.05): 0/1 (|ρ| 0.53, 757s per fit)
+('Achilles_11012013', 'ppseq', 0.1): 0/1 (|ρ| 0.55, 794s per fit)
+('Achilles_11012013', 'ppseq', 0.2): 0/1 (|ρ| 0.64, 744s per fit)

@@ -1,0 +1,31 @@
+30 jobs on 9 workers
+('one map only (subset)', 0, 0): waking in sleep 0.65 (null 0.34, p 0.002), k wake/sleep 2/2
+('both maps replayed', 1, 0): waking in sleep 0.95 (null 0.34, p 0.002), k wake/sleep 2/3
+('both maps replayed', 0, 0): waking in sleep 0.96 (null 0.35, p 0.002), k wake/sleep 2/3
+('both maps replayed', 3, 0): waking in sleep 0.99 (null 0.35, p 0.002), k wake/sleep 2/4
+('both maps replayed', 2, 0): waking in sleep 0.95 (null 0.34, p 0.002), k wake/sleep 2/3
+('one map only (subset)', 3, 0): waking in sleep 0.62 (null 0.31, p 0.002), k wake/sleep 2/2
+('one map only (subset)', 1, 0): waking in sleep 0.68 (null 0.34, p 0.002), k wake/sleep 2/2
+('both maps replayed', 4, 0): waking in sleep 0.94 (null 0.34, p 0.002), k wake/sleep 2/3
+('one map only (subset)', 2, 0): waking in sleep 0.64 (null 0.28, p 0.002), k wake/sleep 2/2
+('one map only (subset)', 4, 0): waking in sleep 0.57 (null 0.31, p 0.002), k wake/sleep 2/2
+('40% segments of the maps', 1, 0): waking in sleep 0.90 (null 0.47, p 0.002), k wake/sleep 2/8
+('40% segments of the maps', 3, 0): waking in sleep 0.85 (null 0.44, p 0.002), k wake/sleep 2/8
+('other maps on the same cells', 2, 0): waking in sleep 0.37 (null 0.34, p 0.116), k wake/sleep 2/3
+('40% segments of the maps', 2, 0): waking in sleep 0.89 (null 0.46, p 0.002), k wake/sleep 2/8
+('40% segments of the maps', 0, 0): waking in sleep 0.84 (null 0.42, p 0.002), k wake/sleep 2/7
+('other maps on the same cells', 0, 0): waking in sleep 0.39 (null 0.33, p 0.018), k wake/sleep 2/3
+('other maps on the same cells', 1, 0): waking in sleep 0.35 (null 0.38, p 0.846), k wake/sleep 2/4
+('40% segments of the maps', 4, 0): waking in sleep 0.87 (null 0.43, p 0.002), k wake/sleep 2/8
+('other maps on the same cells', 3, 0): waking in sleep 0.38 (null 0.39, p 0.553), k wake/sleep 2/4
+('assemblies along the map, no order', 0, 0): waking in sleep 0.43 (null 0.18, p 0.002), k wake/sleep 2/5
+('assemblies along the map, no order', 2, 0): waking in sleep 0.39 (null 0.16, p 0.002), k wake/sleep 2/5
+('assemblies along the map, no order', 1, 0): waking in sleep 0.43 (null 0.19, p 0.002), k wake/sleep 2/5
+('other maps on the same cells', 4, 0): waking in sleep 0.37 (null 0.34, p 0.110), k wake/sleep 2/3
+('assemblies along the map, no order', 3, 0): waking in sleep 0.42 (null 0.16, p 0.002), k wake/sleep 2/5
+('assemblies along the map, no order', 4, 0): waking in sleep 0.34 (null 0.13, p 0.002), k wake/sleep 2/5
+('no replays', 0, 0): waking in sleep nan (null nan, p nan), k wake/sleep 2/0
+('no replays', 1, 0): waking in sleep nan (null nan, p nan), k wake/sleep 2/0
+('no replays', 2, 0): waking in sleep nan (null nan, p nan), k wake/sleep 2/0
+('no replays', 4, 0): waking in sleep nan (null nan, p nan), k wake/sleep 2/0
+('no replays', 3, 0): waking in sleep 0.01 (null 0.02, p 0.954), k wake/sleep 2/1

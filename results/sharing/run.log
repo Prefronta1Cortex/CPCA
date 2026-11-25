@@ -1,0 +1,205 @@
+187 jobs on 10 workers
+[1/187      6s] hc11_job ('Buddy_06272013', 'post'): k=5, templates 5, valid 0, map hits 0, 4s
+[2/187     14s] hc11_job ('Buddy_06272013', 'pre'): k=5, templates 5, valid 0, map hits 0, 11s
+[3/187     21s] hc11_job ('Cicero_09012014', 'post'): k=5, templates 5, valid 0, map hits 0, 17s
+[4/187     23s] hc11_job ('Cicero_09012014', 'pre'): k=5, templates 5, valid 0, map hits 0, 19s
+[5/187     24s] hc11_job ('Cicero_09172014', 'post'): k=6, templates 2, valid 0, map hits 0, 16s
+[6/187     28s] hc11_job ('Cicero_09102014', 'pre'): k=6, templates 3, valid 1, map hits 0, 23s
+[7/187     33s] hc11_job ('Achilles_11012013', 'post'): k=11, templates 9, valid 0, map hits 0, 28s
+[8/187     36s] hc11_job ('Cicero_09172014', 'pre'): k=6, templates 3, valid 0, map hits 0, 20s
+[9/187     37s] hc11_job ('Achilles_11012013', 'pre'): k=7, templates 7, valid 0, map hits 0, 31s
+[10/187     40s] hc11_job ('Gatsby_08022013', 'post'): k=7, templates 6, valid 0, map hits 0, 17s
+[11/187     42s] ladder_job ('L0 one map on 60 cells, both directions', 0): centred 1.00 (step2 1.00)
+[12/187     43s] hc11_job ('Gatsby_08282013', 'pre'): k=5, templates 5, valid 0, map hits 0, 13s
+[13/187     44s] hc11_job ('Gatsby_08022013', 'pre'): k=6, templates 5, valid 0, map hits 0, 19s
+[14/187     45s] ladder_job ('L0 one map on 60 cells, both directions', 1): centred 1.00 (step2 1.00)
+[15/187     46s] ladder_job ('L0 one map on 60 cells, both directions', 2): centred 1.00 (step2 1.00)
+[16/187     49s] hc11_job ('Gatsby_08282013', 'post'): k=8, templates 8, valid 0, map hits 0, 23s
+[17/187     50s] ladder_job ('L1 two maps on the same 60 cells, forward only', 0): centred 1.00 1.00 (step2 0.86 0.85)
+[18/187     52s] ladder_job ('L1 two maps on the same 60 cells, forward only', 1): centred 1.00 1.00 (step2 0.72 0.63)
+[19/187     54s] ladder_job ('L1 two maps on the same 60 cells, forward only', 2): centred 1.00 1.00 (step2 0.92 0.76)
+[20/187     55s] hc11_job ('Cicero_09102014', 'post'): k=7, templates 4, valid 0, map hits 0, 49s
+[21/187     55s] hc11_job ('Achilles_10252013', 'post'): k=11, templates 8, valid 1, map hits 1, 49s
+[22/187     55s] ladder_job ('L2 two maps on the same cells, both directions', 1): centred 1.00 1.00 (step2 0.82 0.83)
+[23/187     55s] ladder_job ('L2 two maps on the same cells, both directions', 0): centred 1.00 1.00 (step2 0.79 0.83)
+[24/187     57s] ladder_job ('L2 two maps on the same cells, both directions', 2): centred 1.00 1.00 (step2 0.81 0.83)
+[25/187     65s] ladder_job ('L5 L2 + variable pacing (30-90 ms)', 0): centred 0.04 1.00 (step2 0.78 0.77)
+[26/187     66s] ladder_job ('L5 L2 + variable pacing (30-90 ms)', 1): centred 1.00 1.00 (step2 0.72 0.70)
+[27/187     67s] ladder_job ('L5 L2 + variable pacing (30-90 ms)', 2): centred 1.00 1.00 (step2 0.89 0.91)
+[28/187     71s] ladder_job ('L3 L2 + partial replays (40% segments)', 0): centred 0.64 0.77 (step2 0.33 0.74)
+[29/187     73s] ladder_job ('L3 L2 + partial replays (40% segments)', 1): centred 0.77 0.67 (step2 0.41 0.63)
+[30/187     74s] ladder_job ('L4 L2 + assemblies', 1): centred 1.00 1.00 (step2 0.77 0.84)
+[31/187     74s] ladder_job ('L4 L2 + assemblies', 0): centred 1.00 1.00 (step2 0.83 0.67)
+[32/187     76s] ladder_job ('L4 L2 + assemblies', 2): centred 1.00 1.00 (step2 0.87 0.73)
+[33/187     76s] ladder_job ('L3 L2 + partial replays (40% segments)', 2): centred 0.61 0.74 (step2 0.71 0.54)
+[34/187     78s] synthetic_job ('A one route, every event a replay', 0): m0: nan->nan | valid 0, false 0, 0.0s
+[35/187     79s] synthetic_job ('A one route, every event a replay', 1): m0: nan->nan | valid 0, false 0, 0.0s
+[36/187     80s] synthetic_job ('A one route, every event a replay', 2): m0: nan->nan | valid 0, false 0, 0.0s
+[37/187     81s] synthetic_job ('A one route, every event a replay', 3): m0: nan->nan | valid 0, false 0, 0.0s
+[38/187     82s] synthetic_job ('A one route, every event a replay', 4): m0: nan->nan | valid 0, false 0, 0.0s
+[39/187     82s] synthetic_job ('A one route, every event a replay', 5): m0: nan->nan | valid 0, false 0, 0.0s
+[40/187     84s] synthetic_job ('A one route, every event a replay', 6): m0: nan->nan | valid 0, false 0, 0.0s
+[41/187     86s] synthetic_job ('A one route, every event a replay', 7): m0: nan->nan | valid 0, false 0, 0.0s
+[42/187     87s] synthetic_job ('A one route, every event a replay', 8): m0: nan->nan | valid 0, false 0, 0.0s
+[43/187     87s] synthetic_job ('A one route, every event a replay', 9): m0: nan->nan | valid 0, false 0, 0.0s
+[44/187     96s] hc11_job ('Achilles_10252013', 'pre'): k=12, templates 8, valid 1, map hits 0, 87s
+[45/187     99s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 1): m0: 1.00->1.00 | valid 1, false 0, 1.4s
+[46/187     99s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 0): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[47/187    101s] ladder_job ('L6 L2 + partial replays + assemblies (= H)', 1): centred 0.80 0.86 (step2 0.75 0.61)
+[48/187    101s] ladder_job ('L6 L2 + partial replays + assemblies (= H)', 0): centred 0.82 0.67 (step2 0.36 0.44)
+[49/187    101s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 2): m0: 1.00->1.00 | valid 1, false 0, 1.4s
+[50/187    103s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 3): m0: 1.00->1.00 | valid 1, false 0, 1.3s
+[51/187    104s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 4): m0: 1.00->1.00 | valid 1, false 0, 1.3s
+[52/187    105s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 5): m0: 1.00->1.00 | valid 1, false 0, 1.4s
+[53/187    105s] ladder_job ('L6 L2 + partial replays + assemblies (= H)', 2): centred 0.75 0.90 (step2 0.47 0.49)
+[54/187    113s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 6): m0: 1.00->1.00 | valid 1, false 0, 1.9s
+[55/187    116s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 7): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[56/187    117s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 8): m0: 1.00->1.00 | valid 1, false 0, 1.4s
+[57/187    118s] synthetic_job ('B one route, forward and backward 60/40, span 25 ms', 9): m0: 1.00->1.00 | valid 1, false 0, 1.3s
+[58/187    119s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 0): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[59/187    119s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 1): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[60/187    121s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 2): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[61/187    122s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 3): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[62/187    124s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 5): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[63/187    124s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 4): m0: 1.00->1.00 | valid 1, false 0, 1.6s
+[64/187    133s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 6): m0: 1.00->1.00 | valid 1, false 0, 1.7s
+[65/187    135s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 8): m0: 1.00->1.00 | valid 1, false 0, 1.8s
+[66/187    135s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 7): m0: 1.00->1.00 | valid 1, false 0, 1.7s
+[67/187    138s] synthetic_job ('C one route, forward and backward 60/40, span 80 ms', 9): m0: 1.00->1.00 | valid 1, false 0, 1.8s
+[68/187    139s] synthetic_job ('D two routes on different cells, 40% replay', 0): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.6s
+[69/187    142s] synthetic_job ('D two routes on different cells, 40% replay', 1): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.7s
+[70/187    146s] synthetic_job ('D two routes on different cells, 40% replay', 4): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.6s
+[71/187    147s] synthetic_job ('D two routes on different cells, 40% replay', 3): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.7s
+[72/187    147s] synthetic_job ('D two routes on different cells, 40% replay', 5): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.7s
+[73/187    151s] synthetic_job ('D two routes on different cells, 40% replay', 2): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.8s
+[74/187    157s] synthetic_job ('D two routes on different cells, 40% replay', 6): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 5.0s
+[75/187    160s] synthetic_job ('D two routes on different cells, 40% replay', 7): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.6s
+[76/187    162s] synthetic_job ('D two routes on different cells, 40% replay', 8): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.6s
+[77/187    163s] synthetic_job ('D two routes on different cells, 40% replay', 9): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 4.6s
+[78/187    166s] synthetic_job ('E two routes sharing half their cells, 40% replay', 1): m0: 0.92->1.00 | m1: 0.91->1.00 | valid 2, false 0, 3.5s
+[79/187    167s] synthetic_job ('E two routes sharing half their cells, 40% replay', 0): m0: 0.89->1.00 | m1: 0.87->1.00 | valid 2, false 0, 3.4s
+[80/187    171s] synthetic_job ('E two routes sharing half their cells, 40% replay', 2): m0: 0.92->1.00 | m1: 0.92->1.00 | valid 2, false 0, 3.6s
+[81/187    174s] synthetic_job ('E two routes sharing half their cells, 40% replay', 3): m0: 0.79->1.00 | m1: 0.80->1.00 | valid 2, false 0, 3.6s
+[82/187    175s] synthetic_job ('E two routes sharing half their cells, 40% replay', 5): m0: 0.89->1.00 | m1: 0.88->1.00 | valid 2, false 0, 3.5s
+[83/187    176s] synthetic_job ('E two routes sharing half their cells, 40% replay', 4): m0: 0.89->1.00 | m1: 0.81->1.00 | valid 2, false 0, 3.6s
+[84/187    183s] synthetic_job ('E two routes sharing half their cells, 40% replay', 6): m0: 0.93->1.00 | m1: 0.94->1.00 | valid 2, false 0, 3.6s
+[85/187    184s] synthetic_job ('E two routes sharing half their cells, 40% replay', 8): m0: 0.90->1.00 | m1: 0.83->1.00 | valid 2, false 0, 3.5s
+[86/187    184s] synthetic_job ('E two routes sharing half their cells, 40% replay', 9): m0: 0.91->1.00 | m1: 0.90->1.00 | valid 2, false 0, 3.9s
+[87/187    186s] synthetic_job ('E two routes sharing half their cells, 40% replay', 7): m0: 0.91->1.00 | m1: 0.76->1.00 | valid 2, false 0, 3.6s
+[88/187    209s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 1): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 19.8s
+[89/187    213s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 2): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 19.8s
+[90/187    213s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 3): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 18.0s
+[91/187    214s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 0): m0: 1.00->1.00 | m1: 0.99->0.99 | valid 2, false 0, 22.6s
+[92/187    215s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 4): m0: 0.99->0.99 | m1: 0.99->1.00 | valid 2, false 0, 19.8s
+[93/187    217s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 5): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 22.2s
+[94/187    217s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 9): m0: 1.00->1.00 | m1: 0.99->1.00 | valid 2, false 0, 12.8s
+[95/187    218s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 6): m0: 0.99->1.00 | m1: 0.99->1.00 | valid 2, false 0, 14.9s
+[96/187    228s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 7): m0: 1.00->0.99 | m1: 1.00->1.00 | valid 2, false 0, 24.2s
+[97/187    229s] synthetic_job ('F two routes, both directions, 15% replay, 15% cells', 8): m0: 1.00->1.00 | m1: 1.00->1.00 | valid 2, false 0, 22.8s
+[98/187    284s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 0): m0: 0.49->0.74 | m1: 0.43->0.64 | valid 4, false 0, 27.4s
+[99/187    284s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 2): m0: 0.31->0.70 | m1: 0.46->0.57 | valid 2, false 0, 29.2s
+[100/187    284s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 4): m0: 0.33->0.55 | m1: 0.64->0.74 | valid 2, false 0, 25.8s
+[101/187    285s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 3): m0: 0.67->0.14 | m1: 0.64->0.82 | valid 2, false 0, 25.3s
+[102/187    287s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 7): m0: 0.42->0.78 | m1: 0.42->0.59 | valid 2, false 0, 27.1s
+[103/187    287s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 1): m0: 0.46->0.21 | m1: 0.37->0.61 | valid 3, false 0, 26.3s
+[104/187    291s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 6): m0: 0.34->0.91 | m1: 0.55->0.61 | valid 4, false 0, 26.1s
+[105/187    295s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 5): m0: 0.42->0.79 | m1: 0.18->0.86 | valid 3, false 1, 27.6s
+[106/187    295s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 8): m0: 0.63->0.76 | m1: 0.45->0.72 | valid 3, false 0, 24.6s
+[107/187    299s] synthetic_job ('G realistic: direction maps, segments, assemblies, non-place cells, 15% replay', 9): m0: 0.66->0.76 | m1: 0.49->0.86 | valid 2, false 0, 24.8s
+[108/187    370s] synthetic_job ('H realistic at 40% replay', 5): m0: 0.99->0.79 | m1: 0.49->0.82 | valid 7, false 2, 30.4s
+[109/187    376s] synthetic_job ('H realistic at 40% replay', 2): m0: 0.62->0.77 | m1: 0.42->0.80 | valid 8, false 1, 33.0s
+[110/187    379s] synthetic_job ('H realistic at 40% replay', 1): m0: 0.44->0.85 | m1: 0.52->0.84 | valid 8, false 1, 35.8s
+[111/187    381s] synthetic_job ('H realistic at 40% replay', 4): m0: 0.48->0.79 | m1: 0.33->0.85 | valid 7, false 1, 38.1s
+[112/187    381s] synthetic_job ('H realistic at 40% replay', 6): m0: 0.50->0.81 | m1: 0.61->0.82 | valid 8, false 1, 36.3s
+[113/187    384s] synthetic_job ('H realistic at 40% replay', 0): m0: 0.71->0.71 | m1: 0.57->0.75 | valid 7, false 1, 36.3s
+[114/187    387s] synthetic_job ('H realistic at 40% replay', 3): m0: 0.50->0.85 | m1: 0.59->0.72 | valid 8, false 1, 37.1s
+[115/187    394s] synthetic_job ('H realistic at 40% replay', 7): m0: 0.43->0.71 | m1: 0.51->0.65 | valid 9, false 1, 36.9s
+[116/187    395s] synthetic_job ('H realistic at 40% replay', 8): m0: 0.44->0.72 | m1: 0.54->0.87 | valid 6, false 0, 37.6s
+[117/187    397s] synthetic_job ('L0 one map on 60 cells, both directions', 0): m0: 1.00->1.00 | valid 1, false 0, 6.5s
+[118/187    401s] synthetic_job ('H realistic at 40% replay', 9): m0: 0.43->0.84 | m1: 0.65->0.96 | valid 6, false 0, 37.1s
+[119/187    401s] synthetic_job ('L0 one map on 60 cells, both directions', 1): m0: 1.00->1.00 | valid 1, false 0, 7.0s
+[120/187    405s] synthetic_job ('L0 one map on 60 cells, both directions', 2): m0: 1.00->1.00 | valid 1, false 0, 7.0s
+[121/187    409s] synthetic_job ('L0 one map on 60 cells, both directions', 3): m0: 1.00->1.00 | valid 1, false 0, 6.8s
+[122/187    410s] synthetic_job ('L0 one map on 60 cells, both directions', 4): m0: 1.00->1.00 | valid 1, false 0, 7.6s
+[123/187    411s] synthetic_job ('L0 one map on 60 cells, both directions', 5): m0: 1.00->1.00 | valid 1, false 0, 7.9s
+[124/187    413s] synthetic_job ('L0 one map on 60 cells, both directions', 6): m0: 1.00->1.00 | valid 1, false 0, 6.7s
+[125/187    421s] synthetic_job ('L0 one map on 60 cells, both directions', 7): m0: 1.00->1.00 | valid 1, false 0, 7.6s
+[126/187    421s] synthetic_job ('L0 one map on 60 cells, both directions', 8): m0: 1.00->1.00 | valid 1, false 0, 8.2s
+[127/187    423s] synthetic_job ('L0 one map on 60 cells, both directions', 9): m0: 1.00->1.00 | valid 1, false 0, 8.3s
+[128/187    430s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 1): m0: 0.65->1.00 | m1: 0.88->1.00 | valid 2, false 0, 4.8s
+[129/187    431s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 0): m0: 0.76->1.00 | m1: 0.92->1.00 | valid 2, false 0, 4.6s
+[130/187    433s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 2): m0: 0.68->1.00 | m1: 0.67->1.00 | valid 2, false 0, 4.7s
+[131/187    439s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 4): m0: 0.75->1.00 | m1: 0.89->1.00 | valid 2, false 0, 4.5s
+[132/187    439s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 5): m0: 0.77->1.00 | m1: 0.93->1.00 | valid 2, false 0, 4.6s
+[133/187    439s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 6): m0: 0.91->1.00 | m1: 0.81->1.00 | valid 2, false 0, 5.8s
+[134/187    442s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 3): m0: 0.91->1.00 | m1: 0.73->1.00 | valid 2, false 0, 4.8s
+[135/187    448s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 7): m0: 0.84->1.00 | m1: 0.72->1.00 | valid 2, false 0, 4.6s
+[136/187    451s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 9): m0: 0.92->1.00 | m1: 0.79->1.00 | valid 2, false 0, 5.7s
+[137/187    452s] synthetic_job ('L1 two maps on the same 60 cells, forward only', 8): m0: 0.72->1.00 | m1: 0.87->1.00 | valid 2, false 0, 4.6s
+[138/187    461s] synthetic_job ('L2 two maps on the same cells, both directions', 1): m0: 0.82->1.00 | m1: 0.79->1.00 | valid 2, false 0, 7.2s
+[139/187    463s] synthetic_job ('L2 two maps on the same cells, both directions', 2): m0: 0.85->1.00 | m1: 0.84->1.00 | valid 2, false 0, 10.3s
+[140/187    464s] synthetic_job ('L2 two maps on the same cells, both directions', 0): m0: 0.87->1.00 | m1: 0.82->1.00 | valid 2, false 0, 11.2s
+[141/187    467s] synthetic_job ('L2 two maps on the same cells, both directions', 3): m0: 0.73->1.00 | m1: 0.82->1.00 | valid 2, false 0, 9.6s
+[142/187    468s] synthetic_job ('L2 two maps on the same cells, both directions', 5): m0: 0.82->1.00 | m1: 0.84->1.00 | valid 2, false 0, 9.1s
+[143/187    469s] synthetic_job ('L2 two maps on the same cells, both directions', 4): m0: 0.70->1.00 | m1: 0.70->1.00 | valid 2, false 0, 11.3s
+[144/187    473s] synthetic_job ('L2 two maps on the same cells, both directions', 6): m0: 0.71->1.00 | m1: 0.75->1.00 | valid 2, false 0, 9.0s
+[145/187    475s] synthetic_job ('L2 two maps on the same cells, both directions', 7): m0: 0.77->1.00 | m1: 0.75->1.00 | valid 2, false 0, 7.2s
+[146/187    480s] synthetic_job ('L2 two maps on the same cells, both directions', 8): m0: 0.88->1.00 | m1: 0.81->1.00 | valid 2, false 0, 10.0s
+[147/187    482s] synthetic_job ('L2 two maps on the same cells, both directions', 9): m0: 0.75->1.00 | m1: 0.82->1.00 | valid 2, false 0, 11.0s
+[148/187    520s] synthetic_job ('L3 L2 + partial replays (40% segments)', 3): m0: 0.50->0.54 | m1: 0.93->0.61 | valid 5, false 3, 23.5s
+[149/187    524s] synthetic_job ('L3 L2 + partial replays (40% segments)', 1): m0: 0.80->0.67 | m1: 0.49->0.72 | valid 6, false 2, 26.4s
+[150/187    525s] synthetic_job ('L3 L2 + partial replays (40% segments)', 2): m0: 0.57->0.60 | m1: 0.52->0.56 | valid 5, false 0, 22.3s
+[151/187    526s] synthetic_job ('L3 L2 + partial replays (40% segments)', 0): m0: 0.50->0.63 | m1: 0.61->0.63 | valid 6, false 2, 27.2s
+[152/187    528s] synthetic_job ('L3 L2 + partial replays (40% segments)', 4): m0: 0.58->0.66 | m1: 0.47->0.68 | valid 6, false 1, 22.4s
+[153/187    533s] synthetic_job ('L3 L2 + partial replays (40% segments)', 6): m0: 0.84->0.64 | m1: 0.43->0.72 | valid 7, false 3, 24.4s
+[154/187    534s] synthetic_job ('L3 L2 + partial replays (40% segments)', 5): m0: 0.60->0.63 | m1: 0.58->0.64 | valid 7, false 2, 30.4s
+[155/187    542s] synthetic_job ('L3 L2 + partial replays (40% segments)', 7): m0: 0.64->0.66 | m1: 0.61->0.84 | valid 6, false 0, 24.9s
+[156/187    546s] synthetic_job ('L3 L2 + partial replays (40% segments)', 9): m0: 0.44->0.72 | m1: 0.60->0.65 | valid 7, false 2, 25.3s
+[157/187    546s] synthetic_job ('L3 L2 + partial replays (40% segments)', 8): m0: 0.87->0.62 | m1: 0.48->0.52 | valid 7, false 5, 24.6s
+[158/187    570s] synthetic_job ('L4 L2 + assemblies', 0): m0: 0.72->1.00 | m1: 0.93->1.00 | valid 2, false 0, 20.6s
+[159/187    570s] synthetic_job ('L4 L2 + assemblies', 1): m0: 0.87->1.00 | m1: 0.88->1.00 | valid 2, false 0, 18.4s
+[160/187    576s] synthetic_job ('L4 L2 + assemblies', 2): m0: 0.77->1.00 | m1: 0.77->1.00 | valid 2, false 0, 17.6s
+[161/187    577s] synthetic_job ('L4 L2 + assemblies', 3): m0: 0.64->1.00 | m1: 0.77->1.00 | valid 2, false 0, 18.5s
+[162/187    579s] synthetic_job ('L4 L2 + assemblies', 4): m0: 0.75->1.00 | m1: 0.74->1.00 | valid 2, false 0, 19.1s
+[163/187    585s] synthetic_job ('L4 L2 + assemblies', 6): m0: 0.87->1.00 | m1: 0.78->1.00 | valid 3, false 1, 20.7s
+[164/187    588s] synthetic_job ('L4 L2 + assemblies', 5): m0: 0.77->1.00 | m1: 0.85->1.00 | valid 2, false 0, 20.2s
+[165/187    590s] synthetic_job ('L4 L2 + assemblies', 7): m0: 0.77->1.00 | m1: 0.75->1.00 | valid 2, false 0, 19.1s
+[166/187    595s] synthetic_job ('L4 L2 + assemblies', 8): m0: 0.83->1.00 | m1: 0.82->1.00 | valid 2, false 0, 17.3s
+[167/187    596s] synthetic_job ('L4 L2 + assemblies', 9): m0: 0.83->1.00 | m1: 0.85->1.00 | valid 2, false 0, 21.2s
+[168/187    608s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 0): m0: 0.82->1.00 | m1: 0.72->1.00 | valid 2, false 0, 6.5s
+[169/187    613s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 1): m0: 0.71->1.00 | m1: 0.80->1.00 | valid 2, false 0, 5.8s
+[170/187    617s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 2): m0: 0.74->1.00 | m1: 0.74->1.00 | valid 2, false 0, 8.9s
+[171/187    620s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 0): m0: 0.02->nan | valid 0, false 0, 1.8s
+[172/187    622s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 3): m0: 0.80->0.72 | m1: 0.83->0.81 | valid 1, false 0, 6.8s
+[173/187    623s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 4): m0: 0.78->1.00 | m1: 0.68->1.00 | valid 2, false 0, 6.7s
+[174/187    623s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 5): m0: 0.87->0.76 | m1: 0.85->0.75 | valid 1, false 0, 6.7s
+[175/187    625s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 1): m0: 0.35->nan | valid 0, false 0, 2.2s
+[176/187    629s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 2): m0: 0.06->nan | valid 0, false 0, 2.0s
+[177/187    632s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 3): m0: 0.11->nan | valid 0, false 0, 2.1s
+[178/187    634s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 7): m0: 0.80->0.76 | m1: 0.87->0.80 | valid 1, false 0, 5.7s
+[179/187    634s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 4): m0: 0.22->nan | valid 0, false 0, 1.7s
+[180/187    635s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 6): m0: 0.76->1.00 | m1: 0.73->1.00 | valid 2, false 0, 7.2s
+[181/187    635s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 5): m0: 0.06->nan | valid 0, false 0, 2.0s
+[182/187    635s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 6): m0: 0.10->nan | valid 0, false 0, 1.8s
+[183/187    635s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 9): m0: 0.81->0.69 | m1: 0.82->0.76 | valid 1, false 0, 6.3s
+[184/187    636s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 7): m0: 0.06->nan | valid 0, false 0, 2.3s
+[185/187    636s] synthetic_job ('L5 L2 + variable pacing (30-90 ms)', 8): m0: 0.87->0.74 | m1: 0.81->0.70 | valid 1, false 0, 8.6s
+[186/187    638s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 8): m0: 0.14->nan | valid 0, false 0, 1.5s
+[187/187    639s] synthetic_job ("S0 L0 with each event's spike trains shuffled among the cells that fired (no order)", 9): m0: 0.13->nan | valid 0, false 0, 1.2s
+16 jobs on 10 workers
+[1/16      6s] hc11_job ('Buddy_06272013', 'post'): k=5, templates 5, valid 0, map hits 0, 4s
+[2/16     14s] hc11_job ('Buddy_06272013', 'pre'): k=5, templates 5, valid 0, map hits 0, 11s
+[3/16     20s] hc11_job ('Cicero_09012014', 'post'): k=5, templates 5, valid 0, map hits 0, 17s
+[4/16     22s] hc11_job ('Cicero_09012014', 'pre'): k=5, templates 5, valid 0, map hits 0, 18s
+[5/16     24s] hc11_job ('Cicero_09172014', 'post'): k=6, templates 2, valid 0, map hits 0, 16s
+[6/16     27s] hc11_job ('Cicero_09102014', 'pre'): k=6, templates 3, valid 1, map hits 0, 23s
+[7/16     32s] hc11_job ('Achilles_11012013', 'post'): k=11, templates 9, valid 0, map hits 0, 28s
+[8/16     36s] hc11_job ('Cicero_09172014', 'pre'): k=6, templates 3, valid 0, map hits 0, 19s
+[9/16     36s] hc11_job ('Achilles_11012013', 'pre'): k=7, templates 7, valid 0, map hits 0, 31s
+[10/16     39s] hc11_job ('Gatsby_08022013', 'post'): k=7, templates 6, valid 0, map hits 0, 17s
+[11/16     42s] hc11_job ('Gatsby_08282013', 'pre'): k=5, templates 5, valid 0, map hits 0, 12s
+[12/16     42s] hc11_job ('Gatsby_08022013', 'pre'): k=6, templates 5, valid 0, map hits 0, 17s
+[13/16     46s] hc11_job ('Gatsby_08282013', 'post'): k=8, templates 8, valid 0, map hits 0, 20s
+[14/16     50s] hc11_job ('Cicero_09102014', 'post'): k=7, templates 4, valid 0, map hits 0, 44s
+[15/16     50s] hc11_job ('Achilles_10252013', 'post'): k=11, templates 8, valid 1, map hits 1, 44s
+[16/16     70s] hc11_job ('Achilles_10252013', 'pre'): k=12, templates 8, valid 1, map hits 0, 61s

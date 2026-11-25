@@ -33,9 +33,15 @@ from cpca.theory import anchor_phase, eigh_desc, lag_matrix, scores
 
 
 def prepare(encoded, center=True, scale=True):
-    """Centre each cell on its mean arrow and/or scale it to unit root-mean-square length."""
+    """Centre each cell on its mean arrow and/or scale it to unit root-mean-square length.
+
+    center="active": align each event and centre on active entries only (cpca.active).
+    """
     X = np.array(encoded, dtype=complex, copy=True)
-    if center:
+    if isinstance(center, str) and center == "active":
+        from cpca.active import align_events, centre_active
+        X = centre_active(align_events(X))
+    elif center:
         X = X - X.mean(axis=0, keepdims=True)
     if scale:
         rms = np.sqrt(np.mean(np.abs(X) ** 2, axis=0))

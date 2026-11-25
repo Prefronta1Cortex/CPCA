@@ -1,0 +1,9 @@
+8 jobs on 9 workers
+('Buddy_06272013', 'post', 0): 1483 events, 32 cells | waking in sleep 0.45 (null 0.40, p 0.133), waking components contained 1/2, k wake/sleep 2/3
+('Gatsby_08022013', 'post', 0): 2782 events, 53 cells | waking in sleep 0.65 (null 0.43, p 0.001), waking components contained 2/2, k wake/sleep 2/6
+('Gatsby_08282013', 'post', 0): 4940 events, 41 cells | waking in sleep 0.69 (null 0.60, p 0.015), waking components contained 2/2, k wake/sleep 2/8
+('Cicero_09172014', 'post', 0): 3462 events, 46 cells | waking in sleep 0.47 (null 0.46, p 0.361), waking components contained 0/2, k wake/sleep 2/4
+('Cicero_09012014', 'post', 0): 3702 events, 50 cells | waking in sleep 0.50 (null 0.44, p 0.042), waking components contained 1/2, k wake/sleep 2/5
+('Achilles_11012013', 'post', 0): 2678 events, 89 cells | waking in sleep 0.58 (null 0.41, p 0.001), waking components contained 2/3, k wake/sleep 3/11
+('Cicero_09102014', 'post', 0): 4892 events, 59 cells | waking in sleep 0.64 (null 0.44, p 0.001), waking components contained 2/2, k wake/sleep 2/5
+('Achilles_10252013', 'post', 0): 3260 events, 115 cells | waking in sleep 0.53 (null 0.35, p 0.001), waking components contained 2/3, k wake/sleep 3/11

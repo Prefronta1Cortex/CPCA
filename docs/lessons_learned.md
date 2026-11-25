@@ -50,6 +50,40 @@ The mentor asked how a Marchenko–Pastur bound applies to complex arrows on a h
 
 The difficulty ladder run the same day corrected a second belief. "PP-Seq is clearly ahead on the realistic condition H" rested on one draw (0.89 / 0.81). On three matched draws of the same settings PP-Seq's median is 0.39 and it recovers 3 of 6 maps, against complex PCA's 0.48 and 5 of 6; where PP-Seq is reliably ahead is the clean rungs with whole routes replayed (1.00 against 0.81–0.90). Lesson, again: one draw per condition is an anecdote; the per-draw spread belongs in the figure. Practical: the ladder's 63 fits took about 10.5 hours on 10 cores, nearly all of it PP-Seq (single-threaded refits on 1500 events, about 75 minutes each) and the seqNMF grid (about 50 minutes per fit); running every PP-Seq sweep candidate as its own job, with a priority scheduler, kept all cores busy to the end.
 
+## Forward and backward plays (October 22)
+
+The direction split (`docs/direction.md`) needed three corrections before its numbers could be trusted, all found by controls rather than by the headline results:
+
+- **A test that could not fail.** The first significance test compared split-half agreement of direction labels on the expressing events against the same agreement after shuffling those events. The no-order control passed it in every draw: the expressing events had been chosen by a template fitted to them, so any template agrees with itself on them, and shuffling only those events left the selection out of the null. Rerunning the whole pipeline on shuffled data showed the null itself at 1.00, so the statistic carried no information. It was replaced by a held-out test: fit on half of the events, judge each event of the other half by its own permutation p-value, binomial count. The no-order control now gives 3.7% of held-out events against 5% chance.
+- **Two earlier gates were wrong.** Selecting expressing events by the centred score favoured one direction; a phase-randomisation null let synchronous volleys pass. The within-event shuffle (who fired and when are kept, only which cell got which time is changed) fixes both.
+- **The split must not overturn a component.** With partial replays one per-cell template is the wrong model and the fit wanders; without the guard the order got worse in the realistic conditions. The guard (agreement ≥ 0.6 with the component's order) was set on development draws and checked on fresh ones.
+
+Two findings that are properties of the data, not of the code: on hc-11 the per-component templates collapse onto the dominant route because centred components spread over 70–116 cells, so the guard rejects them and a single whole-population template is the useful form; and when the two running directions' maps mirror each other, "one map backward" and "the other map forward" are the same pattern of arrows. hc-5 could not serve as a one-direction control (7–25 runs per session).
+
+## Sequences that share cells (October 22)
+
+The difficulty ladder had already located the gap to PP-Seq: one map reached 1.00 after the direction split, two maps on the same cells stayed at 0.80–0.88. Looking at the components showed why: they are the maps' sum and differences, because two orders on the same cells are not orthogonal. The repair (`docs/sharing.md`) is the event-assignment idea that failed as a stand-alone method in September, now placed after PCA and checked on held-out events. Three bugs of my own were found on development draws before any fresh run, each by tracing one draw that collapsed into a single template: merging near-identical templates on the first iteration removed the young single-map template in favour of the blend it was being separated from; the energy that picks between starts counted synchronous volleys, which the blend matches well; and the held-out match let a volley template borrow a route template's evidence. The acceptance criteria were written into the doc before the fresh runs and are reported as they came out, including the parts that failed (false templates with partial replays, uncentred L2) and the hc-11 result, where only 3 of 88 templates pass because single sleep events carry too little order for a per-event test.
+
+## The complex ICA was wrong for months (found November 24–25)
+
+`cpca/ica.py` had two conjugation errors (the update step and the rebuilt patterns). It was never tested on a
+case with known sources, and when it failed on real data the failure was explained scientifically instead of
+checking the code. An outside exploration found the errors. Affected results:
+
+- every fit with ICA on (`cpca.fit` defaults to `ica=True`);
+- the ICA starts in the split stage of `cpca/separate.py`;
+- the conclusions "complex ICA does not help" and ICA off by default.
+
+The fix alone was not enough: the corrected fixed-point ICA still mixed two routes that share cells and each
+take part in many events, so gradient ascent on unitary rotations is now the engine. Rules since then:
+
+- test a component against a known answer before using it as evidence;
+- when a standard tool fails badly, check the implementation first;
+- in briefs to other agents, say which results were verified.
+
+The same review found a claim in the exploration that does not hold: centring on active entries reduces what
+co-firing adds but does not remove it once event clocks vary (`docs/adoption.md`).
+
 ## What held up
 
 - The library mathematics (shift invariance, exact phases under partial coverage, the delay-line reading) and the test suite.

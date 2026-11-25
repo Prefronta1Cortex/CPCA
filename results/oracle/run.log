@@ -1,0 +1,9 @@
+8 sessions on 8 workers
+Buddy_06272013: POST chosen 3/102 testable, oracle 0/10 (|ρ| 0.16), loose 1/10, random 1/10, cpca 0/10 | PRE chosen 6/172 testable, oracle 0/10 (|ρ| 0.16), loose 2/10, random 0/10, cpca 0/10 | 21s
+Cicero_09012014: POST chosen 10/408 testable, oracle 0/10 (|ρ| 0.49), loose 0/10, random 0/10, cpca 1/10 | PRE chosen 4/284 testable, oracle 0/10 (|ρ| -inf), loose 0/10, random 1/10, cpca 2/10 | 42s
+Gatsby_08022013: POST chosen 18/442 testable, oracle 1/10 (|ρ| 0.60), loose 2/10, random 0/10, cpca 3/10 | PRE chosen 20/472 testable, oracle 2/10 (|ρ| 0.50), loose 0/10, random 0/10, cpca 0/10 | 50s
+Gatsby_08282013: POST chosen 4/369 testable, oracle 0/10 (|ρ| 0.71), loose 2/10, random 0/10, cpca 1/10 | PRE chosen 2/224 testable, oracle 0/10 (|ρ| 0.48), loose 1/10, random 0/10, cpca 0/10 | 50s
+Cicero_09172014: POST chosen 31/808 testable, oracle 0/10 (|ρ| 0.55), loose 0/10, random 0/10, cpca 0/10 | PRE chosen 31/748 testable, oracle 2/10 (|ρ| 0.45), loose 0/10, random 1/10, cpca 0/10 | 83s
+Achilles_10252013: POST chosen 38/916 testable, oracle 3/10 (|ρ| 0.41), loose 6/10, random 2/10, cpca 5/10 | PRE chosen 30/962 testable, oracle 0/10 (|ρ| 0.20), loose 0/10, random 1/10, cpca 2/10 | 97s
+Cicero_09102014: POST chosen 14/791 testable, oracle 1/10 (|ρ| 0.61), loose 1/10, random 0/10, cpca 1/10 | PRE chosen 14/801 testable, oracle 0/10 (|ρ| 0.49), loose 1/10, random 0/10, cpca 0/10 | 107s
+Achilles_11012013: POST chosen 17/817 testable, oracle 0/10 (|ρ| 0.33), loose 0/10, random 1/10, cpca 2/10 | PRE chosen 11/818 testable, oracle 2/10 (|ρ| 0.45), loose 1/10, random 0/10, cpca 2/10 | 120s

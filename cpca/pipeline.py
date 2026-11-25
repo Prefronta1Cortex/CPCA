@@ -11,6 +11,7 @@ else is a convention (mean arrow, centre, scale, shuffle-null bound, ICA).
 
 import numpy as np
 
+from cpca.active import shuffle_null_active
 from cpca.decode import readout
 from cpca.decompose import decompose, n_above_null, n_significant, prepare, shuffle_null
 from cpca.encode import encode
@@ -19,12 +20,14 @@ from cpca.ica import unmix
 
 
 def fit(times_ms, T, rng=None, how="mean", center=True, scale=True, n_components="shuffle", ica=True,
-        member_frac=0.2, max_components=20, n_shuffles=100):
+        member_frac=0.2, max_components=20, n_shuffles=100, arc=np.pi):
     """Fit complex PCA (+ ICA) to spike times.
 
     times_ms: (events, cells, spikes) in ms from each event window's start; NaN = no spike.
     T: half-circle scale in ms, one number or one per event (use the event's duration
        so that each event's extent maps to [0, pi]).
+    center: True (column centring), False (uncentred), or "active" (cpca.active: events aligned,
+       cells centred on their active entries, shuffle within each cell's active events).
     n_components: "shuffle" (default: components above a per-cell shuffle null, see
        cpca.decompose.n_above_null), "mp" (Marchenko-Pastur bound; valid for centred and
        scaled arrows only), or an integer.
@@ -35,15 +38,15 @@ def fit(times_ms, T, rng=None, how="mean", center=True, scale=True, n_components
     scores, member masks, and read-outs (weights, relative times in ms, delays) per pattern.
     """
     rng = np.random.default_rng(0) if rng is None else rng
-    encoded = encode(times_ms, T, how=how, t0=0.0)
+    encoded = encode(times_ms, T, how=how, t0=0.0, arc=arc)
     prepared = prepare(encoded, center=center, scale=scale)
     M, N = prepared.shape
     eigenvalues, components, pc_scores, cov = decompose(encoded, n_components=None, center=center, scale=scale)
     n_mp, mp_bound = n_significant(eigenvalues, M, N)
     null_q = None
     if n_components == "shuffle":
-        null = shuffle_null(prepared, rng, n_shuffles=n_shuffles)
-        k, bound = n_above_null(eigenvalues, null, centred=center)
+        null = (shuffle_null_active if center == "active" else shuffle_null)(prepared, rng, n_shuffles=n_shuffles)
+        k, bound = n_above_null(eigenvalues, null, centred=bool(center))
         null_q = {q: np.percentile(null, q, axis=0) for q in (5, 50, 95)}
     elif n_components == "mp":
         k, bound = n_mp, mp_bound
@@ -55,7 +58,8 @@ def fit(times_ms, T, rng=None, how="mean", center=True, scale=True, n_components
         patterns, scores, rotation = unmix(prepared, kept_values, kept, rng)
     else:
         patterns, scores, rotation = kept, pc_scores[:, :k], np.eye(k)
-    T_read = float(np.median(T)) if np.ndim(T) else float(T)
+    # readout converts phase to ms as T / pi * phase
+    T_read = (float(np.median(T)) if np.ndim(T) else float(T)) * np.pi / arc
     reads = []
     for j in range(k):
         weights, rel_times, delays, included, span = readout(patterns[:, j], T_read, min_weight=member_frac)
@@ -65,5 +69,5 @@ def fit(times_ms, T, rng=None, how="mean", center=True, scale=True, n_components
         "bound_rule": n_components if isinstance(n_components, str) else "fixed", "mp_bound": mp_bound, "n_mp": n_mp,
         "null_eigenvalues": null_q, "n_kept": k, "pca_components": kept, "patterns": patterns, "scores": scores, "rotation": rotation,
         "members": [members(patterns[:, j], member_frac) for j in range(k)], "readouts": reads,
-        "T_read_ms": T_read, "settings": {"how": how, "center": center, "scale": scale, "ica": ica, "member_frac": member_frac},
+        "T_read_ms": T_read, "settings": {"how": how, "center": center, "scale": scale, "ica": ica, "member_frac": member_frac, "arc": arc},
     }

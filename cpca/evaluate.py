@@ -170,3 +170,53 @@ def member_field_compactness(component, centres, circular, length, rng, frac=0.2
     pool = centres[np.isfinite(centres)]
     null = np.array([spread(rng.choice(pool, n, replace=False)) for _ in range(n_null)])
     return spread(c), float(np.percentile(null, 5)), float(null.mean()), n
+
+
+def best_compactness(member_sets, centres, circular, length, rng, min_members=4, n_null=500):
+    """Do some output's members have fields close together on the track? Fair across output counts and sizes.
+
+    member_sets: list of boolean arrays (one per output); centres: {map key: per-cell field centre, NaN = no field}.
+    For each output and map, the statistic is the mean pairwise distance between the members' field centres
+    (circular distance on circular tracks), standardised by its own null (field centres permuted among the cells
+    that have a field in that map); the best output is the most compact one. The null permutes the centres once
+    per draw for all outputs and takes the same best, so a method gains nothing from returning more outputs.
+    Returns z (best standardised compactness, negative = compact), ratio (its mean distance over the null mean),
+    p, the index and map of the best output, and n (its members with a field).
+    """
+    def mean_dist(c):
+        d = np.abs(c[..., :, None] - c[..., None, :])
+        if circular:
+            d = np.minimum(d, length - d)
+        n = c.shape[-1]
+        return d.sum(axis=(-1, -2)) / (n * (n - 1))
+
+    tests = []
+    for j, m in enumerate(member_sets):
+        for key, cen in centres.items():
+            use = np.flatnonzero(np.asarray(m, bool) & np.isfinite(cen))
+            if use.size >= min_members:
+                tests.append((j, key, use))
+    out = {"z": np.nan, "ratio": np.nan, "p": np.nan, "index": -1, "map": np.nan, "n": 0, "n_testable": len(tests)}
+    if not tests:
+        return out
+    has = {key: np.flatnonzero(np.isfinite(cen)) for key, cen in centres.items()}
+    perms = {key: np.array([rng.permutation(h) for _ in range(n_null)]) for key, h in has.items()}
+    null_best = np.full(n_null, np.inf)
+    best = None
+    for j, key, use in tests:
+        cen = centres[key]
+        obs = mean_dist(cen[use])
+        pos = np.searchsorted(has[key], use)
+        null = mean_dist(cen[perms[key][:, pos]])                 # (n_null,)
+        mu, sd = null.mean(), null.std()
+        if sd <= 0:
+            continue
+        z = (obs - mu) / sd
+        null_best = np.minimum(null_best, (null - mu) / sd)
+        if best is None or z < best[0]:
+            best = (z, obs / mu, j, key, use.size)
+    if best is None:
+        return out
+    z, ratio, j, key, n = best
+    out.update(z=float(z), ratio=float(ratio), p=float((1 + np.sum(null_best <= z)) / (n_null + 1)), index=j, map=key, n=int(n))
+    return out

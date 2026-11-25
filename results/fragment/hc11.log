@@ -1,0 +1,25 @@
+24 jobs on 9 workers
+('Buddy_06272013', 'post'): 1483 events | cPCA |ρ| 0.29 p 0.924, timing p 0.975 | count PCA |ρ| 0.39 p 0.495
+('Gatsby_08282013', 'post'): 4364 events | cPCA |ρ| 0.84 p 0.304, timing p 0.199 | count PCA |ρ| 0.86 p 0.190
+('Gatsby_08022013', 'post'): 2782 events | cPCA |ρ| 0.77 p 0.442, timing p 0.244 | count PCA |ρ| 0.63 p 0.710
+('Cicero_09012014', 'post'): 3702 events | cPCA |ρ| 0.81 p 0.152, timing p 0.035 | count PCA |ρ| 0.54 p 0.829
+('Cicero_09172014', 'post'): 3462 events | cPCA |ρ| 0.86 p 0.213, timing p 0.194 | count PCA |ρ| 0.75 p 0.559
+('Buddy_06272013', 'pre'): 1483 events | cPCA |ρ| 0.57 p 0.323, timing p 0.239 | count PCA |ρ| 0.34 p 0.755
+('Achilles_11012013', 'post'): 2678 events | cPCA |ρ| 0.90 p 0.042, timing p 0.204 | count PCA |ρ| 0.92 p 0.072
+('Cicero_09102014', 'post'): 3289 events | cPCA |ρ| 0.84 p 0.257, timing p 0.328 | count PCA |ρ| 0.92 p 0.073
+('Achilles_11012013', 'pre'): 2678 events | cPCA |ρ| 0.75 p 0.497, timing p 0.517 | count PCA |ρ| 0.78 p 0.467
+('Cicero_09012014', 'pre'): 3702 events | cPCA |ρ| 0.40 p 0.628, timing p 0.841 | count PCA |ρ| 0.52 p 0.831
+('Gatsby_08022013', 'pre'): 2782 events | cPCA |ρ| 0.68 p 0.686, timing p 0.662 | count PCA |ρ| 0.70 p 0.410
+('Achilles_10252013', 'maze'): 373 events | cPCA |ρ| 0.87 p 0.163, timing p 0.189 | count PCA |ρ| 0.82 p 0.443
+('Cicero_09172014', 'pre'): 3462 events | cPCA |ρ| 0.92 p 0.051, timing p 0.055 | count PCA |ρ| 0.71 p 0.636
+('Buddy_06272013', 'maze'): 504 events | cPCA |ρ| 0.24 p 0.867, timing p 0.970 | count PCA |ρ| 0.78 p 0.085
+('Achilles_11012013', 'maze'): 321 events | cPCA |ρ| 0.81 p 0.137, timing p 0.532 | count PCA |ρ| 0.91 p 0.040
+('Cicero_09172014', 'maze'): 432 events | cPCA |ρ| 0.78 p 0.321, timing p 0.458 | count PCA |ρ| 0.97 p 0.007
+('Gatsby_08282013', 'maze'): 531 events | cPCA |ρ| 0.72 p 0.677, timing p 0.602 | count PCA |ρ| 0.83 p 0.201
+('Cicero_09102014', 'maze'): 184 events | cPCA |ρ| 0.72 p 0.416, timing p 0.502 | count PCA |ρ| 0.86 p 0.117
+('Gatsby_08022013', 'maze'): 474 events | cPCA |ρ| 0.84 p 0.131, timing p 0.114 | count PCA |ρ| 0.48 p 0.961
+('Gatsby_08282013', 'pre'): 4364 events | cPCA |ρ| 0.71 p 0.729, timing p 0.627 | count PCA |ρ| 0.75 p 0.668
+('Cicero_09012014', 'maze'): 1546 events | cPCA |ρ| 0.57 p 0.481, timing p 0.851 | count PCA |ρ| 0.68 p 0.495
+('Cicero_09102014', 'pre'): 3289 events | cPCA |ρ| 0.76 p 0.585, timing p 0.498 | count PCA |ρ| 0.77 p 0.683
+('Achilles_10252013', 'post'): 3260 events | cPCA |ρ| 0.90 p 0.128, timing p 0.159 | count PCA |ρ| 0.91 p 0.170
+('Achilles_10252013', 'pre'): 3260 events | cPCA |ρ| 0.81 p 0.517, timing p 0.423 | count PCA |ρ| 0.78 p 0.809

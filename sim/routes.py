@@ -50,14 +50,20 @@ def route_centres(routes, n_cells):
 
 def generate(rng, n_cells=80, n_events=3000, routes=None, replay_frac=0.4, reverse_frac=0.5, participation=0.15,
              seq_participation=0.6, segment=1.0, span_ms=80.0, jitter_ms=6.0, assemblies=0, extra_rate=0.0,
-             event_ms=EVENT_MS, span_range_ms=None):
+             event_ms=EVENT_MS, span_range_ms=None, assembly_membership=None):
     """Spike times (events, cells, 3) in ms within [0, event_ms]; labels: route index (+1) or 0 for a volley.
 
     span_range_ms: if given as (low, high), each replay is compressed into its own span drawn
     uniformly from that range (variable pacing), instead of the fixed span_ms.
+    assembly_membership: optional assembly index per cell (instead of random membership), e.g.
+    contiguous stretches of a route, for assemblies that follow the map but fire without order.
     """
     routes = routes if routes is not None else make_routes(rng, n_cells)
-    membership = rng.integers(0, assemblies, size=n_cells) if assemblies else None
+    if assembly_membership is not None:
+        membership = np.asarray(assembly_membership, dtype=int)
+        assemblies = int(membership.max()) + 1
+    else:
+        membership = rng.integers(0, assemblies, size=n_cells) if assemblies else None
     times = np.full((n_events, n_cells, 3), np.nan)
     label = np.zeros(n_events, dtype=int)
     direction = np.zeros(n_events, dtype=int)

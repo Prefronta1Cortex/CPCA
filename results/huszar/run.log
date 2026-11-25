@@ -1,0 +1,113 @@
+73 jobs on 10 workers
+[1/73     23s] hc11_job Buddy_06272013: pre: k=5 hits 1/10 best p=0.289 topo p=0.002 | post: k=5 hits 0/10 best p=0.511 topo p=0.043 | place 18
+[2/73     27s] huszar_job sub-e13-16f1_ses-e13-16f1-210312_behavio: pre: k=6 hits 0/12 best p=0.584 topo p=0.000 | post: k=6 hits 0/12 best p=0.185 topo p=0.000 | place 72
+[3/73     39s] huszar_job sub-e13-16f1_ses-e13-16f1-210302_behavio: pre: k=10 hits 1/20 best p=0.148 topo p=0.000 | post: k=6 hits 0/12 best p=0.934 topo p=0.000 | place 96
+[4/73     43s] hc11_job Gatsby_08282013: pre: k=5 hits 0/10 best p=0.584 topo p=0.066 | post: k=8 hits 0/16 best p=0.893 topo p=0.000 | place 27
+[5/73     46s] hc11_job Gatsby_08022013: pre: k=6 hits 1/12 best p=0.552 topo p=0.511 | post: k=7 hits 3/14 best p=0.064 topo p=0.006 | place 25
+[6/73     48s] huszar_job sub-e13-16f1_ses-e13-16f1-210314_behavio: pre: k=5 hits 0/10 best p=0.552 topo p=0.033 | post: k=6 hits 0/12 best p=0.639 topo p=0.000 | place 70
+[7/73     49s] hc11_job Cicero_09012014: pre: k=5 hits 0/10 best p=0.590 topo p=0.611 | post: k=5 hits 1/10 best p=0.005 topo p=0.100 | place 20
+[8/73     50s] hc11_job Cicero_09172014: pre: k=6 hits 0/12 best p=0.895 topo p=0.391 | post: k=6 hits 1/12 best p=0.344 topo p=0.513 | place 26
+[9/73     51s] huszar_job sub-e13-16f1_ses-e13-16f1-210315_behavio: pre: k=6 hits 1/12 best p=0.266 topo p=0.000 | post: k=5 hits 0/10 best p=0.419 topo p=0.000 | place 64
+[10/73] FAILED ('huszar_job', (PosixPath('/Users/basalganglia/Proper/Complex PCA/data/huszar/sub-e13-26m1_ses-e13-26m1-211116_behavior+ecephys.nwb'),)):
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/CPCA/lib/python3.12/concurrent/futures/process.py", line 264, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/basalganglia/Proper/Complex PCA/scripts/run_huszar.py", line 111, in huszar_job
+    s = hz.load_session(path)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/basalganglia/Proper/Complex PCA/cpca/huszar.py", line 33, in load_session
+    ep = f["intervals/epochs"]
+         ~^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/CPCA/lib/python3.12/site-packages/h5py/_hl/group.py", line 407, in __getitem__
+    return self._get(name)
+           ^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "/opt/miniconda3/envs/CPCA/lib/python3.12/site-packages/h5py/_hl/group.py", line 421, in _get
+    oid = h5o.open(self.id, self._e(name), lapl=lapl)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5o.pyx", line 255, in h5py.h5o.open
+KeyError: "Unable to synchronously open object (object 'epochs' doesn't exist)"
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/basalganglia/Proper/Complex PCA/scripts/run_huszar.py", line 216, in main
+    _, msg = fut.result()
+             ^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/CPCA/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/CPCA/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+KeyError: "Unable to synchronously open object (object 'epochs' doesn't exist)"
+
+[11/73     66s] huszar_job sub-e13-16f1_ses-e13-16f1-210319_behavio: pre: k=6 hits 2/12 best p=0.260 topo p=0.001 | post: k=5 hits 1/10 best p=0.361 topo p=0.044 | place 70
+[12/73     68s] huszar_job sub-e13-16f1_ses-e13-16f1-210322_behavio: pre: k=5 hits 1/10 best p=0.383 topo p=0.000 | post: k=5 hits 0/10 best p=0.654 topo p=0.000 | place 62
+[13/73     69s] huszar_job sub-e14-2m2_ses-e14-2m2-201013_behavior+: epoch layout does not fit (no sleep before and after the task)
+[14/73     80s] huszar_job sub-e13-16f1_ses-e13-16f1-210317_behavio: pre: k=9 hits 1/18 best p=0.573 topo p=0.000 | post: k=6 hits 1/12 best p=0.529 topo p=0.001 | place 74
+[15/73     82s] hc11_job Achilles_11012013: pre: k=7 hits 1/14 best p=0.528 topo p=0.280 | post: k=11 hits 8/22 best p=0.093 topo p=0.000 | place 67
+[16/73     82s] huszar_job sub-e14-2m2_ses-e14-2m2-201022_behavior+: epoch layout does not fit (no sleep before and after the task)
+[17/73     82s] huszar_job sub-e14-2m3_ses-e14-2m3-201017_behavior+: epoch layout does not fit (no sleep before and after the task)
+[18/73     92s] huszar_job sub-e14-2m2_ses-e14-2m2-201017_behavior+: pre: k=5 hits 0/10 best p=0.896 topo p=0.007 | post: k=5 hits 0/10 best p=0.440 topo p=0.001 | place 61
+[19/73     92s] huszar_job sub-e14-2m3_ses-e14-2m3-201118_behavior+: epoch layout does not fit (no sleep before and after the task)
+[20/73     92s] huszar_job sub-e14-2m3_ses-e14-2m3-201121_behavior+: epoch layout does not fit (no sleep before and after the task)
+[21/73     92s] huszar_job sub-e14-2m3_ses-e14-2m3-201125_behavior+: epoch layout does not fit (no sleep before and after the task)
+[22/73     92s] huszar_job sub-e14-2m3_ses-e14-2m3-201129_behavior+: epoch layout does not fit (no sleep before and after the task)
+[23/73     93s] huszar_job sub-e14-2m3_ses-e14-2m3-201206_behavior+: epoch layout does not fit (no sleep before and after the task)
+[24/73     93s] huszar_job sub-e14-2m3_ses-e14-2m3-201208_behavior+: epoch layout does not fit (no sleep before and after the task)
+[25/73     93s] huszar_job sub-e15-10m1_ses-e15-10m1-200716_behavio: epoch layout does not fit (no sleep before and after the task)
+[26/73     95s] huszar_job sub-e14-2m3_ses-e14-2m3-201019_behavior+: pre: k=3 hits 1/6 best p=0.094 topo p=0.027 | post: k=3 hits 0/6 best p=0.383 topo p=0.011 | place 27
+[27/73     95s] hc11_job Cicero_09102014: pre: k=6 hits 0/12 best p=0.980 topo p=0.578 | post: k=7 hits 0/14 best p=0.664 topo p=0.000 | place 38
+[28/73     96s] huszar_job sub-e15-10m1_ses-e15-10m1-200727_behavio: epoch layout does not fit (no sleep before and after the task)
+[29/73    111s] huszar_job sub-e15-10m1_ses-e15-10m1-200719_behavio: pre: k=5 hits 2/10 best p=0.013 topo p=0.096 | post: k=4 hits 1/8 best p=0.541 topo p=0.014 | place 54
+[30/73    113s] huszar_job sub-e14-2m2_ses-e14-2m2-201019_behavior+: pre: k=3 hits 0/6 best p=0.912 topo p=0.440 | post: k=6 hits 0/12 best p=0.380 topo p=0.000 | place 79
+[31/73    116s] huszar_job sub-e13-16f1_ses-e13-16f1-210331_behavio: pre: k=9 hits 0/18 best p=0.836 topo p=0.000 | post: k=9 hits 2/18 best p=0.198 topo p=0.000 | place 107
+[32/73    122s] huszar_job sub-e15-10m1_ses-e15-10m1-200803_behavio: pre: k=5 hits 1/10 best p=0.346 topo p=0.324 | post: k=6 hits 0/12 best p=0.356 topo p=0.089 | place 42
+[33/73    134s] huszar_job sub-e13-26m1_ses-e13-26m1-211119_behavio: pre: k=9 hits 1/18 best p=0.548 topo p=0.000 | post: k=11 hits 1/22 best p=0.382 topo p=0.000 | place 129
+[34/73    136s] huszar_job sub-e15-10m1_ses-e15-10m1-200723_behavio: pre: k=7 hits 1/14 best p=0.201 topo p=0.006 | post: k=7 hits 1/14 best p=0.188 topo p=0.000 | place 66
+[35/73    150s] huszar_job sub-e15-10m1_ses-e15-10m1-200809_behavio: pre: k=6 hits 0/12 best p=0.736 topo p=0.005 | post: k=7 hits 0/14 best p=0.878 topo p=0.000 | place 77
+[36/73    151s] huszar_job sub-e15-9f1_ses-e15-9f1-200715_behavior+: epoch layout does not fit (no sleep before and after the task)
+[37/73    151s] huszar_job sub-e15-9f1_ses-e15-9f1-200717_behavior+: epoch layout does not fit (no sleep before and after the task)
+[38/73    158s] huszar_job sub-e15-10m1_ses-e15-10m1-200812_behavio: pre: k=7 hits 0/14 best p=0.930 topo p=0.001 | post: k=8 hits 0/16 best p=0.575 topo p=0.000 | place 72
+[39/73    158s] huszar_job sub-e15-9f1_ses-e15-9f1-200723_behavior+: epoch layout does not fit (no sleep before and after the task)
+[40/73    162s] huszar_job sub-e13-26m1_ses-e13-26m1-211124_behavio: pre: k=11 hits 0/22 best p=0.773 topo p=0.000 | post: k=11 hits 1/22 best p=0.113 topo p=0.000 | place 121
+[41/73    162s] huszar_job sub-e15-9f1_ses-e15-9f1-200802_behavior+: epoch layout does not fit (no sleep before and after the task)
+[42/73    182s] huszar_job sub-e15-9f1_ses-e15-9f1-200720_behavior+: pre: k=5 hits 1/10 best p=0.210 topo p=0.002 | post: k=7 hits 0/14 best p=0.743 topo p=0.000 | place 49
+[43/73    182s] huszar_job sub-e13-26m1_ses-e13-26m1-211019_behavio: pre: k=11 hits 0/22 best p=0.726 topo p=0.000 | post: k=12 hits 3/24 best p=0.004 topo p=0.000 | place 153
+[44/73    183s] huszar_job sub-e16-1f1_ses-e16-1f1-200917_behavior+: epoch layout does not fit (no sleep before and after the task)
+[45/73    183s] huszar_job sub-e16-1f1_ses-e16-1f1-200823_behavior+: epoch layout does not fit (no sleep before and after the task)
+[46/73    183s] huszar_job sub-e16-1f1_ses-e16-1f1-200918_behavior+: epoch layout does not fit (no sleep before and after the task)
+[47/73    187s] huszar_job sub-e13-16f1_ses-e13-16f1-210328_behavio: pre: k=12 hits 2/24 best p=0.275 topo p=0.000 | post: k=13 hits 1/26 best p=0.162 topo p=0.000 | place 124
+[48/73    188s] huszar_job sub-e16-1f1_ses-e16-1f1-200923_behavior+: epoch layout does not fit (no sleep before and after the task)
+[49/73    188s] huszar_job sub-e16-1f1_ses-e16-1f1-201001_behavior+: epoch layout does not fit (no sleep before and after the task)
+[50/73    188s] huszar_job sub-e15-9f1_ses-e15-9f1-200729_behavior+: pre: k=7 hits 1/14 best p=0.007 topo p=0.000 | post: k=7 hits 3/14 best p=0.303 topo p=0.000 | place 79
+[51/73    192s] huszar_job sub-e15-9f1_ses-e15-9f1-200809_behavior+: pre: k=8 hits 4/16 best p=0.342 topo p=0.000 | post: k=8 hits 1/16 best p=0.156 topo p=0.000 | place 78
+[52/73    192s] huszar_job sub-e16-2m1_ses-e16-2m1-201116_behavior+: epoch layout does not fit (no sleep before and after the task)
+[53/73    195s] hc11_job Achilles_10252013: pre: k=12 hits 0/24 best p=0.876 topo p=0.965 | post: k=11 hits 6/22 best p=0.001 topo p=0.000 | place 77
+[54/73    195s] huszar_job sub-e16-2m1_ses-e16-2m1-201121_behavior+: epoch layout does not fit (no sleep before and after the task)
+[55/73    204s] huszar_job sub-e16-1f1_ses-e16-1f1-200919_behavior+: pre: k=3 hits 1/6 best p=0.009 topo p=0.003 | post: k=4 hits 1/8 best p=0.252 topo p=0.001 | place 26
+[56/73    210s] huszar_job sub-e16-2m1_ses-e16-2m1-201129_behavior+: pre: k=4 hits 0/8 best p=0.770 topo p=0.005 | post: k=4 hits 0/8 best p=0.537 topo p=0.002 | place 51
+[57/73    210s] huszar_job sub-e16-2m1_ses-e16-2m1-201119_behavior+: pre: k=4 hits 2/8 best p=0.290 topo p=0.001 | post: k=5 hits 1/10 best p=0.659 topo p=0.000 | place 45
+[58/73    211s] huszar_job sub-e16-1f1_ses-e16-1f1-201002_behavior+: pre: k=4 hits 0/8 best p=0.585 topo p=0.001 | post: k=4 hits 0/8 best p=0.189 topo p=0.001 | place 42
+[59/73    216s] huszar_job sub-e16-2m1_ses-e16-2m1-201206_behavior+: pre: k=3 hits 0/6 best p=0.610 topo p=0.238 | post: k=4 hits 1/8 best p=0.219 topo p=0.001 | place 43
+[60/73    217s] huszar_job sub-e16-1f1_ses-e16-1f1-201004_behavior+: pre: k=5 hits 0/10 best p=0.391 topo p=0.462 | post: k=4 hits 1/8 best p=0.086 topo p=0.719 | place 38
+[61/73    220s] huszar_job sub-e16-1f1_ses-e16-1f1-200920_behavior+: pre: k=4 hits 0/8 best p=0.630 topo p=0.007 | post: k=5 hits 2/10 best p=0.058 topo p=0.002 | place 37
+[62/73    246s] huszar_job sub-e16-3m1_ses-e16-3m1-210119_behavior+: pre: k=7 hits 0/14 best p=0.899 topo p=0.018 | post: k=10 hits 3/20 best p=0.090 topo p=0.000 | place 98
+[63/73    257s] huszar_job sub-e16-3m1_ses-e16-3m1-210201_behavior+: pre: k=7 hits 0/14 best p=0.720 topo p=0.001 | post: k=9 hits 2/18 best p=0.554 topo p=0.000 | place 90
+[64/73    268s] huszar_job sub-e16-3m1_ses-e16-3m1-210111_behavior+: pre: k=8 hits 0/16 best p=0.638 topo p=0.001 | post: k=11 hits 2/22 best p=0.312 topo p=0.000 | place 137
+[65/73    292s] huszar_job sub-e15-13f1_ses-e15-13f1-220119_behavio: pre: k=14 hits 2/28 best p=0.031 topo p=0.000 | post: k=15 hits 8/30 best p=0.001 topo p=0.000 | place 202
+[66/73    311s] huszar_job sub-e16-3m1_ses-e16-3m1-210203_behavior+: pre: k=8 hits 0/16 best p=0.775 topo p=0.000 | post: k=11 hits 2/22 best p=0.380 topo p=0.000 | place 93
+[67/73    318s] huszar_job sub-e16-3m2_ses-e16-3m2-211211_behavior+: pre: k=12 hits 2/24 best p=0.283 topo p=0.000 | post: k=11 hits 3/22 best p=0.017 topo p=0.000 | place 115
+[68/73    328s] huszar_job sub-e16-3m2_ses-e16-3m2-211212_behavior+: pre: k=9 hits 2/18 best p=0.509 topo p=0.003 | post: k=12 hits 2/24 best p=0.216 topo p=0.000 | place 118
+[69/73    339s] huszar_job sub-e16-3m2_ses-e16-3m2-211213_behavior+: pre: k=11 hits 0/22 best p=0.907 topo p=0.042 | post: k=10 hits 2/20 best p=0.079 topo p=0.000 | place 123
+[70/73    350s] huszar_job sub-e16-3m2_ses-e16-3m2-211210_behavior+: pre: k=14 hits 3/28 best p=0.612 topo p=0.000 | post: k=8 hits 4/16 best p=0.404 topo p=0.000 | place 121
+[71/73    357s] huszar_job sub-e15-13f1_ses-e15-13f1-220118_behavio: pre: k=14 hits 2/28 best p=0.132 topo p=0.000 | post: k=18 hits 8/36 best p=0.143 topo p=0.000 | place 204
+[72/73    359s] huszar_job sub-e15-13f1_ses-e15-13f1-220120_behavio: pre: k=15 hits 2/30 best p=0.449 topo p=0.000 | post: k=15 hits 4/30 best p=0.423 topo p=0.000 | place 170
+[73/73    369s] huszar_job sub-e15-13f1_ses-e15-13f1-220117_behavio: pre: k=15 hits 0/30 best p=0.741 topo p=0.000 | post: k=19 hits 6/38 best p=0.005 topo p=0.000 | place 212

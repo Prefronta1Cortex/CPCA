@@ -1,0 +1,49 @@
+48 jobs on 10 workers
+[1/48      6s] synthetic_job ('same maps, sleep as L2', 1): rho +0.967 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[2/48      6s] synthetic_job ('same maps, sleep as L2', 0): rho +0.853 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[3/48      7s] hc11_job ('Buddy_06272013',): 53 waking events, k wake {'uncentred': 2, 'centred': 2}, wake vs map rho 0.28 | post: rho +0.058 p 0.1669 (32 cells) | pre: rho +0.084 p 0.1009 (33 cells)
+[4/48     10s] synthetic_job ('same maps, sleep as L2', 2): rho +0.774 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[5/48     10s] hc11_job ('Gatsby_08282013',): 51 waking events, k wake {'uncentred': 2, 'centred': 2}, wake vs map rho 0.33 | post: rho +0.018 p 0.3443 (41 cells) | pre: rho +0.019 p 0.3308 (41 cells)
+[6/48     10s] synthetic_job ('same maps, sleep as L2', 3): rho +0.837 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[7/48     11s] synthetic_job ('same maps, sleep as L2', 4): rho +0.827 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[8/48     12s] hc11_job ('Gatsby_08022013',): 71 waking events, k wake {'uncentred': 2, 'centred': 2}, wake vs map rho 0.49 | post: rho +0.139 p 0.0005 (53 cells) | pre: rho +0.044 p 0.1399 (53 cells)
+[9/48     12s] hc11_job ('Cicero_09172014',): 20 waking events, k wake {'uncentred': 2, 'centred': 1}, wake vs map rho 0.51 | post: rho +0.050 p 0.1809 (46 cells) | pre: rho +0.074 p 0.1334 (46 cells)
+[10/48     12s] hc11_job ('Cicero_09012014',): 67 waking events, k wake {'uncentred': 2, 'centred': 1}, wake vs map rho 0.41 | post: rho +0.075 p 0.0700 (50 cells) | pre: rho +0.030 p 0.2844 (48 cells)
+[11/48     14s] synthetic_job ('same maps, sleep as L2', 5): rho +0.866 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[12/48     14s] synthetic_job ('same maps, sleep as L2', 6): rho +0.750 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[13/48     14s] synthetic_job ('same maps, sleep as L2', 7): rho +0.765 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[14/48     15s] synthetic_job ('same maps, sleep as L2', 8): rho +0.950 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[15/48     16s] synthetic_job ('same maps, sleep as L2', 9): rho +0.807 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 3}
+[16/48     16s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 0): rho +0.360 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 10, 'centred': 11}
+[17/48     16s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 1): rho +0.345 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 11}
+[18/48     18s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 2): rho +0.352 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 11}
+[19/48     18s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 3): rho +0.298 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 12}
+[20/48     18s] hc11_job ('Achilles_11012013',): 39 waking events, k wake {'uncentred': 3, 'centred': 2}, wake vs map rho 0.36 | post: rho +0.131 p 0.0005 (89 cells) | pre: rho +0.010 p 0.4103 (89 cells)
+[21/48     18s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 4): rho +0.286 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 11}
+[22/48     19s] hc11_job ('Cicero_09102014',): 13 waking events, k wake {'uncentred': 2, 'centred': 1}, wake vs map rho 0.46 | post: rho +0.254 p 0.0005 (59 cells) | pre: rho +0.156 p 0.0020 (59 cells)
+[23/48     19s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 5): rho +0.382 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 10, 'centred': 11}
+[24/48     20s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 6): rho +0.430 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 10, 'centred': 11}
+[25/48     20s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 7): rho +0.343 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 12}
+[26/48     20s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 8): rho +0.322 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 10, 'centred': 11}
+[27/48     22s] synthetic_job ('same maps, sleep as H (partial replays, assemblies)', 9): rho +0.249 p 0.0005, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 11, 'centred': 11}
+[28/48     22s] synthetic_job ('other maps', 0): rho -0.027 p 0.7611, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[29/48     22s] synthetic_job ('other maps', 1): rho -0.053 p 0.9615, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 3}
+[30/48     22s] synthetic_job ('other maps', 2): rho -0.005 p 0.5652, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[31/48     23s] synthetic_job ('other maps', 3): rho -0.054 p 0.9435, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[32/48     23s] synthetic_job ('other maps', 4): rho -0.063 p 0.9675, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[33/48     24s] synthetic_job ('other maps', 5): rho +0.037 p 0.1024, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[34/48     24s] synthetic_job ('other maps', 6): rho -0.009 p 0.6042, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[35/48     24s] synthetic_job ('other maps', 7): rho -0.009 p 0.5987, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[36/48     26s] synthetic_job ('other maps', 8): rho -0.019 p 0.6747, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 4, 'centred': 4}
+[37/48     26s] synthetic_job ('no replays in sleep', 0): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[38/48     26s] synthetic_job ('other maps', 9): rho -0.040 p 0.8761, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 3, 'centred': 3}
+[39/48     26s] synthetic_job ('no replays in sleep', 1): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[40/48     26s] synthetic_job ('no replays in sleep', 2): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[41/48     27s] synthetic_job ('no replays in sleep', 3): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[42/48     27s] synthetic_job ('no replays in sleep', 4): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[43/48     28s] synthetic_job ('no replays in sleep', 5): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[44/48     28s] synthetic_job ('no replays in sleep', 6): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[45/48     29s] synthetic_job ('no replays in sleep', 7): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[46/48     29s] synthetic_job ('no replays in sleep', 8): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[47/48     29s] synthetic_job ('no replays in sleep', 9): rho +nan p nan, k wake {'uncentred': 2, 'centred': 1}, k sleep {'uncentred': 1, 'centred': 0}
+[48/48     30s] hc11_job ('Achilles_10252013',): 81 waking events, k wake {'uncentred': 3, 'centred': 2}, wake vs map rho 0.40 | post: rho +0.173 p 0.0005 (115 cells) | pre: rho +0.026 p 0.1029 (115 cells)

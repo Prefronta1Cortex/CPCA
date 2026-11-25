@@ -1,0 +1,9 @@
+8 sessions on 8 workers
+Gatsby_08282013: real |ρ| 0.60 (p 0.773); timing shuffled: 4/100 pass, median |ρ| 0.59; share of shuffles at least as high as real: 0.465
+Buddy_06272013: real |ρ| 0.57 (p 0.491); timing shuffled: 15/100 pass, median |ρ| 0.71; share of shuffles at least as high as real: 0.901
+Cicero_09012014: real |ρ| 0.29 (p 0.958); timing shuffled: 2/100 pass, median |ρ| 0.42; share of shuffles at least as high as real: 0.851
+Cicero_09172014: real |ρ| 0.50 (p 0.413); timing shuffled: 2/100 pass, median |ρ| 0.45; share of shuffles at least as high as real: 0.277
+Gatsby_08022013: real |ρ| 0.61 (p 0.159); timing shuffled: 13/100 pass, median |ρ| 0.50; share of shuffles at least as high as real: 0.228
+Cicero_09102014: real |ρ| 0.64 (p 0.311); timing shuffled: 3/100 pass, median |ρ| 0.59; share of shuffles at least as high as real: 0.277
+Achilles_11012013: real |ρ| 0.53 (p 0.260); timing shuffled: 9/100 pass, median |ρ| 0.52; share of shuffles at least as high as real: 0.426
+Achilles_10252013: real |ρ| 0.54 (p 0.005); timing shuffled: 35/100 pass, median |ρ| 0.42; share of shuffles at least as high as real: 0.109
